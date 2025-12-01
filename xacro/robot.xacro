@@ -225,6 +225,14 @@
 		<limit lower="-3.14" upper="3.14" effort="100" velocity="1" />
 	</joint>
 
+	<!-- Alias link for compatibility with arms_target_manager (which expects head_link2) -->
+	<link name="head_link2"/>
+	<joint name="head_link2_alias_joint" type="fixed">
+		<parent link="head_pitch"/>
+		<child link="head_link2"/>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+	</joint>
+
 	<link name="arm_base"/>
 	<joint name="arm_base_joint" type="fixed">
 		<origin xyz="-0.0164439628111166 0 0.457354971463696"/>
