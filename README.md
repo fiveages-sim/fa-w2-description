@@ -52,3 +52,8 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 
   
 ## 4. Real Robot Deploy
+* Only Body
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2 hardware:=real enable_head:=false
+  ```

@@ -1,7 +1,7 @@
 # This config file is used by ros2_control
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 1000  # Hz
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -27,8 +27,8 @@ controller_manager:
 ocs2_arm_controller:
   ros__parameters:
     # Joint configuration
-    update_rate: 100  # Hz
-    mpc_frequency: 25
+    update_rate: 1000  # Hz
+    mpc_frequency: 50
     joints:
       - left_joint1
       - left_joint2
@@ -64,8 +64,8 @@ ocs2_arm_controller:
 ocs2_wbc_controller:
   ros__parameters:
     # Joint configuration
-    update_rate: 100  # Hz
-    mpc_frequency: 25
+    update_rate: 1000  # Hz
+    mpc_frequency: 50
     info_file_name: fixed_base
     joints:
       - body_joint1
@@ -148,7 +148,7 @@ body_joint_controller:
 #    home_1: [-0.899, -1.714, 0.865, 0.0]
 #    home_2: [-1.353, -2.660, 1.307, 0.0]
     home_1: [0.0, 0.0, 0.0, 0.0]
-    home_2: [0.1, 0.0, 0.0, 0.0]
+    home_2: [-0.3, -0.3, 0.1, 0.0]
 
     home_duration: 5.0
     move_duration: 3.0
