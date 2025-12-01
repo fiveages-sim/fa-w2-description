@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!-- =================================================================================== -->
+<!-- |    Complete Robot Description for Agibot G1                                     | -->
+<!-- |    This file includes the base robot structure and both arms                    | -->
+<!-- =================================================================================== -->
+<robot name="FiveAges_W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:arg name="type" default="linkhou_q2"/>
+
+	<xacro:if value="${'$(arg type)' == 'linkhou_q2'}">
+		<xacro:include filename="$(find fiveages_w2_description)/xacro/chassis/linkhou_s2.xacro"/>
+	</xacro:if>
+
+</robot>
