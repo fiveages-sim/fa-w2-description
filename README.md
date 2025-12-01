@@ -24,6 +24,11 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2
   ```
+* Body
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2 type:=body
+  ```
 
 ### 3.2 OCS2 Arm Controller Demo
 
@@ -39,3 +44,11 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2
   ```
+* Only Body
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2
+  ```
+
+  
+## 4. Real Robot Deploy
