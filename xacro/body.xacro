@@ -4,229 +4,229 @@
 	<link name="body_base">
 		<inertial>
 			<origin xyz="-0.000200488559999101 -0.000273639516978452 -0.146062494992026"/>
-			<mass value="8.23744177260185" />
+			<mass value="8.23744177260185"/>
 			<inertia
 					ixx="0.0427044289140212"
 					ixy="0.000110484904723097"
 					ixz="5.20117375313561E-06"
 					iyy="0.0344639116909607"
 					iyz="-1.07902056768718E-05"
-					izz="0.0490685771548297" />
+					izz="0.0490685771548297"/>
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/base.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/base.obj"/>
 			</geometry>
 		</visual>
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/base.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/base.obj"/>
 			</geometry>
 		</collision>
 	</link>
 
 	<joint name="body_fixed_joint" type="fixed">
 		<origin xyz="0.10525 0 0.2295"/>
-		<parent link="base_link" />
-		<child link="body_base" />
+		<parent link="base_link"/>
+		<child link="body_base"/>
 	</joint>
 
 	<link name="body_link1">
 		<inertial>
 			<origin xyz="-5.26269080900477E-05 -0.000546927086993554 0.159848926806017"/>
-			<mass value="5.6518910145446" />
+			<mass value="5.6518910145446"/>
 			<inertia
 					ixx="0.129446325951384"
 					ixy="8.587994128406E-06"
 					ixz="9.34570905413505E-06"
 					iyy="0.118974430850637"
 					iyz="0.000463913896532557"
-					izz="0.0161870223281112" />
+					izz="0.0161870223281112"/>
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link1.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link1.obj"/>
 			</geometry>
 		</visual>
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link1.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link1.obj"/>
 			</geometry>
 		</collision>
 	</link>
-	
+
 	<joint name="body_joint1" type="revolute">
-		<parent link="body_base" />
-		<child link="body_link1" />
-		<axis xyz="0 1 0" />
-		<limit lower="-1.352633" upper="0.567" effort="100" velocity="1" />
+		<parent link="body_base"/>
+		<child link="body_link1"/>
+		<axis xyz="0 1 0"/>
+		<limit lower="-1.352633" upper="0.567" effort="100" velocity="1"/>
 	</joint>
-	
+
 	<link name="body_link2">
 		<inertial>
 			<origin xyz="-5.06261699229071E-14 -1.0902390101819E-13 0.172448903272911"/>
-			<mass value="7.6108743790626" />
+			<mass value="7.6108743790626"/>
 			<inertia
 					ixx="0.168898657844891"
 					ixy="-7.65126788334289E-08"
 					ixz="-2.99913165388078E-14"
 					iyy="0.189588222903554"
 					iyz="-2.80537312130624E-15"
-					izz="0.0218547815193579" />
+					izz="0.0218547815193579"/>
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link2.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link2.obj"/>
 			</geometry>
 		</visual>
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link2.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link2.obj"/>
 			</geometry>
 		</collision>
 	</link>
-	
+
 	<joint name="body_joint2" type="revolute">
 		<origin xyz="0 0 0.323"/>
-		<parent link="body_link1" />
-		<child link="body_link2" />
-		<axis xyz="0 -1 0" />
-		<limit lower="-2.66" upper="1.605" effort="100" velocity="1" />
+		<parent link="body_link1"/>
+		<child link="body_link2"/>
+		<axis xyz="0 -1 0"/>
+		<limit lower="-2.66" upper="1.605" effort="100" velocity="1"/>
 	</joint>
-	
+
 	<link name="body_link3">
 		<inertial>
 			<origin xyz="2.24765231915391E-06 -0.017843126813746 0.0199837851518558"/>
-			<mass value="13.7293315804368" />
+			<mass value="13.7293315804368"/>
 			<inertia
 					ixx="0.0380691419113999"
 					ixy="-6.90768437813021E-08"
 					ixz="3.88596630213136E-06"
 					iyy="0.0443960808652778"
 					iyz="8.97911264129812E-06"
-					izz="0.0332593124725221" />
+					izz="0.0332593124725221"/>
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link3.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link3.obj"/>
 			</geometry>
 		</visual>
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link3.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link3.obj"/>
 			</geometry>
 		</collision>
 	</link>
-	
+
 	<joint name="body_joint3" type="revolute">
 		<origin xyz="0 0.0019 0.35294"/>
-		<parent link="body_link2" />
-		<child link="body_link3" />
-		<axis xyz="0 1 0" />
-		<limit lower="-1.745" upper="1.745" effort="100" velocity="1" />
+		<parent link="body_link2"/>
+		<child link="body_link3"/>
+		<axis xyz="0 1 0"/>
+		<limit lower="-1.745" upper="1.745" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="body_link4">
 		<inertial>
-			<origin xyz="-0.0249769763515 0.00261378092766984 0.273685327435851"/>
-			<mass value="23.7446873792875" />
+			<origin xyz="-0.0150844595179076 0.00261332042527829 0.274407850772391"/>
+			<mass value="23.7446394325596"/>
 			<inertia
-					ixx="0.32004495936722"
-					ixy="8.27745275816937E-05"
-					ixz="0.0072338104417254"
-					iyy="0.228581680748554"
-					iyz="8.86157129443541E-05"
-					izz="0.136693312472866" />
+					ixx="0.320326293119484"
+					ixy="8.41740202015408E-05"
+					ixz="0.000603743723020676"
+					iyy="0.228575723449718"
+					iyz="8.78726038347342E-05"
+					izz="0.136416117968312"/>
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link4.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link4.obj"/>
 			</geometry>
 		</visual>
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link4.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link4.obj"/>
 			</geometry>
 		</collision>
 	</link>
 
 	<joint name="body_joint4" type="revolute">
-		<origin xyz="0 -0.0019 0.1443"/>
-		<parent link="body_link3" />
-		<child link="body_link4" />
-		<axis xyz="0 0 -1" />
-		<limit lower="-3.14" upper="3.14" effort="100" velocity="1" />
+		<origin xyz="-7.1612E-05 -0.0019 0.14441"/>
+		<parent link="body_link3"/>
+		<child link="body_link4"/>
+		<axis xyz="0 0 -1"/>
+		<limit lower="-3.14" upper="3.14" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="head_link1">
 		<inertial>
 			<origin xyz="0.0110684120335558 0.0270955929655894 -0.0849037421704728"/>
-			<mass value="1.76592019732553" />
+			<mass value="1.76592019732553"/>
 			<inertia
 					ixx="0.00540494211688139"
 					ixy="5.45899583655646E-06"
 					ixz="0.000512508898720623"
 					iyy="0.0045794535946287"
 					iyz="5.71011553188605E-05"
-					izz="0.00441063426341843" />
+					izz="0.00441063426341843"/>
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_yaw.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_yaw.obj"/>
 			</geometry>
 		</visual>
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_yaw.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_yaw.obj"/>
 			</geometry>
 		</collision>
 	</link>
 
 	<joint name="head_joint1" type="revolute">
-		<origin xyz="-0.046314 -0.0272 0.63334"/>
-		<parent link="body_link4" />
-		<child link="head_link1" />
-		<axis xyz="0.036088 0 -0.99935" />
-		<limit lower="-3.14" upper="3.14" effort="100" velocity="1" />
+		<origin xyz="-0.023428 0 0.48475"/>
+		<parent link="body_link4"/>
+		<child link="head_link1"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-3.14" upper="3.14" effort="100" velocity="1"/>
 	</joint>
-	
+
 	<link name="head_link2">
 		<inertial>
-			<origin xyz="0.0106970783153679 -0.00153937526954917 0.0535386876730146"/>
-			<mass value="1.96837023227358" />
+			<origin xyz="-0.0151771428301439 -0.00143945296196635 -0.0524451271193214"/>
+			<mass value="1.96836671464479"/>
 			<inertia
-					ixx="0.00378109514744319"
-					ixy="-1.35306059382265E-05"
-					ixz="-4.33373870574624E-05"
-					iyy="0.0035236676197971"
-					iyz="9.33508804534738E-06"
-					izz="0.00568993406575938" />
+					ixx="0.00378737345531871"
+					ixy="1.23509442005848E-05"
+					ixz="0.000117982756207023"
+					iyy="0.00352320847778892"
+					iyz="-1.03942260573708E-05"
+					izz="0.00568300818653482"/>
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_pitch.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_pitch.obj"/>
 			</geometry>
 		</visual>
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_pitch.obj" />
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_pitch.obj"/>
 			</geometry>
 		</collision>
 	</link>
-	
+
 	<joint name="head_joint2" type="revolute">
-		<origin xyz="0 0.0315 0"/>
-		<parent link="head_link1" />
-		<child link="head_link2" />
-		<axis xyz="0 -1 0" />
-		<limit lower="-3.14" upper="3.14" effort="100" velocity="1" />
+		<origin xyz="0 0.0042 0.15" rpy="3.1416 0 3.1416"/>
+		<parent link="head_link1"/>
+		<child link="head_link2"/>
+		<axis xyz="0 -1 0"/>
+		<limit lower="-3.14" upper="3.14" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="arm_base"/>
 	<joint name="arm_base_joint" type="fixed">
-		<origin xyz="-0.0164439628111166 0 0.457354971463696"/>
-		<parent link="body_link4" />
-		<child link="arm_base" />
+		<origin xyz="7.1612E-05 0 0.45765"/>
+		<parent link="body_link4"/>
+		<child link="arm_base"/>
 	</joint>
 
 </robot>
