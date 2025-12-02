@@ -1,10 +1,11 @@
 <robot name="LinkHou_S2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 	<link name="base_link"/>
+	<xacro:property name="PI" value="3.1415926535897931"/>
 
 	<joint name="base_link_mount" type="fixed">
 		<parent link="base_link"/>
 		<child link="chassis_base"/>
-		<origin rpy="0 0 3.1415926535"/>
+		<origin rpy="0 0 ${PI}"/>
 	</joint>
 
 	<link name="chassis_base">
@@ -76,8 +77,9 @@
 			</geometry>
 		</visual>
 		<collision>
+			<origin rpy="${PI/2.0} 0 0"/>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj" scale="1 -1 1"/>
+				<cylinder radius="0.07" length="0.046"/>
 			</geometry>
 		</collision>
 	</link>
@@ -135,8 +137,9 @@
 			</geometry>
 		</visual>
 		<collision>
+			<origin rpy="${PI/2.0} 0 0"/>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj"/>
+				<cylinder radius="0.07" length="0.046"/>
 			</geometry>
 		</collision>
 	</link>
@@ -194,8 +197,9 @@
 			</geometry>
 		</visual>
 		<collision>
+			<origin rpy="${PI/2.0} 0 0"/>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj" scale="1 -1 1"/>
+				<cylinder radius="0.07" length="0.046"/>
 			</geometry>
 		</collision>
 	</link>
@@ -253,8 +257,9 @@
 			</geometry>
 		</visual>
 		<collision>
+			<origin rpy="${PI/2.0} 0 0"/>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj"/>
+				<cylinder radius="0.07" length="0.046"/>
 			</geometry>
 		</collision>
 	</link>
@@ -292,7 +297,7 @@
 	</link>
 
 	<joint name="rr_lidar_joint" type="fixed">
-		<origin xyz="0.21412 0.19406 0.32957" rpy="1.5708 -1.309 0"/>
+		<origin xyz="0.21412 0.19406 0.32957" rpy="${PI/2.0} -1.309 0"/>
 		<parent link="chassis_base"/>
 		<child link="rr_lidar"/>
 	</joint>
@@ -322,7 +327,7 @@
 	</link>
 
 	<joint name="fl_lidar_joint" type="fixed">
-		<origin xyz="-0.21412 -0.19406 0.32957" rpy="1.5708 -1.309 3.1416"/>
+		<origin xyz="-0.21412 -0.19406 0.32957" rpy="${PI/2.0} -1.309 3.1416"/>
 		<parent link="chassis_base"/>
 		<child link="fl_lidar"/>
 	</joint>
@@ -341,7 +346,7 @@
 	</link>
 
 	<joint name="chassis_camera_joint" type="fixed">
-		<origin xyz="-0.3438 -0.00032028 0.159" rpy="0 0 3.1416"/>
+		<origin xyz="-0.3438 -0.00032028 0.159" rpy="0 0 ${PI}"/>
 		<parent link="chassis_base"/>
 		<child link="chassis_camera"/>
 	</joint>

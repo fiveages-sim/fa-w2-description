@@ -10,14 +10,14 @@
 	<joint name="left_arm_base_joint" type="fixed">
 		<parent link="arm_base"/>
 		<child link="left_base_link"/>
-		<origin rpy="-1.5708 0 0" xyz="0.0 0.062 0"/>
+		<origin rpy="-${PI/2} 0 0" xyz="0.0 0.062 0"/>
 	</joint>
 
 	<!-- Right Arm -->
 	<joint name="right_arm_base_joint" type="fixed">
 		<parent link="arm_base"/>
 		<child link="right_base_link"/>
-		<origin rpy="1.5708 0 0" xyz="0 -0.062 0"/>
+		<origin rpy="${PI/2} 0 0" xyz="0 -0.062 0"/>
 	</joint>
 
 	<xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>

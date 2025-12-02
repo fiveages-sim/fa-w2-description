@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+	<xacro:property name="PI" value="3.1415926535897931"/>
 	<link name="body_base">
 		<inertial>
 			<origin xyz="-0.000200488559999101 -0.000273639516978452 -0.146062494992026"/>
@@ -155,7 +156,7 @@
 		<parent link="body_link3"/>
 		<child link="body_link4"/>
 		<axis xyz="0 0 -1"/>
-		<limit lower="-3.14" upper="3.14" effort="100" velocity="1"/>
+		<limit lower="-${PI}" upper="${PI}" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="head_link1">
@@ -215,7 +216,7 @@
 	</link>
 
 	<joint name="head_joint2" type="revolute">
-		<origin xyz="0 0.0042 0.15" rpy="3.1416 0 3.1416"/>
+		<origin xyz="0 0.0042 0.15" rpy="${PI} 0 ${PI}"/>
 		<parent link="head_link1"/>
 		<child link="head_link2"/>
 		<axis xyz="0 -1 0"/>
