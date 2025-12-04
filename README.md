@@ -2,6 +2,8 @@
 
 This package contains the description files for FiveAges W2 humanoid.
 
+![FiveAges](.images/fiveages_w2.png)
+
 ## 1. Build
 
 ```bash
@@ -50,6 +52,12 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2
   ```
 
+#### 3.2.2 Isaac Sim
+* Empty Hand (Full Body Control)
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 hardware:=isaac
+  ```
   
 ## 4. Real Robot Deploy
 * Only Body
