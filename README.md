@@ -20,6 +20,22 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple
   ```
 
+<details>
+<summary><strong>More Configs with End Effector</strong></summary>
+
+* With ChangingTek AG2F90 Gripper
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=ag2f90
+  ```
+* With Jodell RG75 Gripper
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=rg75
+  ```
+  
+</details>
+
 ### 2.2 Component
 * Linkhou S2 Base
   ```bash
@@ -35,13 +51,12 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 ## 3. ROS2 Control Demos
 
 ### 3.1 Mock Component
-
-* Empty Hand (Full Body Control)
+* Full Body Control
   ```bash
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2
   ```
-* Empty Hand (Split Body Control)
+* Split Body Control
   ```bash
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2
@@ -51,6 +66,15 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2
   ```
+<details>
+<summary><strong>More Full Body Configs</strong></summary>
+
+* With ChangingTek AG2F90 Gripper
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch ocs2_arm_controller full_body.launch.py type:=ag2f90 robot:=fiveages_w2
+  ```
+</details>
 
 ### 3.2 Isaac Sim
 * Empty Hand (Full Body Control)
