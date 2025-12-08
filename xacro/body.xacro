@@ -88,7 +88,7 @@
 	</link>
 
 	<joint name="body_joint2" type="revolute">
-		<origin xyz="0 0 0.323"/>
+		<origin xyz="0 0 0.322"/>
 		<parent link="body_link1"/>
 		<child link="body_link2"/>
 		<axis xyz="0 -1 0"/>
@@ -120,7 +120,7 @@
 	</link>
 
 	<joint name="body_joint3" type="revolute">
-		<origin xyz="0 0.0019 0.35294"/>
+		<origin xyz="0 0.0019 0.355"/>
 		<parent link="body_link2"/>
 		<child link="body_link3"/>
 		<axis xyz="0 1 0"/>
@@ -152,11 +152,25 @@
 	</link>
 
 	<joint name="body_joint4" type="revolute">
-		<origin xyz="-7.1612E-05 -0.0019 0.14441"/>
+		<origin xyz="-7.1612E-05 -0.0019 0.14331"/>
 		<parent link="body_link3"/>
 		<child link="body_link4"/>
 		<axis xyz="0 0 -1"/>
 		<limit lower="-${PI}" upper="${PI}" effort="100" velocity="1"/>
+	</joint>
+
+	<link name="body_camera">
+<!--		<visual>-->
+<!--			<geometry>-->
+<!--				<mesh filename="file://$(find sensor_models)/meshes/orbbec/336.obj"/>-->
+<!--			</geometry>-->
+<!--		</visual>-->
+	</link>
+
+	<joint name="body_camera_joint" type="fixed">
+		<origin xyz="0.10065 0.024257 0.28812" rpy="${PI} 0.378684973 0"/>
+		<parent link="body_link4"/>
+		<child link="body_camera"/>
 	</joint>
 
 	<link name="head_link1">
@@ -221,6 +235,20 @@
 		<child link="head_link2"/>
 		<axis xyz="0 -1 0"/>
 		<limit lower="-3.14" upper="3.14" effort="100" velocity="1"/>
+	</joint>
+
+	<link name="head_camera">
+<!--		<visual>-->
+<!--			<geometry>-->
+<!--				<mesh filename="file://$(find sensor_models)/meshes/orbbec/336L.obj"/>-->
+<!--			</geometry>-->
+<!--		</visual>-->
+	</link>
+
+	<joint name="head_camera_joint" type="fixed">
+		<origin xyz="-0.097847  0.046703 -0.12364" rpy="0 -0.64460396 ${PI}"/>
+		<parent link="head_link2"/>
+		<child link="head_camera"/>
 	</joint>
 
 	<link name="arm_base"/>

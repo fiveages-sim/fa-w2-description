@@ -13,6 +13,7 @@
 
   <exec_depend>robot_common_launch</exec_depend>
   <exec_depend>m6_ccs_description</exec_depend>
+  <exec_depend>camera_models</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
