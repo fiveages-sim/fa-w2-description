@@ -103,6 +103,7 @@ ocs2_wbc_controller:
       - position
 
     robot_name: fiveages_w2
+    robot_type: ag2f90
     home_duration: 5.0
 
     home_pos: [ -0.899, -1.714, -0.865, 0.0,
