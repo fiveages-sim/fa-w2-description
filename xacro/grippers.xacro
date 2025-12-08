@@ -5,6 +5,23 @@
 
         <!-- Note: type parameter is now passed as macro parameter -->
 
+        <xacro:if value="${type == ''}">
+            <link name="left_eef"/>
+            <link name="right_eef"/>
+
+            <joint name="left_eef_joint" type="fixed">
+                <parent link="left_tcp"/>
+                <child link="left_eef"/>
+                <origin rpy=" ${PI/2} 0 0"/>
+            </joint>
+
+            <joint name="right_eef_joint" type="fixed">
+                <parent link="right_tcp"/>
+                <child link="right_eef"/>
+                <origin rpy=" ${PI/2} 0 0"/>
+            </joint>
+        </xacro:if>
+
         <xacro:if value="${type == 'ag2f90'}">
             <xacro:include filename="$(find changingtek_description)/xacro/AG2F90-C.xacro"/>
             <xacro:AG2F90-C name="left" use_flange="true"/>

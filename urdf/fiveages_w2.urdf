@@ -372,8 +372,9 @@
       </geometry>
     </visual>
     <collision>
+      <origin xyz="0.0091 0 0.25765"/>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/link4.obj"/>
+        <box size="0.2000 0.32 0.5029"/>
       </geometry>
     </collision>
   </link>
@@ -387,7 +388,7 @@
   <link name="body_camera">
     <visual>
       <geometry>
-        <mesh filename="file:///home/fiveages/ros2_ws/install/sensor_models/share/sensor_models/meshes/orbbec/336.obj"/>
+        <mesh filename="package://sensor_models/meshes/orbbec/336.obj"/>
       </geometry>
     </visual>
   </link>
@@ -418,7 +419,7 @@
     <parent link="body_link4"/>
     <child link="head_link1"/>
     <axis xyz="0 0 1"/>
-    <limit effort="100" lower="-3.14" upper="3.14" velocity="1"/>
+    <limit effort="100" lower="-0.436" upper="0.436" velocity="1"/>
   </joint>
   <link name="head_link2">
     <inertial>
@@ -442,12 +443,12 @@
     <parent link="head_link1"/>
     <child link="head_link2"/>
     <axis xyz="0 -1 0"/>
-    <limit effort="100" lower="-3.14" upper="3.14" velocity="1"/>
+    <limit effort="100" lower="-0.26" upper="0.26" velocity="1"/>
   </joint>
   <link name="head_camera">
     <visual>
       <geometry>
-        <mesh filename="file:///home/fiveages/ros2_ws/install/sensor_models/share/sensor_models/meshes/orbbec/336L.obj"/>
+        <mesh filename="package://sensor_models/meshes/orbbec/336L.obj"/>
       </geometry>
     </visual>
   </link>
@@ -688,11 +689,11 @@
     <axis xyz="0 0 1"/>
     <limit effort="18" lower="-1.5707963267948966" upper="1.5707963267948966" velocity="3.141592653589793"/>
   </joint>
-  <link name="left_eef"/>
-  <joint name="left_eef_joint" type="fixed">
+  <link name="left_tcp"/>
+  <joint name="left_tcp_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 -0.095296 0"/>
     <parent link="left_link7"/>
-    <child link="left_eef"/>
+    <child link="left_tcp"/>
   </joint>
   <!-- Base Link -->
   <link name="right_base_link">
@@ -908,10 +909,24 @@
     <axis xyz="0 0 1"/>
     <limit effort="18" lower="-1.5707963267948966" upper="1.5707963267948966" velocity="3.141592653589793"/>
   </joint>
-  <link name="right_eef"/>
-  <joint name="right_eef_joint" type="fixed">
+  <link name="right_tcp"/>
+  <joint name="right_tcp_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 -0.095296 0"/>
     <parent link="right_link7"/>
+    <child link="right_tcp"/>
+  </joint>
+  <link name="left_eef"/>
+  <link name="right_eef"/>
+
+  <joint name="left_eef_joint" type="fixed">
+    <parent link="left_tcp"/>
+    <child link="left_eef"/>
+    <origin rpy="1.5707963267948966 0 0"/>
+  </joint>
+
+  <joint name="right_eef_joint" type="fixed">
+    <parent link="right_tcp"/>
     <child link="right_eef"/>
+    <origin rpy="1.5707963267948966 0 0"/>
   </joint>
 </robot>
