@@ -27,7 +27,7 @@
     # 格式：head_rpy_axis_direction.<rpy_name> = 1.0 或 -1.0（必须是浮点数）
     head_rpy_axis_direction:
       head_yaw: 1.0      # yaw轴方向：1.0表示正方向，-1.0表示反向
-      head_pitch: -1.0   # pitch轴方向：1.0表示正方向，-1.0表示反向
+      head_pitch: 1.0   # pitch轴方向：1.0表示正方向，-1.0表示反向
       head_roll: 1.0     # roll轴方向：1.0表示正方向，-1.0表示反向
     
     # 头部link名称配置（可选）

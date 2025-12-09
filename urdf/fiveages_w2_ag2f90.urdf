@@ -430,7 +430,7 @@
     <origin rpy="3.141592653589793 0 3.141592653589793" xyz="0 0.0042 0.15"/>
     <parent link="head_link1"/>
     <child link="head_link2"/>
-    <axis xyz="0 -1 0"/>
+    <axis xyz="0 1 0"/>
     <limit effort="100" lower="-0.26" upper="0.26" velocity="1"/>
   </joint>
   <link name="head_camera">
