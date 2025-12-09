@@ -46,12 +46,10 @@
       </geometry>
     </visual>
   </link>
-  <joint name="rr_steer_joint" type="revolute">
+  <joint name="rr_steer_joint" type="fixed">
     <origin xyz="-0.23072 -0.21738 0.166"/>
     <parent link="base_link"/>
     <child link="rr_steer"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="5" lower="-3.141592653589793" upper="3.141592653589793" velocity="6.28"/>
   </joint>
   <link name="rr_wheel">
     <inertial>
@@ -71,11 +69,10 @@
       </geometry>
     </collision>
   </link>
-  <joint name="rr_wheel_joint" type="continuous">
+  <joint name="rr_wheel_joint" type="fixed">
     <origin xyz="-0.00071653 -0.003566 -0.136"/>
     <parent link="rr_steer"/>
     <child link="rr_wheel"/>
-    <axis xyz="0 1 0"/>
   </joint>
   <link name="rl_steer">
     <inertial>
@@ -89,12 +86,10 @@
       </geometry>
     </visual>
   </link>
-  <joint name="rl_steer_joint" type="revolute">
+  <joint name="rl_steer_joint" type="fixed">
     <origin xyz="-0.22928 0.21738 0.166"/>
     <parent link="base_link"/>
     <child link="rl_steer"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="5" lower="-3.141592653589793" upper="3.141592653589793" velocity="6.28"/>
   </joint>
   <link name="rl_wheel">
     <inertial>
@@ -114,11 +109,10 @@
       </geometry>
     </collision>
   </link>
-  <joint name="rl_wheel_joint" type="continuous">
+  <joint name="rl_wheel_joint" type="fixed">
     <origin xyz="0.00071653 0.003566 -0.136"/>
     <parent link="rl_steer"/>
     <child link="rl_wheel"/>
-    <axis xyz="0 1 0"/>
   </joint>
   <link name="fr_steer">
     <inertial>
@@ -132,12 +126,10 @@
       </geometry>
     </visual>
   </link>
-  <joint name="fr_steer_joint" type="revolute">
+  <joint name="fr_steer_joint" type="fixed">
     <origin xyz="0.22928 -0.21738 0.166"/>
     <parent link="base_link"/>
     <child link="fr_steer"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="5" lower="-3.141592653589793" upper="3.141592653589793" velocity="6.28"/>
   </joint>
   <link name="fr_wheel">
     <inertial>
@@ -157,11 +149,10 @@
       </geometry>
     </collision>
   </link>
-  <joint name="fr_wheel_joint" type="continuous">
+  <joint name="fr_wheel_joint" type="fixed">
     <origin xyz="-0.00071653 -0.003566 -0.136"/>
     <parent link="fr_steer"/>
     <child link="fr_wheel"/>
-    <axis xyz="0 1 0"/>
   </joint>
   <link name="fl_steer">
     <inertial>
@@ -175,12 +166,10 @@
       </geometry>
     </visual>
   </link>
-  <joint name="fl_steer_joint" type="revolute">
+  <joint name="fl_steer_joint" type="fixed">
     <origin xyz="0.23072 0.21738 0.166"/>
     <parent link="base_link"/>
     <child link="fl_steer"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="5" lower="-3.141592653589793" upper="3.141592653589793" velocity="6.28"/>
   </joint>
   <link name="fl_wheel">
     <inertial>
@@ -200,11 +189,10 @@
       </geometry>
     </collision>
   </link>
-  <joint name="fl_wheel_joint" type="continuous">
+  <joint name="fl_wheel_joint" type="fixed">
     <origin xyz="0.00071653 -0.003566 -0.136"/>
     <parent link="fl_steer"/>
     <child link="fl_wheel"/>
-    <axis xyz="0 1 0"/>
   </joint>
   <link name="rr_lidar">
     <inertial>

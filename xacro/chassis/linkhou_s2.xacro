@@ -1,359 +1,389 @@
-<robot name="LinkHou_S2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<?xml version="1.0"?>
+<robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 	<xacro:property name="PI" value="3.1415926535897931"/>
 
-	<link name="base_footprint"/>
-	<joint name="base_footprint_joint" type="fixed">
-		<parent link="base_footprint"/>
-		<child link="base_link"/>
-		<origin xyz="0 0 0.04"/>
-	</joint>
+	<xacro:macro name="linkhou_s2" params="joints_movable:=true">
+		<!-- 根据joints_movable参数设置关节类型 -->
+		<xacro:if value="${joints_movable}">
+			<xacro:property name="steer_joint_type" value="revolute"/>
+			<xacro:property name="wheel_joint_type" value="continuous"/>
+		</xacro:if>
+		<xacro:unless value="${joints_movable}">
+			<xacro:property name="steer_joint_type" value="fixed"/>
+			<xacro:property name="wheel_joint_type" value="fixed"/>
+		</xacro:unless>
 
-	<link name="base_link"/>
-	<joint name="base_link_mount" type="fixed">
-		<parent link="base_link"/>
-		<child link="chassis_base"/>
-		<origin rpy="0 0 ${PI}"/>
-	</joint>
+		<link name="base_footprint"/>
+		<joint name="base_footprint_joint" type="fixed">
+			<parent link="base_footprint"/>
+			<child link="base_link"/>
+			<origin xyz="0 0 0.04"/>
+		</joint>
 
-	<link name="chassis_base">
-		<inertial>
-			<origin xyz="-0.010273 0.00026047 0.1315"/>
-			<mass value="87.15"/>
-			<inertia
-					ixx="0.83411"
-					ixy="-0.00032119"
-					ixz="0.004604"
-					iyy="1.4167"
-					iyz="7.1643E-05"
-					izz="1.7214"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/base_link.obj"/>
-			</geometry>
-		</visual>
-		<collision>
-			<origin xyz="0 0 0.15"/>
-			<geometry>
-				<box size="0.5 0.3 0.2"/>
-			</geometry>
-		</collision>
-	</link>
+		<link name="base_link"/>
+		<joint name="base_link_mount" type="fixed">
+			<parent link="base_link"/>
+			<child link="chassis_base"/>
+			<origin rpy="0 0 ${PI}"/>
+		</joint>
 
-	<link name="rr_steer">
-		<inertial>
-			<origin xyz="-0.00067026 -0.024202 -0.061733"/>
-			<mass value="0.65556"/>
-			<inertia
-					ixx="0.00076736"
-					ixy="-1.7164E-08"
-					ixz="-3.4992E-07"
-					iyy="0.00058611"
-					iyz="-0.00023947"
-					izz="0.00052471"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj" scale="1 -1 1"/>
-			</geometry>
-		</visual>
-	</link>
+		<link name="chassis_base">
+			<inertial>
+				<origin xyz="-0.010273 0.00026047 0.1315"/>
+				<mass value="87.15"/>
+				<inertia
+						ixx="0.83411"
+						ixy="-0.00032119"
+						ixz="0.004604"
+						iyy="1.4167"
+						iyz="7.1643E-05"
+						izz="1.7214"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/base_link.obj"/>
+				</geometry>
+			</visual>
+			<collision>
+				<origin xyz="0 0 0.15"/>
+				<geometry>
+					<box size="0.5 0.3 0.2"/>
+				</geometry>
+			</collision>
+		</link>
 
-	<joint name="rr_steer_joint" type="revolute">
-		<origin xyz="-0.23072 -0.21738 0.166"/>
-		<parent link="base_link"/>
-		<child link="rr_steer"/>
-		<axis xyz="0 0 1"/>
-		<limit lower="-${PI}" upper="${PI}" effort="5" velocity="6.28"/>
-	</joint>
+		<link name="rr_steer">
+			<inertial>
+				<origin xyz="-0.00067026 -0.024202 -0.061733"/>
+				<mass value="0.65556"/>
+				<inertia
+						ixx="0.00076736"
+						ixy="-1.7164E-08"
+						ixz="-3.4992E-07"
+						iyy="0.00058611"
+						iyz="-0.00023947"
+						izz="0.00052471"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj" scale="1 -1 1"/>
+				</geometry>
+			</visual>
+		</link>
 
-	<link name="rr_wheel">
-		<inertial>
-			<origin xyz="-9.5495E-06 -0.00099178 6.4755E-06"/>
-			<mass value="1.2283"/>
-			<inertia
-					ixx="0.0020567"
-					ixy="-3.2625E-08"
-					ixz="-1.1187E-07"
-					iyy="0.0037677"
-					iyz="1.4797E-07"
-					izz="0.0020568"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj" scale="1 -1 1"/>
-			</geometry>
-		</visual>
-		<collision>
-			<origin rpy="${PI/2.0} 0 0"/>
-			<geometry>
-				<cylinder radius="0.07" length="0.046"/>
-			</geometry>
-		</collision>
-	</link>
+		<joint name="rr_steer_joint" type="${steer_joint_type}">
+			<origin xyz="-0.23072 -0.21738 0.166"/>
+			<parent link="base_link"/>
+			<child link="rr_steer"/>
+			<xacro:if value="${joints_movable}">
+				<axis xyz="0 0 1"/>
+				<limit lower="-${PI}" upper="${PI}" effort="5" velocity="6.28"/>
+			</xacro:if>
+		</joint>
 
-	<joint name="rr_wheel_joint" type="continuous">
-		<origin xyz="-0.00071653 -0.003566 -0.136"/>
-		<parent link="rr_steer"/>
-		<child link="rr_wheel"/>
-		<axis xyz="0 1 0"/>
-	</joint>
+		<link name="rr_wheel">
+			<inertial>
+				<origin xyz="-9.5495E-06 -0.00099178 6.4755E-06"/>
+				<mass value="1.2283"/>
+				<inertia
+						ixx="0.0020567"
+						ixy="-3.2625E-08"
+						ixz="-1.1187E-07"
+						iyy="0.0037677"
+						iyz="1.4797E-07"
+						izz="0.0020568"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj" scale="1 -1 1"/>
+				</geometry>
+			</visual>
+			<collision>
+				<origin rpy="${PI/2.0} 0 0"/>
+				<geometry>
+					<cylinder radius="0.07" length="0.046"/>
+				</geometry>
+			</collision>
+		</link>
 
-	<link name="rl_steer">
-		<inertial>
-			<origin xyz="0.00067026 0.024202 -0.061733"/>
-			<mass value="0.65556"/>
-			<inertia
-					ixx="0.00076736"
-					ixy="-1.7163E-08"
-					ixz="3.4992E-07"
-					iyy="0.00058611"
-					iyz="0.00023947"
-					izz="0.00052471"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj"/>
-			</geometry>
-		</visual>
-	</link>
+		<joint name="rr_wheel_joint" type="${wheel_joint_type}">
+			<origin xyz="-0.00071653 -0.003566 -0.136"/>
+			<parent link="rr_steer"/>
+			<child link="rr_wheel"/>
+			<xacro:if value="${joints_movable}">
+				<axis xyz="0 1 0"/>
+			</xacro:if>
+		</joint>
 
-	<joint name="rl_steer_joint" type="revolute">
-		<origin xyz="-0.22928 0.21738 0.166"/>
-		<parent link="base_link"/>
-		<child link="rl_steer"/>
-		<axis xyz="0 0 1"/>
-		<limit lower="-${PI}" upper="${PI}" effort="5" velocity="6.28"/>
-	</joint>
+		<link name="rl_steer">
+			<inertial>
+				<origin xyz="0.00067026 0.024202 -0.061733"/>
+				<mass value="0.65556"/>
+				<inertia
+						ixx="0.00076736"
+						ixy="-1.7163E-08"
+						ixz="3.4992E-07"
+						iyy="0.00058611"
+						iyz="0.00023947"
+						izz="0.00052471"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj"/>
+				</geometry>
+			</visual>
+		</link>
 
-	<link name="rl_wheel">
-		<inertial>
-			<origin xyz="-6.77013827887762E-06 0.000991778701903534 9.34293679251755E-06"/>
-			<mass value="1.22832806539885"/>
-			<inertia
-					ixx="0.0020567891793888"
-					ixy="1.48916704553435E-07"
-					ixz="-1.10605927530389E-07"
-					iyy="0.0037676756883782"
-					iyz="-2.79953606372295E-08"
-					izz="0.00205674185492585"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj"/>
-			</geometry>
-		</visual>
-		<collision>
-			<origin rpy="${PI/2.0} 0 0"/>
-			<geometry>
-				<cylinder radius="0.07" length="0.046"/>
-			</geometry>
-		</collision>
-	</link>
+		<joint name="rl_steer_joint" type="${steer_joint_type}">
+			<origin xyz="-0.22928 0.21738 0.166"/>
+			<parent link="base_link"/>
+			<child link="rl_steer"/>
+			<xacro:if value="${joints_movable}">
+				<axis xyz="0 0 1"/>
+				<limit lower="-${PI}" upper="${PI}" effort="5" velocity="6.28"/>
+			</xacro:if>
+		</joint>
 
-	<joint name="rl_wheel_joint" type="continuous">
-		<origin xyz="0.00071653 0.003566 -0.136"/>
-		<parent link="rl_steer"/>
-		<child link="rl_wheel"/>
-		<axis xyz="0 1 0"/>
-	</joint>
+		<link name="rl_wheel">
+			<inertial>
+				<origin xyz="-6.77013827887762E-06 0.000991778701903534 9.34293679251755E-06"/>
+				<mass value="1.22832806539885"/>
+				<inertia
+						ixx="0.0020567891793888"
+						ixy="1.48916704553435E-07"
+						ixz="-1.10605927530389E-07"
+						iyy="0.0037676756883782"
+						iyz="-2.79953606372295E-08"
+						izz="0.00205674185492585"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj"/>
+				</geometry>
+			</visual>
+			<collision>
+				<origin rpy="${PI/2.0} 0 0"/>
+				<geometry>
+					<cylinder radius="0.07" length="0.046"/>
+				</geometry>
+			</collision>
+		</link>
 
-	<link name="fr_steer">
-		<inertial>
-			<origin xyz="-0.00067026 -0.024202 -0.061733"/>
-			<mass value="0.65556"/>
-			<inertia
-					ixx="0.00076736"
-					ixy="-1.7163E-08"
-					ixz="-3.4992E-07"
-					iyy="0.00058611"
-					iyz="-0.00023947"
-					izz="0.00052471"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj" scale="1 -1 1"/>
-			</geometry>
-		</visual>
-	</link>
+		<joint name="rl_wheel_joint" type="${wheel_joint_type}">
+			<origin xyz="0.00071653 0.003566 -0.136"/>
+			<parent link="rl_steer"/>
+			<child link="rl_wheel"/>
+			<xacro:if value="${joints_movable}">
+				<axis xyz="0 1 0"/>
+			</xacro:if>
+		</joint>
 
-	<joint name="fr_steer_joint" type="revolute">
-		<origin xyz="0.22928 -0.21738 0.166"/>
-		<parent link="base_link"/>
-		<child link="fr_steer"/>
-		<axis xyz="0 0 1"/>
-		<limit lower="-${PI}" upper="${PI}" effort="5" velocity="6.28"/>
-	</joint>
+		<link name="fr_steer">
+			<inertial>
+				<origin xyz="-0.00067026 -0.024202 -0.061733"/>
+				<mass value="0.65556"/>
+				<inertia
+						ixx="0.00076736"
+						ixy="-1.7163E-08"
+						ixz="-3.4992E-07"
+						iyy="0.00058611"
+						iyz="-0.00023947"
+						izz="0.00052471"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj" scale="1 -1 1"/>
+				</geometry>
+			</visual>
+		</link>
 
-	<link name="fr_wheel">
-		<inertial>
-			<origin xyz="-6.4606E-06 -0.00099178 9.5769E-06"/>
-			<mass value="1.2283"/>
-			<inertia
-					ixx="0.0020567"
-					ixy="2.462E-08"
-					ixz="-6.9326E-08"
-					iyy="0.0037677"
-					iyz="1.4949E-07"
-					izz="0.0020569"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj" scale="1 -1 1"/>
-			</geometry>
-		</visual>
-		<collision>
-			<origin rpy="${PI/2.0} 0 0"/>
-			<geometry>
-				<cylinder radius="0.07" length="0.046"/>
-			</geometry>
-		</collision>
-	</link>
+		<joint name="fr_steer_joint" type="${steer_joint_type}">
+			<origin xyz="0.22928 -0.21738 0.166"/>
+			<parent link="base_link"/>
+			<child link="fr_steer"/>
+			<xacro:if value="${joints_movable}">
+				<axis xyz="0 0 1"/>
+				<limit lower="-${PI}" upper="${PI}" effort="5" velocity="6.28"/>
+			</xacro:if>
+		</joint>
 
-	<joint name="fr_wheel_joint" type="continuous">
-		<origin xyz="-0.00071653 -0.003566 -0.136"/>
-		<parent link="fr_steer"/>
-		<child link="fr_wheel"/>
-		<axis xyz="0 1 0"/>
-	</joint>
+		<link name="fr_wheel">
+			<inertial>
+				<origin xyz="-6.4606E-06 -0.00099178 9.5769E-06"/>
+				<mass value="1.2283"/>
+				<inertia
+						ixx="0.0020567"
+						ixy="2.462E-08"
+						ixz="-6.9326E-08"
+						iyy="0.0037677"
+						iyz="1.4949E-07"
+						izz="0.0020569"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj" scale="1 -1 1"/>
+				</geometry>
+			</visual>
+			<collision>
+				<origin rpy="${PI/2.0} 0 0"/>
+				<geometry>
+					<cylinder radius="0.07" length="0.046"/>
+				</geometry>
+			</collision>
+		</link>
 
-	<link name="fl_steer">
-		<inertial>
-			<origin xyz="0.00067026110136939 0.024201895934192 -0.0617332783946613"/>
-			<mass value="0.655558098590739"/>
-			<inertia
-					ixx="0.00076735828499042"
-					ixy="-1.71633678730281E-08"
-					ixz="3.49915403143955E-07"
-					iyy="0.000586107112558297"
-					iyz="0.000239471330998281"
-					izz="0.000524706735782284"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj"/>
-			</geometry>
-		</visual>
-	</link>
+		<joint name="fr_wheel_joint" type="${wheel_joint_type}">
+			<origin xyz="-0.00071653 -0.003566 -0.136"/>
+			<parent link="fr_steer"/>
+			<child link="fr_wheel"/>
+			<xacro:if value="${joints_movable}">
+				<axis xyz="0 1 0"/>
+			</xacro:if>
+		</joint>
 
-	<joint name="fl_steer_joint" type="revolute">
-		<origin xyz="0.23072 0.21738 0.166"/>
-		<parent link="base_link"/>
-		<child link="fl_steer"/>
-		<axis xyz="0 0 1"/>
-		<limit lower="-${PI}" upper="${PI}" effort="5" velocity="6.28"/>
-	</joint>
+		<link name="fl_steer">
+			<inertial>
+				<origin xyz="0.00067026110136939 0.024201895934192 -0.0617332783946613"/>
+				<mass value="0.655558098590739"/>
+				<inertia
+						ixx="0.00076735828499042"
+						ixy="-1.71633678730281E-08"
+						ixz="3.49915403143955E-07"
+						iyy="0.000586107112558297"
+						iyz="0.000239471330998281"
+						izz="0.000524706735782284"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj"/>
+				</geometry>
+			</visual>
+		</link>
 
-	<link name="fl_wheel">
-		<inertial>
-			<origin xyz="-8.3207E-06 0.00099179 8.0258E-06"/>
-			<mass value="1.2283"/>
-			<inertia
-					ixx="0.0020568"
-					ixy="1.515E-07"
-					ixz="-9.5872E-08"
-					iyy="0.0037677"
-					iyz="-1.7122E-09"
-					izz="0.0020567"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj"/>
-			</geometry>
-		</visual>
-		<collision>
-			<origin rpy="${PI/2.0} 0 0"/>
-			<geometry>
-				<cylinder radius="0.07" length="0.046"/>
-			</geometry>
-		</collision>
-	</link>
+		<joint name="fl_steer_joint" type="${steer_joint_type}">
+			<origin xyz="0.23072 0.21738 0.166"/>
+			<parent link="base_link"/>
+			<child link="fl_steer"/>
+			<xacro:if value="${joints_movable}">
+				<axis xyz="0 0 1"/>
+				<limit lower="-${PI}" upper="${PI}" effort="5" velocity="6.28"/>
+			</xacro:if>
+		</joint>
 
-	<joint name="fl_wheel_joint" type="continuous">
-		<origin xyz="0.00071653 -0.003566 -0.136"/>
-		<parent link="fl_steer"/>
-		<child link="fl_wheel"/>
-		<axis xyz="0 1 0"/>
-	</joint>
+		<link name="fl_wheel">
+			<inertial>
+				<origin xyz="-8.3207E-06 0.00099179 8.0258E-06"/>
+				<mass value="1.2283"/>
+				<inertia
+						ixx="0.0020568"
+						ixy="1.515E-07"
+						ixz="-9.5872E-08"
+						iyy="0.0037677"
+						iyz="-1.7122E-09"
+						izz="0.0020567"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj"/>
+				</geometry>
+			</visual>
+			<collision>
+				<origin rpy="${PI/2.0} 0 0"/>
+				<geometry>
+					<cylinder radius="0.07" length="0.046"/>
+				</geometry>
+			</collision>
+		</link>
 
-	<link name="rr_lidar">
-		<inertial>
-			<origin xyz="0.27366 -0.0075 -0.00664"/>
-			<mass value="3696.2"/>
-			<inertia
-					ixx="830.34"
-					ixy="-2.1461E-08"
-					ixz="2.8038E-08"
-					iyy="538.42"
-					iyz="2.5514E-08"
-					izz="538.42"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
-			</geometry>
-		</visual>
-		<collision>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
-			</geometry>
-		</collision>
-	</link>
+		<joint name="fl_wheel_joint" type="${wheel_joint_type}">
+			<origin xyz="0.00071653 -0.003566 -0.136"/>
+			<parent link="fl_steer"/>
+			<child link="fl_wheel"/>
+			<xacro:if value="${joints_movable}">
+				<axis xyz="0 1 0"/>
+			</xacro:if>
+		</joint>
 
-	<joint name="rr_lidar_joint" type="fixed">
-		<origin xyz="0.21412 0.19406 0.32957" rpy="${PI/2.0} -1.309 0"/>
-		<parent link="chassis_base"/>
-		<child link="rr_lidar"/>
-	</joint>
+		<link name="rr_lidar">
+			<inertial>
+				<origin xyz="0.27366 -0.0075 -0.00664"/>
+				<mass value="3696.2"/>
+				<inertia
+						ixx="830.34"
+						ixy="-2.1461E-08"
+						ixz="2.8038E-08"
+						iyy="538.42"
+						iyz="2.5514E-08"
+						izz="538.42"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
+				</geometry>
+			</visual>
+			<collision>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
+				</geometry>
+			</collision>
+		</link>
 
-	<link name="fl_lidar">
-		<inertial>
-			<origin xyz="0.27366 -0.0075 -0.00664"/>
-			<mass value="3696.2"/>
-			<inertia
-					ixx="830.34"
-					ixy="-2.1461E-08"
-					ixz="2.8038E-08"
-					iyy="538.42"
-					iyz="2.5514E-08"
-					izz="538.42"/>
-		</inertial>
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
-			</geometry>
-		</visual>
-		<collision>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
-			</geometry>
-		</collision>
-	</link>
+		<joint name="rr_lidar_joint" type="fixed">
+			<origin xyz="0.21412 0.19406 0.32957" rpy="${PI/2.0} -1.309 0"/>
+			<parent link="chassis_base"/>
+			<child link="rr_lidar"/>
+		</joint>
 
-	<joint name="fl_lidar_joint" type="fixed">
-		<origin xyz="-0.21412 -0.19406 0.32957" rpy="${PI/2.0} -1.309 3.1416"/>
-		<parent link="chassis_base"/>
-		<child link="fl_lidar"/>
-	</joint>
+		<link name="fl_lidar">
+			<inertial>
+				<origin xyz="0.27366 -0.0075 -0.00664"/>
+				<mass value="3696.2"/>
+				<inertia
+						ixx="830.34"
+						ixy="-2.1461E-08"
+						ixz="2.8038E-08"
+						iyy="538.42"
+						iyz="2.5514E-08"
+						izz="538.42"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
+				</geometry>
+			</visual>
+			<collision>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
+				</geometry>
+			</collision>
+		</link>
 
-	<link name="chassis_camera">
-		<visual>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.obj"/>
-			</geometry>
-		</visual>
-		<collision>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.obj"/>
-			</geometry>
-		</collision>
-	</link>
+		<joint name="fl_lidar_joint" type="fixed">
+			<origin xyz="-0.21412 -0.19406 0.32957" rpy="${PI/2.0} -1.309 3.1416"/>
+			<parent link="chassis_base"/>
+			<child link="fl_lidar"/>
+		</joint>
 
-	<joint name="chassis_camera_joint" type="fixed">
-		<origin xyz="-0.3438 -0.00032028 0.159" rpy="0 0 ${PI}"/>
-		<parent link="chassis_base"/>
-		<child link="chassis_camera"/>
-	</joint>
+		<link name="chassis_camera">
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.obj"/>
+				</geometry>
+			</visual>
+			<collision>
+				<geometry>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.obj"/>
+				</geometry>
+			</collision>
+		</link>
+
+		<joint name="chassis_camera_joint" type="fixed">
+			<origin xyz="-0.3438 -0.00032028 0.159" rpy="0 0 ${PI}"/>
+			<parent link="chassis_base"/>
+			<child link="chassis_camera"/>
+		</joint>
+
+	</xacro:macro>
 
 </robot>

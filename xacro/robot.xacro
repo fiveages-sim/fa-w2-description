@@ -2,7 +2,9 @@
 <robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 	<xacro:arg name="collider" default="convex"/>
+	<xacro:arg name="chassis_joints_movable" default="false"/>
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/chassis/linkhou_s2.xacro"/>
+	<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/body.xacro"/>
 
 
