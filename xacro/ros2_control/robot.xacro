@@ -24,9 +24,9 @@
 			<hardware>
 				<plugin>juxie_ros2_control/JxHardware</plugin>
 				<!-- CAN 接口配置 -->
-				<param name="can_interface">canfd</param>
+				<param name="can_interface">can0</param>
 				<!-- 电机 ID 列表（最多 8 个） -->
-				<param name="motor_ids">1,2,3,4</param>
+				<param name="motor_ids">1,2,3,4,5,6</param>
 				<!-- 控制周期（毫秒） -->
 				<param name="control_period_ms">1</param>
 			</hardware>
