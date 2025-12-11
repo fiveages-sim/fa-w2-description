@@ -7,7 +7,6 @@
 
 	<xacro:include filename="$(find m6_ccs_description)/xacro/ros2_control/interfaces.xacro"/>
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/ros2_control/body.xacro"/>
-	<!-- <xacro:include filename="$(find fiveages_w2_description)/xacro/ros2_control/chassis.xacro"/> -->
 
 	<xacro:if value="${'$(arg ros2_control_hardware_type)' == 'real'}">
 		<ros2_control name="M6_CCS_System" type="system">

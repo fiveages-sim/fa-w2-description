@@ -258,5 +258,4 @@
 		<parent link="body_link4"/>
 		<child link="arm_base"/>
 	</joint>
-
 </robot>

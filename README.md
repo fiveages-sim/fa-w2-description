@@ -14,6 +14,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 ## 2. Visualize the robot
 
 ### 2.1 Full Robot
+
 * FiveAges W2 (Basic visualization)
   ```bash
   source ~/ros2_ws/install/setup.bash
@@ -33,10 +34,11 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=rg75
   ```
-  
+
 </details>
 
 ### 2.2 Component
+
 * Linkhou S2 Base
   ```bash
   source ~/ros2_ws/install/setup.bash
@@ -51,6 +53,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 ## 3. ROS2 Control Demos
 
 ### 3.1 Mock Component
+
 * Full Body Control
   ```bash
   source ~/ros2_ws/install/setup.bash
@@ -66,6 +69,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2
   ```
+
 <details>
 <summary><strong>More Full Body Configs</strong></summary>
 
@@ -79,6 +83,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75 robot:=fiveages_w2
   ```
+
 </details>
 
 <details>
@@ -94,9 +99,11 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75 robot:=fiveages_w2
   ```
+
 </details>
 
 ### 3.2 Isaac Sim
+
 * Empty Hand (Full Body Control)
   ```bash
   source ~/ros2_ws/install/setup.bash
@@ -104,6 +111,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   ```
 
 ### 3.3 Joint Control Commands
+
 * Set Head Angles
   ```bash
   ros2 topic pub /head_joint_controller/target_joint_position std_msgs/msg/Float64MultiArray "{data: [0.0, 0.5]}"  # 设置目标关节角度（弧度）
@@ -124,6 +132,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   ```
 
 ## 4. Real Robot Deploy
+
 * Only Body
   ```bash
   source ~/ros2_ws/install/setup.bash

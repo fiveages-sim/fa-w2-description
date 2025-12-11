@@ -376,7 +376,7 @@
   <link name="body_camera">
     <visual>
       <geometry>
-        <mesh filename="file:///home/fiveages/ros2_ws/install/sensor_models/share/sensor_models/meshes/orbbec/336.obj"/>
+        <mesh filename="package://sensor_models/meshes/orbbec/336.obj"/>
       </geometry>
     </visual>
   </link>
@@ -436,7 +436,7 @@
   <link name="head_camera">
     <visual>
       <geometry>
-        <mesh filename="file:///home/fiveages/ros2_ws/install/sensor_models/share/sensor_models/meshes/orbbec/336L.obj"/>
+        <mesh filename="package://sensor_models/meshes/orbbec/336L.obj"/>
       </geometry>
     </visual>
   </link>
@@ -679,7 +679,7 @@
   </joint>
   <link name="left_tcp"/>
   <joint name="left_tcp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 -0.095296 0"/>
+    <origin rpy="1.5707963267948966 -1.5707963267948966 0" xyz="0 -0.095 0"/>
     <parent link="left_link7"/>
     <child link="left_tcp"/>
   </joint>
@@ -899,7 +899,7 @@
   </joint>
   <link name="right_tcp"/>
   <joint name="right_tcp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 -0.095296 0"/>
+    <origin rpy="1.5707963267948966 -1.5707963267948966 0" xyz="0 -0.095 0"/>
     <parent link="right_link7"/>
     <child link="right_tcp"/>
   </joint>
@@ -912,12 +912,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/base.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/base.obj"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/base.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/base.obj"/>
       </geometry>
     </collision>
   </link>
@@ -929,12 +929,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/flange.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/flange.obj"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/flange.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/flange.obj"/>
       </geometry>
     </collision>
   </link>
@@ -950,12 +950,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/finger.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/finger.obj"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/finger.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/finger.obj"/>
       </geometry>
     </collision>
   </link>
@@ -974,12 +974,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/finger.obj" scale="-1 -1 1"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/finger.obj" scale="-1 -1 1"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/finger.obj" scale="-1 -1 1"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/finger.obj" scale="-1 -1 1"/>
       </geometry>
     </collision>
   </link>
@@ -999,12 +999,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/pad_fiveages.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/pad_fiveages.obj"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/pad_fiveages.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/pad_fiveages.obj"/>
       </geometry>
     </collision>
   </link>
@@ -1021,12 +1021,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/pad_fiveages.obj" scale="1 -1 1"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/pad_fiveages.obj" scale="1 -1 1"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/pad_fiveages.obj" scale="1 -1 1"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/pad_fiveages.obj" scale="1 -1 1"/>
       </geometry>
     </collision>
   </link>
@@ -1049,12 +1049,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/base.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/base.obj"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/base.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/base.obj"/>
       </geometry>
     </collision>
   </link>
@@ -1066,12 +1066,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/flange.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/flange.obj"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/flange.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/flange.obj"/>
       </geometry>
     </collision>
   </link>
@@ -1087,12 +1087,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/finger.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/finger.obj"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/finger.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/finger.obj"/>
       </geometry>
     </collision>
   </link>
@@ -1111,12 +1111,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/finger.obj" scale="-1 -1 1"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/finger.obj" scale="-1 -1 1"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/finger.obj" scale="-1 -1 1"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/finger.obj" scale="-1 -1 1"/>
       </geometry>
     </collision>
   </link>
@@ -1136,12 +1136,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/pad_fiveages.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/pad_fiveages.obj"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/pad_fiveages.obj"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/pad_fiveages.obj"/>
       </geometry>
     </collision>
   </link>
@@ -1158,12 +1158,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/pad_fiveages.obj" scale="1 -1 1"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/pad_fiveages.obj" scale="1 -1 1"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://jodell_description/meshes/RG75/pad_fiveages.obj" scale="1 -1 1"/>
+        <mesh filename="file:///home/fa/ros2_ws/install/jodell_description/share/jodell_description/meshes/RG75/pad_fiveages.obj" scale="1 -1 1"/>
       </geometry>
     </collision>
   </link>
@@ -1179,12 +1179,10 @@
     <origin xyz="0 0 0.22"/>
   </joint>
   <joint name="left_gripper_base_joint" type="fixed">
-    <origin rpy="-1.5707963267948966 0 3.141592653589793"/>
     <parent link="left_tcp"/>
     <child link="left_flange"/>
   </joint>
   <joint name="right_gripper_base_joint" type="fixed">
-    <origin rpy="1.5707963267948966 0 0"/>
     <parent link="right_tcp"/>
     <child link="right_flange"/>
   </joint>
