@@ -427,7 +427,7 @@
     </collision>
   </link>
   <joint name="head_joint2" type="revolute">
-    <origin rpy="3.141592653589793 0 3.141592653589793" xyz="0 0.0042 0.15"/>
+    <origin xyz="0 0.0042 0.15"/>
     <parent link="head_link1"/>
     <child link="head_link2"/>
     <axis xyz="0 1 0"/>
@@ -441,7 +441,7 @@
     </visual>
   </link>
   <joint name="head_camera_joint" type="fixed">
-    <origin rpy="0 -0.64460396 3.141592653589793" xyz="-0.097847  0.046703 -0.12364"/>
+    <origin rpy="3.141592653589793 0.64460396 0" xyz="0.097847  0.046703 0.12364"/>
     <parent link="head_link2"/>
     <child link="head_camera"/>
   </joint>
