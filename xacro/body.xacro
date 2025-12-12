@@ -231,7 +231,7 @@
 	</link>
 
 	<joint name="head_joint2" type="revolute">
-		<origin xyz="0 0.0042 0.15" rpy="${PI} 0 ${PI}"/>
+		<origin xyz="0 0.0042 0.15"/>
 		<parent link="head_link1"/>
 		<child link="head_link2"/>
 		<axis xyz="0 1 0"/>
@@ -247,7 +247,7 @@
 	</link>
 
 	<joint name="head_camera_joint" type="fixed">
-		<origin xyz="-0.097847  0.046703 -0.12364" rpy="0 -0.64460396 ${PI}"/>
+		<origin xyz="0.097847  0.046703 0.12364" rpy="${PI} 0.64460396 0"/>
 		<parent link="head_link2"/>
 		<child link="head_camera"/>
 	</joint>
@@ -257,5 +257,12 @@
 		<origin xyz="7.1612E-05 0 0.45765"/>
 		<parent link="body_link4"/>
 		<child link="arm_base"/>
+	</joint>
+
+	<link name="head_top_camera"/>
+	<joint name="head_top_camera_joint" type="fixed">
+		<origin xyz="0.0877736 0.0245687 0.107989" rpy="-2.100227811211368 0.0016038446958035316 -1.583610269343787"/>
+		<parent link="head_link2"/>
+		<child link="head_top_camera"/>
 	</joint>
 </robot>
