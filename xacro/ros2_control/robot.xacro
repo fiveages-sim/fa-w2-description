@@ -17,6 +17,21 @@
 
 			<xacro:m6_interfaces name="left"/>
 			<xacro:m6_interfaces name="right"/>
+
+			<xacro:if value="${'$(arg type)' != ''}">
+				<joint name="left_gripper_joint">
+					<command_interface name="position"/>
+					<state_interface name="position">
+						<param name="initial_value">0</param>
+					</state_interface>
+				</joint>
+				<joint name="right_gripper_joint">
+					<command_interface name="position"/>
+					<state_interface name="position">
+						<param name="initial_value">0</param>
+					</state_interface>
+				</joint>
+			</xacro:if>
 		</ros2_control>
 
 		<ros2_control name="juxie_body" type="system">
