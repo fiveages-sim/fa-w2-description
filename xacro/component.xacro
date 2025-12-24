@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!-- =================================================================================== -->
-<!-- |    Complete Robot Description for Agibot G1                                     | -->
+<!-- |    Complete Robot Description for FiveAges W2                                     | -->
 <!-- |    This file includes the base robot structure and both arms                    | -->
 <!-- =================================================================================== -->
 <robot name="FiveAges_W2" xmlns:xacro="http://www.ros.org/wiki/xacro">

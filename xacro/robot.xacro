@@ -26,8 +26,28 @@
 	<xacro:M6_CCS name="left" collider="$(arg collider)"/>
 	<xacro:M6_CCS name="right" direction="-1" collider="$(arg collider)"/>
 
+	<!-- 从 type 参数解析出 gripper_type -->
 	<xacro:arg name="type" default=""/>
-	<xacro:property name="selected_gripper_type" value="$(arg type)"/>
+	<xacro:property name="type_arg" value="$(arg type)"/>
+
+	<!-- 默认值 -->
+	<xacro:property name="selected_gripper_type" value=""/>
+
+	<!-- 从 type 解析 gripper_type -->
+	<xacro:if value="${type_arg == 'rg75'}">
+		<xacro:property name="selected_gripper_type" value="rg75"/>
+	</xacro:if>
+	<xacro:if value="${type_arg == 'ag2f90'}">
+		<xacro:property name="selected_gripper_type" value="ag2f90_d"/>
+	</xacro:if>
+	<xacro:if value="${type_arg == 'ag2f90_c'}">
+		<xacro:property name="selected_gripper_type" value="ag2f90_c"/>
+	</xacro:if>
+	<xacro:if value="${type_arg == 'ag2f90_d'}">
+		<xacro:property name="selected_gripper_type" value="ag2f90_d"/>
+	</xacro:if>
+
+
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/grippers.xacro"/>
 	<xacro:Grippers type="${selected_gripper_type}"/>
 </robot>

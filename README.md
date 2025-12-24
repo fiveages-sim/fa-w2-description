@@ -94,6 +94,10 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller split_body.launch.py type:=ag2f90 robot:=fiveages_w2
   ```
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch ocs2_arm_controller split_body.launch.py type:=ag2f90_d robot:=fiveages_w2
+  ```
 * With Jodell RG75 Gripper
   ```bash
   source ~/ros2_ws/install/setup.bash
