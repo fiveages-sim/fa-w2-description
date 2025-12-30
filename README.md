@@ -1,6 +1,6 @@
-# FiveAges W2 Description
+# FiveAges W2 Description (SINOPEC)
 
-This package contains the description files for FiveAges W2 humanoid.
+This package contains the description files for FiveAges W2 humanoid with SINOPEC Style.
 
 ![FiveAges](.images/fiveages_w2.png)
 

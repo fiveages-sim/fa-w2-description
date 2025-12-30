@@ -3,7 +3,7 @@
 
 	<xacro:arg name="collider" default="convex"/>
 	<xacro:arg name="chassis_joints_movable" default="false"/>
-	<xacro:include filename="$(find fiveages_w2_description)/xacro/chassis/linkhou_s2.xacro"/>
+	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
 	<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/body.xacro"/>
 
@@ -22,7 +22,7 @@
 		<origin rpy="${PI/2} 0 0" xyz="0 -0.062 0"/>
 	</joint>
 
-	<xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>
+	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/arm.xacro"/>
 	<xacro:M6_CCS name="left" collider="$(arg collider)"/>
 	<xacro:M6_CCS name="right" direction="-1" collider="$(arg collider)"/>
 

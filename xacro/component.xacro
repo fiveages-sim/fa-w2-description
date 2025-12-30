@@ -9,7 +9,7 @@
 
 	<xacro:arg name="chassis_joints_movable" default="true"/>
 	<xacro:if value="${'$(arg type)' == 'linkhou_q2'}">
-		<xacro:include filename="$(find fiveages_w2_description)/xacro/chassis/linkhou_s2.xacro"/>
+		<xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
 		<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
 	</xacro:if>
 
