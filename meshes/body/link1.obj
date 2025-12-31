@@ -1,6 +1,6 @@
 # Blender 5.0.0
 # www.blender.org
-mtllib link1.mtl
+mtllib materials.mtl
 o Link2
 v 0.074026 0.044833 0.252969
 v 0.073457 0.044867 0.251299
