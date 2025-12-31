@@ -1,6 +1,6 @@
 # Blender 5.0.0
 # www.blender.org
-mtllib head_yaw.mtl
+mtllib materials.mtl
 o Link6
 v 0.005201 -0.000750 -0.005500
 v 0.005750 -0.001299 -0.005500

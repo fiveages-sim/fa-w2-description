@@ -1,6 +1,6 @@
 # Blender 5.0.1
 # www.blender.org
-mtllib head_pitch.mtl
+mtllib materials.mtl
 o head_pitch
 v 0.084879 0.070004 0.101756
 v 0.084861 0.068318 0.101626
