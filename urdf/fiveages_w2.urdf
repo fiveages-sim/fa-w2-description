@@ -298,7 +298,7 @@
     <parent link="body_base"/>
     <child link="body_link1"/>
     <axis xyz="0 1 0"/>
-    <limit effort="100" lower="-1.352633" upper="0.567" velocity="1"/>
+    <limit effort="100" lower="-1.2217304763960306" upper="0.5235987755982988" velocity="1"/>
   </joint>
   <link name="body_link2">
     <inertial>
@@ -322,7 +322,7 @@
     <parent link="body_link1"/>
     <child link="body_link2"/>
     <axis xyz="0 -1 0"/>
-    <limit effort="100" lower="-2.66" upper="1.605" velocity="1"/>
+    <limit effort="100" lower="-2.0943951023931953" upper="1.5707963267948966" velocity="1"/>
   </joint>
   <link name="body_link3">
     <inertial>
@@ -346,7 +346,7 @@
     <parent link="body_link2"/>
     <child link="body_link3"/>
     <axis xyz="0 1 0"/>
-    <limit effort="100" lower="-1.745" upper="1.745" velocity="1"/>
+    <limit effort="100" lower="-0.8726646259971648" upper="1.2217304763960306" velocity="1"/>
   </joint>
   <link name="body_link4">
     <inertial>
@@ -407,7 +407,7 @@
     <parent link="body_link4"/>
     <child link="head_link1"/>
     <axis xyz="0 0 1"/>
-    <limit effort="100" lower="-0.436" upper="0.436" velocity="1"/>
+    <limit effort="100" lower="-0.4363323129985824" upper="0.4363323129985824" velocity="1"/>
   </joint>
   <link name="head_link2">
     <inertial>
@@ -427,11 +427,11 @@
     </collision>
   </link>
   <joint name="head_joint2" type="revolute">
-    <origin xyz="0 0.0042 0.15"/>
+    <origin xyz="0 0.0 0.15"/>
     <parent link="head_link1"/>
     <child link="head_link2"/>
     <axis xyz="0 1 0"/>
-    <limit effort="100" lower="-0.26" upper="0.26" velocity="1"/>
+    <limit effort="100" lower="-0.2617993877991494" upper="0.2617993877991494" velocity="1"/>
   </joint>
   <link name="head_camera">
     <visual>
@@ -450,6 +450,12 @@
     <origin xyz="7.1612E-05 0 0.45765"/>
     <parent link="body_link4"/>
     <child link="arm_base"/>
+  </joint>
+  <link name="head_top_camera"/>
+  <joint name="head_top_camera_joint" type="fixed">
+    <origin rpy="-2.100227811211368 0.0016038446958035316 -1.583610269343787" xyz="0.0877736 0.0245687 0.107989"/>
+    <parent link="head_link2"/>
+    <child link="head_top_camera"/>
   </joint>
   <!-- Left Arm -->
   <joint name="left_arm_base_joint" type="fixed">
@@ -491,7 +497,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link1.obj"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link1.obj"/>
       </geometry>
     </visual>
     <collision>
@@ -518,7 +524,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link2.obj"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link2.obj" scale="1 1 1"/>
       </geometry>
     </visual>
     <collision>
@@ -545,7 +551,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link3.obj"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link3.obj"/>
       </geometry>
     </visual>
     <collision>
@@ -578,7 +584,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link4.obj"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link4.obj"/>
       </geometry>
     </visual>
     <collision>
@@ -605,7 +611,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link5.obj" scale="1 1 1"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link5.obj" scale="1 1 1"/>
       </geometry>
     </visual>
     <collision>
@@ -711,7 +717,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link1.obj"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link1.obj"/>
       </geometry>
     </visual>
     <collision>
@@ -738,7 +744,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link2.obj"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link2.obj" scale="1 1 -1"/>
       </geometry>
     </visual>
     <collision>
@@ -765,7 +771,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link3.obj"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link3.obj"/>
       </geometry>
     </visual>
     <collision>
@@ -798,7 +804,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link4.obj"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link4.obj"/>
       </geometry>
     </visual>
     <collision>
@@ -825,7 +831,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link5.obj" scale="1 -1 1"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link5.obj" scale="1 -1 1"/>
       </geometry>
     </visual>
     <collision>

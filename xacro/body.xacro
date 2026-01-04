@@ -60,7 +60,7 @@
 		<parent link="body_base"/>
 		<child link="body_link1"/>
 		<axis xyz="0 1 0"/>
-		<limit lower="-1.352633" upper="0.567" effort="100" velocity="1"/>
+		<limit lower="-${PI*70/180}" upper="${PI*30/180}" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="body_link2">
@@ -92,7 +92,7 @@
 		<parent link="body_link1"/>
 		<child link="body_link2"/>
 		<axis xyz="0 -1 0"/>
-		<limit lower="-2.66" upper="1.605" effort="100" velocity="1"/>
+		<limit lower="-${PI*120/180}" upper="${PI*90/180}" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="body_link3">
@@ -124,7 +124,7 @@
 		<parent link="body_link2"/>
 		<child link="body_link3"/>
 		<axis xyz="0 1 0"/>
-		<limit lower="-1.745" upper="1.745" effort="100" velocity="1"/>
+		<limit lower="-${PI*50/180}" upper="${PI*70/180}" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="body_link4">
@@ -203,7 +203,7 @@
 		<parent link="body_link4"/>
 		<child link="head_link1"/>
 		<axis xyz="0 0 1"/>
-		<limit lower="-0.436" upper="0.436" effort="100" velocity="1"/>
+		<limit lower="-${PI*25/180}" upper="${PI*25/180}" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="head_link2">
@@ -235,7 +235,7 @@
 		<parent link="head_link1"/>
 		<child link="head_link2"/>
 		<axis xyz="0 1 0"/>
-		<limit lower="-0.26" upper="0.26" effort="100" velocity="1"/>
+		<limit lower="-${PI*15/180}" upper="${PI*15/180}" effort="100" velocity="1"/>
 	</joint>
 
 	<link name="head_camera">

@@ -39,8 +39,8 @@
 
         <xacro:if value="${type == 'rg75'}">
             <xacro:include filename="$(find jodell_description)/xacro/RG75-300.xacro"/>
-            <xacro:RG75-300 name="left" use_flange="true" pad="leapmotor"/>
-            <xacro:RG75-300 name="right" use_flange="true" pad="leapmotor"/>
+            <xacro:RG75-300 name="left" use_flange="true"/>
+            <xacro:RG75-300 name="right" use_flange="true"/>
 
             <joint name="left_gripper_base_joint" type="fixed">
                 <parent link="left_tcp"/>
