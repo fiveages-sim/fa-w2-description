@@ -1,0 +1,223 @@
+# This config file is used by ros2_control
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    # 双臂控制器 - 使用ocs2 arm controller
+    ocs2_arm_controller:
+      type: ocs2_arm_controller/Ocs2ArmController
+
+    # 全身控制器 - 使用ocs2 arm controller
+    ocs2_wbc_controller:
+      type: ocs2_arm_controller/Ocs2ArmController
+
+    # 头部控制器 - 使用basic joint controller
+    head_joint_controller:
+      type: basic_joint_controller/BasicJointController
+
+    # 身体控制器 - 使用basic joint controller
+    body_joint_controller:
+      type: basic_joint_controller/BasicJointController
+
+    # 左手夹爪控制器
+    left_hand_controller:
+      type: basic_joint_controller/BasicJointController
+
+    # 右手夹爪控制器
+    right_hand_controller:
+      type: basic_joint_controller/BasicJointController
+
+
+
+ocs2_arm_controller:
+  ros__parameters:
+    # Joint configuration
+    update_rate: 100  # Hz
+    mpc_frequency: 50
+    joints:
+      - left_joint1
+      - left_joint2
+      - left_joint3
+      - left_joint4
+      - left_joint5
+      - left_joint6
+      - left_joint7
+      - right_joint1
+      - right_joint2
+      - right_joint3
+      - right_joint4
+      - right_joint5
+      - right_joint6
+      - right_joint7
+
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+
+    robot_name: m6_ccs
+    robot_type: dual
+    info_file_name: dual
+    home_duration: 2.0
+
+    # Control parameters
+    home_1: [
+                1.457133809892805, -1.0633699963902674, -1.1994065285584414, -0.8074199090303408, -0.6949558811978124, -0.6864381599253574, -0.1295225067208675,
+                -1.457133809892805, -1.0633699963902674, 1.1994065285584414, -0.8074199090303408, 0.6949558811978124, -0.6864381599253574, 0.1295225067208675 ]
+    home_2: [ 2.502, -1.528, -1.562, -1.680, 0.0, -0.787, 0.0,
+              -2.502, -1.528, 1.562, -1.680, 0.0, -0.787, 0.0 ]
+    home_3: [ 2.502, -1.528, -1.562, -1.680, 0.0, -0.787, 0.0,
+              -2.502, -1.528, 1.562, -1.680, 0.0, -0.787, 0.0 ]
+    home_4: [ 2.502, -1.528, -1.562, -1.680, 0.0, -0.787, 0.0,
+              -2.502, -1.528, 1.562, -1.680, 0.0, -0.787, 0.0 ]
+
+ocs2_wbc_controller:
+  ros__parameters:
+    # Joint configuration
+    update_rate: 100  # Hz
+    mpc_frequency: 50
+    info_file_name: fixed_base
+    joints:
+      - body_joint1
+      - body_joint2
+      - body_joint3
+      - body_joint4
+      - left_joint1
+      - left_joint2
+      - left_joint3
+      - left_joint4
+      - left_joint5
+      - left_joint6
+      - left_joint7
+      - right_joint1
+      - right_joint2
+      - right_joint3
+      - right_joint4
+      - right_joint5
+      - right_joint6
+      - right_joint7
+
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+
+    robot_name: fiveages_w2
+    home_duration: 2.0
+
+    home_pos: [ -0.899, -1.714, -0.865, 0.0,
+                1.457133809892805, -1.0633699963902674, -1.1994065285584414, -0.8074199090303408, -0.6949558811978124, -0.6864381599253574, -0.1295225067208675,
+                -1.457133809892805, -1.0633699963902674, 1.1994065285584414, -0.8074199090303408, 0.6949558811978124, -0.6864381599253574, 0.1295225067208675 ]
+    rest_pos: [ -1.353, -2.660, -1.307, 0.0,
+                0.454, -0.872, 0.285, -0.964, -1.461, 0.458, -0.161,
+                -0.454, -0.872, -0.285, -0.964, -1.461, -0.458, 0.161 ]
+
+# 头部关节控制器配置
+head_joint_controller:
+  ros__parameters:
+    update_rate: 100  # Hz
+    
+    # 头部关节
+    joints:
+      - head_joint1
+      - head_joint2
+    
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+    home_1: [0.0, 0.0]           # 配置 0: 正视前方
+    home_2: [0.0, -0.1]        # 配置 1: 向左看约 -45度
+    
+    home_duration: 5.0
+    move_duration: 5.0
+    hold_position_threshold: 0.1
+
+body_joint_controller:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    # 身体关节
+    joints:
+      - body_joint1
+      - body_joint2
+      - body_joint3
+      - body_joint4
+
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+    # 三组不同的 home pose 配置
+    # 使用 home_1, home_2, home_3 参数命名规则
+    home_1: [-0.899, -1.714, -0.865, 0.0]
+    home_2: [-1.353, -2.660, -1.307, 0.0]
+    home_3: [-0.899, -1.714, -0.865, 0.0]
+    home_4: [-0.899, -1.714, -0.865, -1.5708]
+
+    home_duration: 2.0
+    move_duration: 2.0
+    hold_position_threshold: 0.1
+
+# 左手夹爪控制器配置
+left_hand_controller:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    # 7个主控关节
+    joints:
+      - left_hand_thumb_joint1
+      - left_hand_thumb_joint2
+      - left_hand_index_joint
+      - left_hand_middle_joint
+      - left_hand_ring_joint
+      - left_hand_pinky_joint
+
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+    # Home 配置（需要根据实际情况调整）
+    home_1: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    home_2: [1.0, 0.5, 1.0, 1.0, 1.0, 1.0]
+
+    home_duration: 2.0
+    move_duration: 2.0
+    hold_position_threshold: 0.1
+
+# 右手控制器配置
+right_hand_controller:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    # 7个主控关节
+    joints:
+      - right_hand_thumb_joint1
+      - right_hand_thumb_joint2
+      - right_hand_index_joint
+      - right_hand_middle_joint
+      - right_hand_ring_joint
+      - right_hand_pinky_joint
+
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+    # Home 配置（需要根据实际情况调整）
+    home_1: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    home_2: [1.0, 0.5, 1.0, 1.0, 1.0, 1.0]
+
+    home_duration: 2.0
+    move_duration: 2.0
+    hold_position_threshold: 0.1
