@@ -266,14 +266,18 @@ selfCollision
       [7] "body_link4, left_link3",
   }
 
-  ; minimum distance allowed between the pairs
+  ; minimum distance allowed between the pairs [m]
   minimumDistance  0.01
 
-  ; relaxed log barrier mu
-  mu      1e-2
+  ; activation distance: penalty only active when distance < this value [m]
+  ; if not specified, defaults to 5 * minimumDistance
+  ; activationDistance  0.05
 
-  ; relaxed log barrier delta
-  delta   1e-3
+  ; relaxed log barrier mu (scaling factor)
+  mu      1e-3
+
+  ; relaxed log barrier delta (relaxation parameter)
+  delta   1e-2
 }
 
 ; Only applied for arm joints: limits parsed from URDF
