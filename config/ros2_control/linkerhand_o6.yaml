@@ -170,6 +170,9 @@ body_joint_controller:
 left_hand_controller:
   ros__parameters:
     update_rate: 100  # Hz
+    target_command_enabled: true
+    movej_interpolation_type: "none"
+    home_interpolation_type: "none"
 
     # 7个主控关节
     joints:
@@ -198,6 +201,9 @@ left_hand_controller:
 right_hand_controller:
   ros__parameters:
     update_rate: 100  # Hz
+    target_command_enabled: true
+    movej_interpolation_type: "none"
+    home_interpolation_type: "none"
 
     # 7个主控关节
     joints:
