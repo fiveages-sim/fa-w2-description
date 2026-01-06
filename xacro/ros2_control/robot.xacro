@@ -38,7 +38,7 @@
 				</joint>
 			</xacro:if>
 			<!-- 灵巧手接口 -->
-			<xacro:if value="${selected_hand_type == 'linkerhand_o6'}">
+			<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
 				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
 				<xacro:linkerhand_o6_interfaces name="left_hand"/>
 				<xacro:linkerhand_o6_interfaces name="right_hand"/>
@@ -97,7 +97,7 @@
 			</xacro:if>
 
 			<!-- 灵巧手接口 -->
-			<xacro:if value="${selected_hand_type == 'linkerhand_o6'}">
+			<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
 				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
 				<xacro:linkerhand_o6_interfaces name="left_hand"/>
 				<xacro:linkerhand_o6_interfaces name="right_hand"/>

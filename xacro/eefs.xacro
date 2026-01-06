@@ -64,7 +64,7 @@
             <xacro:include filename="$(find linkerhand_description)/xacro/o6.xacro"/>
             <xacro:LinkerHandO6 name="left_hand" direction="1" use_flange="true" fixed_joints="false"/>
             <joint name="left_hand_base_joint" type="fixed">
-                <origin xyz="0 0 0.0045" rpy="0 0 3.1415926535"/>
+                <origin xyz="0 0 0.0045" rpy="0 0 ${PI/2}"/>
                 <parent link="left_tcp"/>
                 <child link="left_hand_flange"/>
             </joint>
@@ -73,7 +73,25 @@
             <joint name="right_hand_base_joint" type="fixed">
                 <parent link="right_tcp"/>
                 <child link="right_hand_flange"/>
-                <origin xyz="0 0 0.0045"/>
+                <origin xyz="0 0 0.0045" rpy="0 0 ${-PI/2}"/>
+            </joint>
+        </xacro:if>
+
+        <!-- 灵巧手类型 -->
+        <xacro:if value="${hand_type == 'linkerhand_l6'}">
+            <xacro:include filename="$(find linkerhand_description)/xacro/l6.xacro"/>
+            <xacro:LinkerHandL6 name="left_hand" direction="1" use_flange="true" fixed_joints="false"/>
+            <joint name="left_hand_base_joint" type="fixed">
+                <origin xyz="0 0 0.0045" rpy="0 0 ${PI/2}"/>
+                <parent link="left_tcp"/>
+                <child link="left_hand_flange"/>
+            </joint>
+
+            <xacro:LinkerHandL6 name="right_hand" direction="-1" use_flange="true" fixed_joints="false"/>
+            <joint name="right_hand_base_joint" type="fixed">
+                <parent link="right_tcp"/>
+                <child link="right_hand_flange"/>
+                <origin xyz="0 0 0.0045" rpy="0 0 ${-PI/2}"/>
             </joint>
         </xacro:if>
 
