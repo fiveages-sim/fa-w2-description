@@ -178,41 +178,67 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        left_eef:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_flange:
+        left_hand_flange:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_gripper_base:
+        left_hand_hand_base:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_left_1_link:
+        left_hand_index_distal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_left_2_link:
+        left_hand_index_proximal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_left_Pad_link:
+        left_hand_middle_distal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_left_in_link:
+        left_hand_middle_proximal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_left_up_link:
+        left_hand_pinky_distal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_pinky_proximal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_ring_distal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_ring_proximal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_thumb_distal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_thumb_metacarpals:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_thumb_metacarpals_base2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -252,31 +278,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        left_right_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_right_2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_right_Pad_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_right_in_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_right_up_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         left_tcp:
           Alpha: 1
           Show Axes: false
@@ -286,41 +287,67 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        right_eef:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_flange:
+        right_hand_flange:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_gripper_base:
+        right_hand_hand_base:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_left_1_link:
+        right_hand_index_distal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_left_2_link:
+        right_hand_index_proximal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_left_Pad_link:
+        right_hand_middle_distal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_left_in_link:
+        right_hand_middle_proximal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_left_up_link:
+        right_hand_pinky_distal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_pinky_proximal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_ring_distal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_ring_proximal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_thumb_distal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_thumb_metacarpals:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_thumb_metacarpals_base2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -356,31 +383,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         right_link7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_Pad_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_in_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_up_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -467,41 +469,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        left_flange:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_gripper_base:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_left_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_left_2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_left_Pad_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_left_in_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_left_up_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         left_link1:
           Alpha: 1
           Show Axes: false
@@ -537,31 +504,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        left_right_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_right_2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_right_Pad_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_right_in_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_right_up_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         left_tcp:
           Alpha: 1
           Show Axes: false
@@ -575,41 +517,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        right_flange:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_gripper_base:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_left_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_left_2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_left_Pad_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_left_in_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_left_up_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         right_link1:
           Alpha: 1
           Show Axes: false
@@ -641,31 +548,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         right_link7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_Pad_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_in_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_right_up_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -756,21 +638,31 @@ Visualization Manager:
           Value: true
         left_base_link:
           Value: true
-        left_eef:
+        left_hand_flange:
           Value: true
-        left_flange:
+        left_hand_hand_base:
           Value: true
-        left_gripper_base:
+        left_hand_index_distal:
           Value: true
-        left_left_1_link:
+        left_hand_index_proximal:
           Value: true
-        left_left_2_link:
+        left_hand_middle_distal:
           Value: true
-        left_left_Pad_link:
+        left_hand_middle_proximal:
           Value: true
-        left_left_in_link:
+        left_hand_pinky_distal:
           Value: true
-        left_left_up_link:
+        left_hand_pinky_proximal:
+          Value: true
+        left_hand_ring_distal:
+          Value: true
+        left_hand_ring_proximal:
+          Value: true
+        left_hand_thumb_distal:
+          Value: true
+        left_hand_thumb_metacarpals:
+          Value: true
+        left_hand_thumb_metacarpals_base2:
           Value: true
         left_link1:
           Value: true
@@ -786,35 +678,35 @@ Visualization Manager:
           Value: true
         left_link7:
           Value: true
-        left_right_1_link:
-          Value: true
-        left_right_2_link:
-          Value: true
-        left_right_Pad_link:
-          Value: true
-        left_right_in_link:
-          Value: true
-        left_right_up_link:
-          Value: true
         left_tcp:
           Value: true
         right_base_link:
           Value: true
-        right_eef:
+        right_hand_flange:
           Value: true
-        right_flange:
+        right_hand_hand_base:
           Value: true
-        right_gripper_base:
+        right_hand_index_distal:
           Value: true
-        right_left_1_link:
+        right_hand_index_proximal:
           Value: true
-        right_left_2_link:
+        right_hand_middle_distal:
           Value: true
-        right_left_Pad_link:
+        right_hand_middle_proximal:
           Value: true
-        right_left_in_link:
+        right_hand_pinky_distal:
           Value: true
-        right_left_up_link:
+        right_hand_pinky_proximal:
+          Value: true
+        right_hand_ring_distal:
+          Value: true
+        right_hand_ring_proximal:
+          Value: true
+        right_hand_thumb_distal:
+          Value: true
+        right_hand_thumb_metacarpals:
+          Value: true
+        right_hand_thumb_metacarpals_base2:
           Value: true
         right_link1:
           Value: true
@@ -829,16 +721,6 @@ Visualization Manager:
         right_link6:
           Value: true
         right_link7:
-          Value: true
-        right_right_1_link:
-          Value: true
-        right_right_2_link:
-          Value: true
-        right_right_Pad_link:
-          Value: true
-        right_right_in_link:
-          Value: true
-        right_right_up_link:
           Value: true
         right_tcp:
           Value: true
@@ -875,26 +757,24 @@ Visualization Manager:
                                     left_link6:
                                       left_link7:
                                         left_tcp:
-                                          left_flange:
-                                            left_gripper_base:
-                                              left_eef:
-                                                {}
-                                              left_left_1_link:
-                                                left_left_in_link:
+                                          left_hand_flange:
+                                            left_hand_hand_base:
+                                              left_hand_index_proximal:
+                                                left_hand_index_distal:
                                                   {}
-                                                left_left_up_link:
-                                                  left_left_Pad_link:
-                                                    {}
-                                              left_left_2_link:
-                                                {}
-                                              left_right_1_link:
-                                                left_right_in_link:
+                                              left_hand_middle_proximal:
+                                                left_hand_middle_distal:
                                                   {}
-                                                left_right_up_link:
-                                                  left_right_Pad_link:
+                                              left_hand_pinky_proximal:
+                                                left_hand_pinky_distal:
+                                                  {}
+                                              left_hand_ring_proximal:
+                                                left_hand_ring_distal:
+                                                  {}
+                                              left_hand_thumb_metacarpals_base2:
+                                                left_hand_thumb_metacarpals:
+                                                  left_hand_thumb_distal:
                                                     {}
-                                              left_right_2_link:
-                                                {}
                         right_base_link:
                           right_link1:
                             right_link2:
@@ -904,26 +784,24 @@ Visualization Manager:
                                     right_link6:
                                       right_link7:
                                         right_tcp:
-                                          right_flange:
-                                            right_gripper_base:
-                                              right_eef:
-                                                {}
-                                              right_left_1_link:
-                                                right_left_in_link:
+                                          right_hand_flange:
+                                            right_hand_hand_base:
+                                              right_hand_index_proximal:
+                                                right_hand_index_distal:
                                                   {}
-                                                right_left_up_link:
-                                                  right_left_Pad_link:
-                                                    {}
-                                              right_left_2_link:
-                                                {}
-                                              right_right_1_link:
-                                                right_right_in_link:
+                                              right_hand_middle_proximal:
+                                                right_hand_middle_distal:
                                                   {}
-                                                right_right_up_link:
-                                                  right_right_Pad_link:
+                                              right_hand_pinky_proximal:
+                                                right_hand_pinky_distal:
+                                                  {}
+                                              right_hand_ring_proximal:
+                                                right_hand_ring_distal:
+                                                  {}
+                                              right_hand_thumb_metacarpals_base2:
+                                                right_hand_thumb_metacarpals:
+                                                  right_hand_thumb_distal:
                                                     {}
-                                              right_right_2_link:
-                                                {}
                       body_camera:
                         {}
                       head_link1:
@@ -996,7 +874,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
-    Fixed Frame: base_link
+    Fixed Frame: base_footprint
     Frame Rate: 30
   Name: root
   Tools:
@@ -1039,25 +917,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.7511361837387085
+      Distance: 2.723815441131592
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.009613669477403164
-        Y: 0.15641286969184875
-        Z: 1.0478830337524414
+        X: 0.06987253576517105
+        Y: 0.06984475255012512
+        Z: 0.9434776902198792
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.20039723813533783
+      Pitch: 0.005397261120378971
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.318567752838135
+      Yaw: 5.998565673828125
     Saved: ~
 Window Geometry:
   Displays:
@@ -1081,5 +959,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1552
-  X: 367
-  Y: 114
+  X: 212
+  Y: 81
