@@ -159,6 +159,7 @@ body_joint_controller:
     home_duration: 2.0
     move_duration: 2.0
     hold_position_threshold: 0.1
+    movej_interpolation_type: doubles
 
 # 左手夹爪控制器配置
 left_hand_controller:

@@ -12,8 +12,16 @@
   <license>BSD</license>
 
   <exec_depend>robot_common_launch</exec_depend>
-  <exec_depend>m6_ccs_description</exec_depend>
+
   <exec_depend>camera_models</exec_depend>
+  <exec_depend>m6_ccs_description</exec_depend>
+  <exec_depend>jodell_description</exec_depend>
+  <exec_depend>changingtek_description</exec_depend>
+  <exec_depend>linkerhand_description</exec_depend>
+
+  <exec_depend>ocs2_arm_controller</exec_depend>
+  <exec_depend>basic_joint_controller</exec_depend>
+  <exec_depend>adaptive_gripper_controller</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
