@@ -63,7 +63,7 @@ ocs2_arm_controller:
     info_file_name: dual
     home_duration: 2.0
     trajectory_duration: 6.0
-
+    movej_interpolation_type: doubles
     # Control parameters
     home_1: [ 1.5435, -1.1615, -1.4302, -0.9121, 1.1631, -0.1420, 0.6302,
               -1.5435, -1.1615, 1.4302, -0.9121, 1.9784, 0.1420, 0.6302 ]
