@@ -909,7 +909,11 @@
     <parent link="right_link7"/>
     <child link="right_tcp"/>
   </joint>
-  <!-- Note: type parameter is now passed as macro parameter -->
+  <!-- Note: 
+             - gripper_type 不为空时表示使用夹爪（保持原有逻辑）
+             - hand_type 只在需要区分灵巧手时使用（如 linkerhand_o6）
+             - 两者都为空时表示无末端执行器配置
+        -->
   <link name="left_eef"/>
   <link name="right_eef"/>
   <joint name="left_eef_joint" type="fixed">
