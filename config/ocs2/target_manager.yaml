@@ -8,9 +8,10 @@
     
     # VR更新频率（Hz）
     vr_update_rate: 500.0
-    
+
+    marker_fixed_frame: base_footprint
     # 是否启用VR输入处理
-    enable_vr: false
+    enable_vr: true
     
     # 头部关节映射配置（可选）
     # 如果配置了，将使用此映射而不是自动检测

@@ -17,6 +17,9 @@
 				<param name="gripper_type">${selected_gripper_type}</param>
 				<param name="max_joint_speed">50</param>
 				<param name="max_joint_acceleration">30</param>
+				<!-- <param name="ctrl_mode">JOINT_IMPEDANCE</param> -->
+				<param name="left_dyn_param">0.4,0,0,50.65,0,0,0,0,0,0</param>
+				<param name="right_dyn_param">0.4,0,0,50.85,0,0,0,0,0,0</param>
 			</hardware>
 
 			<xacro:m6_interfaces name="left"/>
@@ -38,11 +41,7 @@
 				</joint>
 			</xacro:if>
 			<!-- 灵巧手接口 -->
-			<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
-				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
-				<xacro:linkerhand_o6_interfaces name="left_hand"/>
-				<xacro:linkerhand_o6_interfaces name="right_hand"/>
-			</xacro:if>
+		
 		</ros2_control>
 
 		<ros2_control name="juxie_body" type="system">
@@ -58,6 +57,31 @@
 
 			<xacro:body_interfaces/>
 		</ros2_control>
+
+		<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
+			<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
+			<ros2_control name="linkerhand_6_left_system" type="system">
+				<hardware>
+					<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
+					<param name="serial_port">/dev/ttyUSB1</param>
+					<param name="hand_type">${selected_hand_type}</param>
+					<param name="hand_side">left</param>
+					<param name="max_speed_ratio">1.0</param>
+				</hardware>
+				<xacro:linkerhand_o6_interfaces name="left_hand"/>
+			</ros2_control>
+
+			<ros2_control name="linkerhand_6_right_system" type="system">
+				<hardware>
+					<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
+					<param name="serial_port">/dev/ttyUSB0</param>
+					<param name="hand_type">${selected_hand_type}</param>
+					<param name="hand_side">right</param>
+					<param name="max_speed_ratio">1.0</param>
+				</hardware>
+				<xacro:linkerhand_o6_interfaces name="right_hand"/>
+			</ros2_control>
+		</xacro:if>
 	</xacro:if>
 
 
