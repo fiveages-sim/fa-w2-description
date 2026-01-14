@@ -17,9 +17,11 @@
 				<param name="gripper_type">${selected_gripper_type}</param>
 				<param name="max_joint_speed">50</param>
 				<param name="max_joint_acceleration">30</param>
-				<!-- <param name="ctrl_mode">JOINT_IMPEDANCE</param> -->
-				<param name="left_dyn_param">0.4,0,0,50.65,0,0,0,0,0,0</param>
-				<param name="right_dyn_param">0.4,0,0,50.85,0,0,0,0,0,0</param>
+				<xacro:if value="selected_hand_type == 'linkerhand_l6'}">
+					<param name="ctrl_mode">JOINT_IMPEDANCE</param>
+					<param name="left_dyn_param">0.6,0,0,50.65,0,0,0,0,0,0</param>
+					<param name="right_dyn_param">0.6,0,0,50.85,0,0,0,0,0,0</param>
+				</xacro:if>
 			</hardware>
 
 			<xacro:m6_interfaces name="left"/>
@@ -41,7 +43,7 @@
 				</joint>
 			</xacro:if>
 			<!-- 灵巧手接口 -->
-		
+
 		</ros2_control>
 
 		<ros2_control name="juxie_body" type="system">
