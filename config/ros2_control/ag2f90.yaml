@@ -135,7 +135,7 @@ head_joint_controller:
     home_2: [0.0, 0.0]        # 配置 1: 向左看约 -45度
     
     home_duration: 5.0
-    move_duration: 5.0
+    movej_duration: 5.0
     hold_position_threshold: 0.1
 
 body_joint_controller:
@@ -163,7 +163,7 @@ body_joint_controller:
     home_4: [-0.899, -1.714, -0.865, 3.14]
 
     home_duration: 5.0
-    move_duration: 5.0
+    movej_duration: 5.0
     hold_position_threshold: 0.1
 
 # 左手夹爪控制器配置

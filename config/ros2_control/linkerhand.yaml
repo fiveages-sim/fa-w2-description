@@ -101,8 +101,8 @@ ocs2_arm_controller:
     robot_type: dual
     info_file_name: dual
     home_duration: 2.0
-    move_duration: 2.0
-    trajectory_duration: 6.0
+    movej_duration: 2.0
+    movel_trajectory_duration: 6.0
     movej_interpolation_type: doubles
     # Control parameters
     home_1: [ 1.457133809892805, -1.0633699963902674, -1.1994065285584414, -0.8074199090303408, -0.6949558811978124, -0.6864381599253574, -0.1295225067208675,
@@ -171,7 +171,7 @@ head_joint_controller:
     home_2: [0.0, -0.1]        # 配置 1: 向左看约 -45度
     
     home_duration: 2.0
-    move_duration: 2.0
+    movej_duration: 2.0
     hold_position_threshold: 0.1
 
 body_joint_controller:
@@ -197,7 +197,7 @@ body_joint_controller:
     home_2: [-1.22, -2.094, -0.873, 0.0]
 
     home_duration: 2.0
-    move_duration: 2.0
+    movej_duration: 2.0
     hold_position_threshold: 0.1
     movej_interpolation_type: doubles
 
@@ -228,7 +228,7 @@ left_hand_controller:
     home_2: [1.0, 0.5, 1.0, 1.0, 1.0, 1.0]
 
     home_duration: 2.0
-    move_duration: 2.0
+    movej_duration: 2.0
     hold_position_threshold: 0.1
 
 right_hand_controller:
@@ -258,5 +258,5 @@ right_hand_controller:
     home_2: [1.0, 0.5, 1.0, 1.0, 1.0, 1.0]
 
     home_duration: 2.0
-    move_duration: 2.0
+    movej_duration: 2.0
     hold_position_threshold: 0.1

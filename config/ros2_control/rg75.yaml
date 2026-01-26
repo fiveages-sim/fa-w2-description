@@ -62,9 +62,9 @@ ocs2_arm_controller:
     robot_type: dual_rg75
     info_file_name: dual
     home_duration: 5.0
-    move_duration: 1.5
-    trajectory_duration: 1.0
-    moveL_duration: 0.5
+    movej_duration: 1.5
+    movel_trajectory_duration: 1.0
+    movel_duration: 0.5
 
 
     # Control parameters
@@ -139,7 +139,7 @@ head_joint_controller:
     home_2: [0.0, 0.0]
     
     home_duration: 5.0
-    move_duration: 3.0
+    movej_duration: 3.0
     hold_position_threshold: 0.1
 
 body_joint_controller:
@@ -167,7 +167,7 @@ body_joint_controller:
 #    home_2: [-0.3, -0.3, 0.1, 0.0]
 
     home_duration: 5.0
-    move_duration: 3.0
+    movej_duration: 3.0
     movej_interpolation_type: "linear"  # "tanh"（默认）或 "linear"
     hold_position_threshold: 0.1
 
