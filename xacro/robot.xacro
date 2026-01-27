@@ -55,6 +55,9 @@
 	<xacro:if value="${type_arg == 'linkerhand_l6'}">
 		<xacro:property name="selected_hand_type" value="linkerhand_l6"/>
 	</xacro:if>
+	<xacro:if value="${type_arg == 'linkerhand_o7'}">
+		<xacro:property name="selected_hand_type" value="linkerhand_o7"/>
+	</xacro:if>
 
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/eefs.xacro"/>

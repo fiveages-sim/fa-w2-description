@@ -42,7 +42,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/base_link.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/base_link.glb"/>
 				</geometry>
 			</visual>
 			<collision>
@@ -67,7 +67,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj" scale="1 -1 1"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.glb" scale="1 -1 1"/>
 				</geometry>
 			</visual>
 		</link>
@@ -96,7 +96,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj" scale="1 -1 1"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.glb" scale="1 -1 1"/>
 				</geometry>
 			</visual>
 			<collision>
@@ -130,7 +130,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.glb"/>
 				</geometry>
 			</visual>
 		</link>
@@ -159,7 +159,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.glb"/>
 				</geometry>
 			</visual>
 			<collision>
@@ -193,7 +193,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj" scale="1 -1 1"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.glb" scale="1 -1 1"/>
 				</geometry>
 			</visual>
 		</link>
@@ -222,7 +222,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj" scale="1 -1 1"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.glb" scale="1 -1 1"/>
 				</geometry>
 			</visual>
 			<collision>
@@ -256,7 +256,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/steer_link.glb"/>
 				</geometry>
 			</visual>
 		</link>
@@ -285,7 +285,7 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/wheel.glb"/>
 				</geometry>
 			</visual>
 			<collision>
@@ -319,12 +319,12 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.glb"/>
 				</geometry>
 			</visual>
 			<collision>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.glb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -349,12 +349,12 @@
 			</inertial>
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.glb"/>
 				</geometry>
 			</visual>
 			<collision>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.glb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -368,12 +368,12 @@
 		<link name="chassis_camera">
 			<visual>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.glb"/>
 				</geometry>
 			</visual>
 			<collision>
 				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.obj"/>
+					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.glb"/>
 				</geometry>
 			</collision>
 		</link>

@@ -39,6 +39,11 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=linkerhand_o6
   ```
+* With LinkerHand O7
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=linkerhand_o7
+  ```
 
 </details>
 
@@ -97,6 +102,12 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   ```bash
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller full_body.launch.py type:=linkerhand_l6 robot:=fiveages_w2
+  ```
+
+* With LinkerHand O7
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch ocs2_arm_controller full_body.launch.py type:=linkerhand_o7 robot:=fiveages_w2
   ```
 
 </details>
