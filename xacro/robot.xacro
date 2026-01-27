@@ -8,6 +8,10 @@
 	<xacro:arg name="type" default=""/>
 	<xacro:property name="type_arg" value="$(arg type)"/>
 
+	<!-- 手部控制方式：usb 或 marvin -->
+	<xacro:arg name="hand_control_mode" default="usb"/>
+	<xacro:property name="hand_control_mode_arg" value="$(arg hand_control_mode)"/>
+
 	<!-- 默认值 -->
 	<xacro:property name="selected_hand_type" value=""/>
 	<xacro:property name="selected_gripper_type" value=""/>
