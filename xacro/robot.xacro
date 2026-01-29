@@ -8,7 +8,7 @@
 	<xacro:arg name="type" default=""/>
 	<xacro:property name="type_arg" value="$(arg type)"/>
 
-	<!-- 手部控制方式：usb 或 marvin -->
+	<!-- 手部控制模式：通过 type 后缀选择（_usb -> modbus, _marvin -> marvin 485） -->
 	<xacro:arg name="hand_control_mode" default="usb"/>
 	<xacro:property name="hand_control_mode_arg" value="$(arg hand_control_mode)"/>
 
@@ -30,15 +30,24 @@
 	<xacro:if value="${type_arg == 'ag2f90_d'}">
 		<xacro:property name="selected_gripper_type" value="ag2f90_d"/>
 	</xacro:if>
-	<!-- 灵巧手类型 -->
-	<xacro:if value="${type_arg == 'linkerhand_o6'}">
+	<!-- 灵巧手类型解析：支持格式 linkerhand_{o6,l6,o7}[_usb|_marvin] -->
+	<!-- O6 -->
+	<xacro:if value="${type_arg == 'linkerhand_o6' or type_arg == 'linkerhand_o6_usb' or type_arg == 'linkerhand_o6_marvin'}">
 		<xacro:property name="selected_hand_type" value="linkerhand_o6"/>
+		<xacro:if value="${type_arg == 'linkerhand_o6_usb'}"><xacro:property name="hand_control_mode_arg" value="usb"/></xacro:if>
+		<xacro:if value="${type_arg == 'linkerhand_o6_marvin'}"><xacro:property name="hand_control_mode_arg" value="marvin"/></xacro:if>
 	</xacro:if>
-	<xacro:if value="${type_arg == 'linkerhand_l6'}">
+	<!-- L6 -->
+	<xacro:if value="${type_arg == 'linkerhand_l6' or type_arg == 'linkerhand_l6_usb' or type_arg == 'linkerhand_l6_marvin'}">
 		<xacro:property name="selected_hand_type" value="linkerhand_l6"/>
+		<xacro:if value="${type_arg == 'linkerhand_l6_usb'}"><xacro:property name="hand_control_mode_arg" value="usb"/></xacro:if>
+		<xacro:if value="${type_arg == 'linkerhand_l6_marvin'}"><xacro:property name="hand_control_mode_arg" value="marvin"/></xacro:if>
 	</xacro:if>
-	<xacro:if value="${type_arg == 'linkerhand_o7'}">
+	<!-- O7 -->
+	<xacro:if value="${type_arg == 'linkerhand_o7' or type_arg == 'linkerhand_o7_usb' or type_arg == 'linkerhand_o7_marvin'}">
 		<xacro:property name="selected_hand_type" value="linkerhand_o7"/>
+		<xacro:if value="${type_arg == 'linkerhand_o7_usb'}"><xacro:property name="hand_control_mode_arg" value="usb"/></xacro:if>
+		<xacro:if value="${type_arg == 'linkerhand_o7_marvin'}"><xacro:property name="hand_control_mode_arg" value="marvin"/></xacro:if>
 	</xacro:if>
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>

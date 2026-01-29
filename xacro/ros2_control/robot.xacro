@@ -2,17 +2,33 @@
 <robot name="fiveages_w2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 	<xacro:arg name="ros2_control_hardware_type" default="mock_components"/>
+	<xacro:arg name="device_ip" default="192.168.1.190"/>
+	<xacro:property name="device_ip_arg" value="$(arg device_ip)"/>
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/robot.xacro"/>
 
 	<xacro:include filename="$(find m6_ccs_description)/xacro/ros2_control/interfaces.xacro"/>
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/ros2_control/body.xacro"/>
 
+	<!-- 宏：创建单个 modbus 灵巧手系统（USB 模式） -->
+	<xacro:macro name="create_modbus_hand_single" params="hand_type system_suffix side serial_port">
+		<ros2_control name="linkerhand_${system_suffix}_${side}_system" type="system">
+			<hardware>
+				<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
+				<param name="serial_port">${serial_port}</param>
+				<param name="hand_type">${hand_type}</param>
+				<param name="hand_side">${side}</param>
+				<param name="max_speed_ratio">1.0</param>
+			</hardware>
+			<xacro:insert_block/>
+		</ros2_control>
+	</xacro:macro>
+
 	<xacro:if value="${'$(arg ros2_control_hardware_type)' == 'real'}">
 		<!-- 确定传递给 marvin_ros2_control 的 gripper_type 参数 -->
 		<!-- 
 			Marvin 模式下的手部控制逻辑：
-			1. 如果 hand_control_mode == 'marvin' 且 selected_hand_type 不为空，
+			1. 如果 hand_control_mode_arg == 'marvin'（由 type 后缀 _marvin 设定）且 selected_hand_type 不为空，
 			   则将 selected_hand_type (如 linkerhand_o7) 传递给 MarvinHardware 的 gripper_type 参数
 			2. MarvinHardware 会通过 normalizeString() 将 gripper_type 转换为大写
 			3. 在 createTool() 和 contains_gripper() 中检测 gripper_type 是否包含 "LINKERHAND" 或 "HAND"
@@ -42,7 +58,7 @@
 				<!-- <param name="ctrl_mode">JOINT_IMPEDANCE</param> -->
 				<param name="left_dyn_param">0.4,0,0,50.65,0,0,0,0,0,0</param>
 				<param name="right_dyn_param">0.4,0,0,50.85,0,0,0,0,0,0</param>
-				<param name="device_ip"></param>
+				<param name="device_ip">${device_ip_arg}</param>
 			</hardware>
 
 			<xacro:m6_interfaces name="left"/>
@@ -63,12 +79,7 @@
 					</state_interface>
 				</joint>
 			</xacro:if>
-			<!-- 
-				灵巧手接口：通过天机硬件控制（marvin 模式）
-				注意：这些接口会被添加到 M6_CCS_System 中，MarvinHardware 会通过 gripper_type 参数
-				检测到手部类型，并创建对应的 DexterousHand 对象来控制这些关节。
-				控制通过 485 总线完成，不需要 modbus_ros2_control。
-			-->
+			<!-- 灵巧手接口：marvin 模式（485 总线，通过 M6_CCS_System） -->
 			<xacro:if value="${selected_hand_type != '' and hand_control_mode_arg == 'marvin'}">
 				<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
 					<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
@@ -98,58 +109,27 @@
 			<xacro:body_interfaces/>
 		</ros2_control>
 
-		<!-- 灵巧手接口：通过 USB (modbus_ros2_control) -->
-		<!-- 只有在 hand_control_mode 明确为 'usb' 时才创建 modbus 系统 -->
-		<!-- 注意：marvin 模式下，手的控制通过 M6_CCS_System 中的 MarvinHardware 完成，不需要 modbus 系统 -->
+		<!-- 灵巧手接口：USB 模式（modbus_ros2_control） -->
 		<xacro:if value="${selected_hand_type != '' and hand_control_mode_arg == 'usb'}">
+			<!-- O6/L6: 6-DOF 手 -->
 			<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
 				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
-				<ros2_control name="linkerhand_6_left_system" type="system">
-					<hardware>
-						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-						<param name="serial_port">/dev/ttyUSB1</param>
-						<param name="hand_type">${selected_hand_type}</param>
-						<param name="hand_side">left</param>
-						<param name="max_speed_ratio">1.0</param>
-					</hardware>
+				<xacro:create_modbus_hand_single hand_type="${selected_hand_type}" system_suffix="6" side="left" serial_port="/dev/ttyUSB1">
 					<xacro:linkerhand_o6_interfaces name="left_hand"/>
-				</ros2_control>
-
-				<ros2_control name="linkerhand_6_right_system" type="system">
-					<hardware>
-						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-						<param name="serial_port">/dev/ttyUSB0</param>
-						<param name="hand_type">${selected_hand_type}</param>
-						<param name="hand_side">right</param>
-						<param name="max_speed_ratio">1.0</param>
-					</hardware>
+				</xacro:create_modbus_hand_single>
+				<xacro:create_modbus_hand_single hand_type="${selected_hand_type}" system_suffix="6" side="right" serial_port="/dev/ttyUSB0">
 					<xacro:linkerhand_o6_interfaces name="right_hand"/>
-				</ros2_control>
+				</xacro:create_modbus_hand_single>
 			</xacro:if>
-
+			<!-- O7: 7-DOF 手 -->
 			<xacro:if value="${selected_hand_type == 'linkerhand_o7'}">
 				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
-				<ros2_control name="linkerhand_7_left_system" type="system">
-					<hardware>
-						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-						<param name="serial_port">/dev/ttyUSB1</param>
-						<param name="hand_type">${selected_hand_type}</param>
-						<param name="hand_side">left</param>
-						<param name="max_speed_ratio">1.0</param>
-					</hardware>
+				<xacro:create_modbus_hand_single hand_type="${selected_hand_type}" system_suffix="7" side="left" serial_port="/dev/ttyUSB1">
 					<xacro:linkerhand_o7_interfaces name="left_hand"/>
-				</ros2_control>
-
-				<ros2_control name="linkerhand_7_right_system" type="system">
-					<hardware>
-						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-						<param name="serial_port">/dev/ttyUSB0</param>
-						<param name="hand_type">${selected_hand_type}</param>
-						<param name="hand_side">right</param>
-						<param name="max_speed_ratio">1.0</param>
-					</hardware>
+				</xacro:create_modbus_hand_single>
+				<xacro:create_modbus_hand_single hand_type="${selected_hand_type}" system_suffix="7" side="right" serial_port="/dev/ttyUSB0">
 					<xacro:linkerhand_o7_interfaces name="right_hand"/>
-				</ros2_control>
+				</xacro:create_modbus_hand_single>
 			</xacro:if>
 		</xacro:if>
 	</xacro:if>
