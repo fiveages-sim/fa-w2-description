@@ -51,6 +51,18 @@
 					<box size="0.5 0.3 0.2"/>
 				</geometry>
 			</collision>
+			<collision>
+				<origin xyz="0 0.195 0.16"/>
+				<geometry>
+					<box size="0.66 0.16 0.3"/>
+				</geometry>
+			</collision>
+			<collision>
+				<origin xyz="0 -0.195 0.16"/>
+				<geometry>
+					<box size="0.66 0.16 0.3"/>
+				</geometry>
+			</collision>
 		</link>
 
 		<link name="rr_steer">
@@ -322,11 +334,6 @@
 					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.glb"/>
 				</geometry>
 			</visual>
-			<collision>
-				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.glb"/>
-				</geometry>
-			</collision>
 		</link>
 
 		<joint name="rr_lidar_joint" type="fixed">
@@ -352,11 +359,6 @@
 					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.glb"/>
 				</geometry>
 			</visual>
-			<collision>
-				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/lidar.glb"/>
-				</geometry>
-			</collision>
 		</link>
 
 		<joint name="fl_lidar_joint" type="fixed">
@@ -371,11 +373,6 @@
 					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.glb"/>
 				</geometry>
 			</visual>
-			<collision>
-				<geometry>
-					<mesh filename="file://$(find fiveages_w2_description)/meshes/linkhou_s2/camera.glb"/>
-				</geometry>
-			</collision>
 		</link>
 
 		<joint name="chassis_camera_joint" type="fixed">

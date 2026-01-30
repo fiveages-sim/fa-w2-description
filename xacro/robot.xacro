@@ -3,28 +3,6 @@
 
 	<xacro:arg name="collider" default="convex"/>
 	<xacro:arg name="chassis_joints_movable" default="false"/>
-	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
-	<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
-	<xacro:include filename="$(find fiveages_w2_description)/xacro/body.xacro"/>
-
-
-	<!-- Left Arm -->
-	<joint name="left_arm_base_joint" type="fixed">
-		<parent link="arm_base"/>
-		<child link="left_base_link"/>
-		<origin rpy="-${PI/2} 0 0" xyz="0.0 0.062 0"/>
-	</joint>
-
-	<!-- Right Arm -->
-	<joint name="right_arm_base_joint" type="fixed">
-		<parent link="arm_base"/>
-		<child link="right_base_link"/>
-		<origin rpy="${PI/2} 0 0" xyz="0 -0.062 0"/>
-	</joint>
-
-	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/arm.xacro"/>
-	<xacro:M6_CCS name="left" collider="$(arg collider)"/>
-	<xacro:M6_CCS name="right" direction="-1" collider="$(arg collider)"/>
 
 	<!-- 从 type 参数解析出 hand_type 和 gripper_type -->
 	<xacro:arg name="type" default=""/>
@@ -59,6 +37,28 @@
 		<xacro:property name="selected_hand_type" value="linkerhand_o7"/>
 	</xacro:if>
 
+	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
+	<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
+	<xacro:include filename="$(find fiveages_w2_description)/xacro/body.xacro"/>
+
+	<!-- Left Arm -->
+	<joint name="left_arm_base_joint" type="fixed">
+		<parent link="arm_base"/>
+		<child link="left_base_link"/>
+		<origin rpy="-${PI/2} 0 0" xyz="0.0 0.062 0"/>
+	</joint>
+
+	<!-- Right Arm -->
+	<joint name="right_arm_base_joint" type="fixed">
+		<parent link="arm_base"/>
+		<child link="right_base_link"/>
+		<origin rpy="${PI/2} 0 0" xyz="0 -0.062 0"/>
+	</joint>
+
+
+	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/arm.xacro"/>
+	<xacro:M6_CCS name="left" collider="$(arg collider)"/>
+	<xacro:M6_CCS name="right" direction="-1" collider="$(arg collider)"/>
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/eefs.xacro"/>
 	<xacro:EndEffectors hand_type="${selected_hand_type}" gripper_type="${selected_gripper_type}"/>

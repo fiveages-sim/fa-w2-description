@@ -59,8 +59,7 @@ ocs2_arm_controller:
       - position
 
     robot_name: m6_ccs
-    robot_type: dual_rg75
-    info_file_name: dual
+    robot_type: rg75
     home_duration: 5.0
     movej_duration: 1.5
     movel_trajectory_duration: 1.0

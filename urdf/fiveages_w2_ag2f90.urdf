@@ -33,6 +33,18 @@
         <box size="0.5 0.3 0.2"/>
       </geometry>
     </collision>
+    <collision>
+      <origin xyz="0 0.195 0.16"/>
+      <geometry>
+        <box size="0.66 0.16 0.3"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.195 0.16"/>
+      <geometry>
+        <box size="0.66 0.16 0.3"/>
+      </geometry>
+    </collision>
   </link>
   <link name="rr_steer">
     <inertial>
@@ -205,11 +217,6 @@
         <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/lidar.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/lidar.glb"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="rr_lidar_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.309 0" xyz="0.21412 0.19406 0.32957"/>
@@ -227,11 +234,6 @@
         <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/lidar.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/lidar.glb"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="fl_lidar_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.309 3.1416" xyz="-0.21412 -0.19406 0.32957"/>
@@ -244,11 +246,6 @@
         <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/camera.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/camera.glb"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="chassis_camera_joint" type="fixed">
     <origin rpy="0 0 3.141592653589793" xyz="-0.3438 -0.00032028 0.159"/>
@@ -266,11 +263,6 @@
         <mesh filename="package://fiveages_w2_description/meshes/body/base.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/base.glb"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="body_fixed_joint" type="fixed">
     <origin xyz="0.10525 0 0.2295"/>
@@ -289,8 +281,9 @@
       </geometry>
     </visual>
     <collision>
+      <origin xyz="0.0 0 0.17"/>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/link1.glb"/>
+        <box size="0.15 0.145 0.48"/>
       </geometry>
     </collision>
   </link>
@@ -298,7 +291,7 @@
     <parent link="body_base"/>
     <child link="body_link1"/>
     <axis xyz="0 1 0"/>
-    <limit effort="100" lower="-1.352633" upper="0.567" velocity="1"/>
+    <limit effort="500" lower="-1.352633" upper="0.567" velocity="1"/>
   </joint>
   <link name="body_link2">
     <inertial>
@@ -312,8 +305,9 @@
       </geometry>
     </visual>
     <collision>
+      <origin xyz="0.0 0 0.18"/>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/link2.glb"/>
+        <box size="0.16 0.2 0.5"/>
       </geometry>
     </collision>
   </link>
@@ -322,7 +316,7 @@
     <parent link="body_link1"/>
     <child link="body_link2"/>
     <axis xyz="0 -1 0"/>
-    <limit effort="100" lower="-2.66" upper="1.605" velocity="1"/>
+    <limit effort="500" lower="-2.66" upper="1.605" velocity="1"/>
   </joint>
   <link name="body_link3">
     <inertial>
@@ -336,8 +330,9 @@
       </geometry>
     </visual>
     <collision>
+      <origin xyz="0.0 0 0.032"/>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/link3.glb"/>
+        <box size="0.13 0.13 0.22"/>
       </geometry>
     </collision>
   </link>
@@ -346,7 +341,7 @@
     <parent link="body_link2"/>
     <child link="body_link3"/>
     <axis xyz="0 1 0"/>
-    <limit effort="100" lower="-1.745" upper="1.745" velocity="1"/>
+    <limit effort="500" lower="-1.745" upper="1.745" velocity="1"/>
   </joint>
   <link name="body_link4">
     <inertial>
@@ -371,7 +366,7 @@
     <parent link="body_link3"/>
     <child link="body_link4"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="100" lower="-3.141592653589793" upper="3.141592653589793" velocity="1"/>
+    <limit effort="500" lower="-3.141592653589793" upper="3.141592653589793" velocity="1"/>
   </joint>
   <link name="body_camera">
     <visual>
@@ -396,18 +391,13 @@
         <mesh filename="package://fiveages_w2_description/meshes/body/head_yaw.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/head_yaw.glb"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="head_joint1" type="revolute">
     <origin xyz="-0.023428 0 0.48475"/>
     <parent link="body_link4"/>
     <child link="head_link1"/>
     <axis xyz="0 0 1"/>
-    <limit effort="100" lower="-0.436" upper="0.436" velocity="1"/>
+    <limit effort="500" lower="-0.436" upper="0.436" velocity="1"/>
   </joint>
   <link name="head_link2">
     <inertial>
@@ -421,17 +411,18 @@
       </geometry>
     </visual>
     <collision>
+      <origin xyz="0.025 0 0.04"/>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/head_pitch.glb"/>
+        <box size="0.15 0.16 0.24"/>
       </geometry>
     </collision>
   </link>
   <joint name="head_joint2" type="revolute">
-    <origin xyz="0 0.0042 0.15"/>
+    <origin xyz="0 0.0 0.15"/>
     <parent link="head_link1"/>
     <child link="head_link2"/>
     <axis xyz="0 1 0"/>
-    <limit effort="100" lower="-0.26" upper="0.26" velocity="1"/>
+    <limit effort="500" lower="-0.26" upper="0.26" velocity="1"/>
   </joint>
   <link name="head_camera">
     <visual>
@@ -450,6 +441,12 @@
     <origin xyz="7.1612E-05 0 0.45765"/>
     <parent link="body_link4"/>
     <child link="arm_base"/>
+  </joint>
+  <link name="head_top_camera"/>
+  <joint name="head_top_camera_joint" type="fixed">
+    <origin rpy="-2.100227811211368 0.0016038446958035316 -1.583610269343787" xyz="0.0877736 0.0245687 0.107989"/>
+    <parent link="head_link2"/>
+    <child link="head_top_camera"/>
   </joint>
   <!-- Left Arm -->
   <joint name="left_arm_base_joint" type="fixed">
@@ -491,7 +488,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link1.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link1.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -518,7 +515,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link2.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link2.glb" scale="1 1 1"/>
       </geometry>
     </visual>
     <collision>
@@ -545,7 +542,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link3.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link3.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -578,7 +575,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link4.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link4.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -605,7 +602,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link5.glb" scale="1 1 1"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link5.glb" scale="1 1 1"/>
       </geometry>
     </visual>
     <collision>
@@ -632,7 +629,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link6.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link6.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -659,13 +656,19 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link7.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link7.glb"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0 0" xyz="0 -0.075732 0"/>
       <geometry>
         <cylinder length="0.038392" radius="0.041707"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707963267948966 0 0" xyz="0 -0.175732 0"/>
+      <geometry>
+        <cylinder length="0.138392" radius="0.041707"/>
       </geometry>
     </collision>
   </link>
@@ -711,7 +714,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link1.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link1.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -738,7 +741,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link2.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link2.glb" scale="1 1 -1"/>
       </geometry>
     </visual>
     <collision>
@@ -765,7 +768,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link3.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link3.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -798,7 +801,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link4.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link4.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -825,7 +828,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link5.glb" scale="1 -1 1"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link5.glb" scale="1 -1 1"/>
       </geometry>
     </visual>
     <collision>
@@ -852,7 +855,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link6.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link6.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -879,13 +882,19 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://m6_ccs_description/meshes/link7_r.glb"/>
+        <mesh filename="package://fiveages_w2_description/meshes/arm/link7_r.glb"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0 0" xyz="0 -0.075732 0"/>
       <geometry>
         <cylinder length="0.038392" radius="0.041707"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707963267948966 0 0" xyz="0 -0.175732 0"/>
+      <geometry>
+        <cylinder length="0.138392" radius="0.041707"/>
       </geometry>
     </collision>
   </link>
@@ -903,7 +912,11 @@
     <parent link="right_link7"/>
     <child link="right_tcp"/>
   </joint>
-  <!-- Note: type parameter is now passed as macro parameter -->
+  <!-- Note: 
+             - gripper_type 不为空时表示使用夹爪（保持原有逻辑）
+             - hand_type 只在需要区分灵巧手时使用（如 linkerhand_o6）
+             - 两者都为空时表示无末端执行器配置
+        -->
   <link name="left_flange">
     <inertial>
       <origin xyz="-0.000388 0.002345 0.0"/>
@@ -932,11 +945,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/gripper_base.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/base.stl"/>
-      </geometry>
-    </collision>
   </link>
   <link name="left_left_1_link">
     <inertial>
@@ -949,11 +957,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/link_1.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/link_1.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_gripper_joint" type="revolute">
     <origin rpy="1.5707963267948966 0 0" xyz="0 -0.030141 0.090147"/>
@@ -973,11 +976,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/in_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/in_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_left_in_Joint" type="revolute">
     <origin xyz="0 0.023914 -0.0020253"/>
@@ -998,11 +996,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/up_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/up_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_left_up_Joint" type="revolute">
     <origin xyz="0 0.054804 -0.0046413"/>
@@ -1023,11 +1016,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/pad_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/pad_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_left_Pad_Joint" type="fixed">
     <origin xyz="0 0.04125 -0.02425"/>
@@ -1045,11 +1033,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/link_2.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/link_2.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_left_2_Joint" type="revolute">
     <origin rpy="1.5707963267948966 0 0" xyz="0 -0.016 0.107"/>
@@ -1070,11 +1053,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/link_2.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/link_2.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_right_2_Joint" type="revolute">
     <origin rpy="1.5707963267948966 0 3.141592653589793" xyz="0 0.016 0.107"/>
@@ -1082,7 +1060,7 @@
     <child link="left_right_2_link"/>
     <axis xyz="1 0 0"/>
     <limit effort="50" lower="0" upper="1" velocity="3.141592653589793"/>
-    <mimic joint="left_left_2_Joint"/>
+    <mimic joint="left_gripper_joint"/>
   </joint>
   <link name="left_right_1_link">
     <inertial>
@@ -1095,11 +1073,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/link_1.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/link_1.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_right_1_Joint" type="revolute">
     <origin rpy="1.5707963267948966 0 3.141592653589793" xyz="0 0.030141 0.090147"/>
@@ -1120,11 +1093,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/in_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/in_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_right_in_Joint" type="revolute">
     <origin xyz="0 0.023914 -0.0020253"/>
@@ -1132,7 +1100,7 @@
     <child link="left_right_in_link"/>
     <axis xyz="-1 0 0"/>
     <limit effort="50" lower="0" upper="1" velocity="3.141592653589793"/>
-    <mimic joint="left_right_1_Joint" multiplier="0.1" offset="0"/>
+    <mimic joint="left_gripper_joint" multiplier="0.1" offset="0"/>
   </joint>
   <link name="left_right_up_link">
     <inertial>
@@ -1145,11 +1113,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/up_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/up_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_right_up_Joint" type="revolute">
     <origin xyz="0 0.054804 -0.0046413"/>
@@ -1157,7 +1120,7 @@
     <child link="left_right_up_link"/>
     <axis xyz="-1 0 0"/>
     <limit effort="50" lower="0" upper="1" velocity="3.141592653589793"/>
-    <mimic joint="left_right_1_Joint"/>
+    <mimic joint="left_gripper_joint"/>
   </joint>
   <link name="left_right_Pad_link">
     <inertial>
@@ -1170,11 +1133,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/pad_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/pad_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="left_right_Pad_Joint" type="fixed">
     <origin xyz="0 0.04125 -0.02425"/>
@@ -1220,11 +1178,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/gripper_base.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/base.stl"/>
-      </geometry>
-    </collision>
   </link>
   <link name="right_left_1_link">
     <inertial>
@@ -1237,11 +1190,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/link_1.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/link_1.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_gripper_joint" type="revolute">
     <origin rpy="1.5707963267948966 0 0" xyz="0 -0.030141 0.090147"/>
@@ -1261,11 +1209,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/in_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/in_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_left_in_Joint" type="revolute">
     <origin xyz="0 0.023914 -0.0020253"/>
@@ -1286,11 +1229,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/up_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/up_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_left_up_Joint" type="revolute">
     <origin xyz="0 0.054804 -0.0046413"/>
@@ -1311,11 +1249,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/pad_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/pad_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_left_Pad_Joint" type="fixed">
     <origin xyz="0 0.04125 -0.02425"/>
@@ -1333,11 +1266,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/link_2.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/link_2.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_left_2_Joint" type="revolute">
     <origin rpy="1.5707963267948966 0 0" xyz="0 -0.016 0.107"/>
@@ -1358,11 +1286,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/link_2.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/link_2.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_right_2_Joint" type="revolute">
     <origin rpy="1.5707963267948966 0 3.141592653589793" xyz="0 0.016 0.107"/>
@@ -1370,7 +1293,7 @@
     <child link="right_right_2_link"/>
     <axis xyz="1 0 0"/>
     <limit effort="50" lower="0" upper="1" velocity="3.141592653589793"/>
-    <mimic joint="right_left_2_Joint"/>
+    <mimic joint="right_gripper_joint"/>
   </joint>
   <link name="right_right_1_link">
     <inertial>
@@ -1383,11 +1306,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/link_1.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/link_1.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_right_1_Joint" type="revolute">
     <origin rpy="1.5707963267948966 0 3.141592653589793" xyz="0 0.030141 0.090147"/>
@@ -1408,11 +1326,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/in_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/in_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_right_in_Joint" type="revolute">
     <origin xyz="0 0.023914 -0.0020253"/>
@@ -1420,7 +1333,7 @@
     <child link="right_right_in_link"/>
     <axis xyz="-1 0 0"/>
     <limit effort="50" lower="0" upper="1" velocity="3.141592653589793"/>
-    <mimic joint="right_right_1_Joint" multiplier="0.1" offset="0"/>
+    <mimic joint="right_gripper_joint" multiplier="0.1" offset="0"/>
   </joint>
   <link name="right_right_up_link">
     <inertial>
@@ -1433,11 +1346,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/up_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/up_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_right_up_Joint" type="revolute">
     <origin xyz="0 0.054804 -0.0046413"/>
@@ -1445,7 +1353,7 @@
     <child link="right_right_up_link"/>
     <axis xyz="-1 0 0"/>
     <limit effort="50" lower="0" upper="1" velocity="3.141592653589793"/>
-    <mimic joint="right_right_1_Joint"/>
+    <mimic joint="right_gripper_joint"/>
   </joint>
   <link name="right_right_Pad_link">
     <inertial>
@@ -1458,11 +1366,6 @@
         <mesh filename="package://changingtek_description/meshes/AG2F90-C/visual/pad_link.glb"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://changingtek_description/meshes/AG2F90-C/collision/pad_link.stl"/>
-      </geometry>
-    </collision>
   </link>
   <joint name="right_right_Pad_Joint" type="fixed">
     <origin xyz="0 0.04125 -0.02425"/>

@@ -59,8 +59,7 @@ ocs2_arm_controller:
       - position
 
     robot_name: m6_ccs
-    robot_type: dual_ag2f90_c
-    info_file_name: dual
+    robot_type: ag2f90
     home_duration: 5.0
 
     # Control parameters
