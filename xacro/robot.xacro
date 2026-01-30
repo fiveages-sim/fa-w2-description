@@ -57,8 +57,8 @@
 
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/arm.xacro"/>
-	<xacro:M6_CCS name="left" collider="$(arg collider)"/>
-	<xacro:M6_CCS name="right" direction="-1" collider="$(arg collider)"/>
+	<xacro:M6_CCS name="left"/>
+	<xacro:M6_CCS name="right" direction="-1"/>
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/eefs.xacro"/>
 	<xacro:EndEffectors hand_type="${selected_hand_type}" gripper_type="${selected_gripper_type}"/>
