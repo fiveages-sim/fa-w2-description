@@ -15,7 +15,7 @@
 
 	<xacro:if value="${'$(arg type)' == 'body'}">
 		<link name="base_link"/>
-		<xacro:include filename="$(find fiveages_w2_description)/xacro/body.xacro"/>
+		<xacro:include filename="$(find fiveages_w2_description)/xacro/components/body.xacro"/>
 	</xacro:if>
 
 </robot>

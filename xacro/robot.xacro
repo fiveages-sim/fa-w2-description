@@ -39,7 +39,7 @@
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
 	<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
-	<xacro:include filename="$(find fiveages_w2_description)/xacro/body.xacro"/>
+	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/body.xacro"/>
 
 	<!-- Left Arm -->
 	<joint name="left_arm_base_joint" type="fixed">
@@ -56,9 +56,9 @@
 	</joint>
 
 
-	<xacro:include filename="$(find fiveages_w2_description)/xacro/components/arm.xacro"/>
-	<xacro:M6_CCS name="left"/>
-	<xacro:M6_CCS name="right" direction="-1"/>
+	<xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>
+	<xacro:M6_CCS name="left" style="fiveages_w2"/>
+	<xacro:M6_CCS name="right" direction="-1" style="fiveages_w2"/>
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/eefs.xacro"/>
 	<xacro:EndEffectors hand_type="${selected_hand_type}" gripper_type="${selected_gripper_type}"/>
