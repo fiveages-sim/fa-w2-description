@@ -16,14 +16,9 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/base.obj"/>
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/base.glb"/>
 			</geometry>
 		</visual>
-		<collision>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/base.obj"/>
-			</geometry>
-		</collision>
 	</link>
 
 	<joint name="body_fixed_joint" type="fixed">
@@ -46,12 +41,13 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link1.obj"/>
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link1.glb"/>
 			</geometry>
 		</visual>
 		<collision>
+			<origin xyz="0.0 0 0.17"/>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link1.obj"/>
+				<box size="0.15 0.145 0.48"/>
 			</geometry>
 		</collision>
 	</link>
@@ -77,12 +73,13 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link2.obj"/>
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link2.glb"/>
 			</geometry>
 		</visual>
 		<collision>
+			<origin xyz="0.0 0 0.18"/>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link2.obj"/>
+				<box size="0.16 0.2 0.5"/>
 			</geometry>
 		</collision>
 	</link>
@@ -109,12 +106,13 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link3.obj"/>
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link3.glb"/>
 			</geometry>
 		</visual>
 		<collision>
+			<origin xyz="0.0 0 0.032"/>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link3.obj"/>
+				<box size="0.13 0.13 0.22"/>
 			</geometry>
 		</collision>
 	</link>
@@ -141,7 +139,7 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link4.obj"/>
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/link4.glb"/>
 			</geometry>
 		</visual>
 		<collision>
@@ -163,7 +161,7 @@
 	<link name="body_camera">
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find sensor_models)/meshes/orbbec/336.obj"/>
+				<mesh filename="file://$(find sensor_models)/meshes/orbbec/336.glb"/>
 			</geometry>
 		</visual>
 	</link>
@@ -188,14 +186,9 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_yaw.obj"/>
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_yaw.glb"/>
 			</geometry>
 		</visual>
-		<collision>
-			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_yaw.obj"/>
-			</geometry>
-		</collision>
 	</link>
 
 	<joint name="head_joint1" type="revolute">
@@ -220,12 +213,13 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_pitch.obj"/>
+				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_pitch.glb"/>
 			</geometry>
 		</visual>
 		<collision>
+			<origin xyz="0.025 0 0.04"/>
 			<geometry>
-				<mesh filename="file://$(find fiveages_w2_description)/meshes/body/head_pitch.obj"/>
+				<box size="0.15 0.16 0.24"/>
 			</geometry>
 		</collision>
 	</link>
@@ -241,7 +235,7 @@
 	<link name="head_camera">
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find sensor_models)/meshes/orbbec/336L.obj"/>
+				<mesh filename="file://$(find sensor_models)/meshes/orbbec/336L.glb"/>
 			</geometry>
 		</visual>
 	</link>

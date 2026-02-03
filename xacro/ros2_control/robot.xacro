@@ -129,6 +129,12 @@
 				<xacro:linkerhand_o6_interfaces name="right_hand"/>
 			</xacro:if>
 
+			<xacro:if value="${selected_hand_type == 'linkerhand_o7'}">
+				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
+				<xacro:linkerhand_o7_interfaces name="left_hand"/>
+				<xacro:linkerhand_o7_interfaces name="right_hand"/>
+			</xacro:if>
+
 		</ros2_control>
 	</xacro:unless>
 
