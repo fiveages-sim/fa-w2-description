@@ -59,6 +59,11 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2 type:=body
   ```
+* Arms
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2 type:=arms
+  ```
 
 ## 3. ROS2 Control Demos
 
