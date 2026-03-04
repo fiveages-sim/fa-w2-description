@@ -98,6 +98,11 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75 robot:=fiveages_w2
   ```
+* With Jodell RG75 Gripper
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75_heavy robot:=fiveages_w2
+  ```
 * With LinkerHand O6
   ```bash
   source ~/ros2_ws/install/setup.bash
@@ -134,6 +139,12 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75 robot:=fiveages_w2
   ```
+
+* With Jodell RG75 Gripper
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75_heavy robot:=fiveages_w2
+  ```
 * With LinkerHand O6
   ```bash
   source ~/ros2_ws/install/setup.bash
@@ -157,7 +168,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 * With Jodell RG75 Gripper
   ```bash
   source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75 robot:=fiveages_w2 hardware:=isaac
+  ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75_heavy robot:=fiveages_w2 hardware:=isaac
   ```
 * With ChangingTek AG2F90 Gripper
   ```bash

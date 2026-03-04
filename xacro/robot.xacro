@@ -11,11 +11,16 @@
 	<!-- 默认值 -->
 	<xacro:property name="selected_hand_type" value=""/>
 	<xacro:property name="selected_gripper_type" value=""/>
+	<xacro:property name="selected_gripper_pad" value="default"/>
 
 	<!-- 从 type 解析 hand_type 和 gripper_type -->
 	<!-- 夹爪类型：selected_gripper_type 不为空即表示使用夹爪 -->
 	<xacro:if value="${type_arg == 'rg75'}">
 		<xacro:property name="selected_gripper_type" value="rg75"/>
+	</xacro:if>
+	<xacro:if value="${type_arg == 'rg75_heavy'}">
+		<xacro:property name="selected_gripper_type" value="rg75"/>
+		<xacro:property name="selected_gripper_pad" value="heavy_carry"/>
 	</xacro:if>
 	<xacro:if value="${type_arg == 'ag2f90'}">
 		<xacro:property name="selected_gripper_type" value="ag2f90_d"/>
