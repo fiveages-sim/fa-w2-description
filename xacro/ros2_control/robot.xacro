@@ -10,20 +10,6 @@
 	<xacro:include filename="$(find m6_ccs_description)/xacro/ros2_control/interfaces.xacro"/>
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/ros2_control/body.xacro"/>
 
-	<!-- 宏：创建单个 modbus 灵巧手系统（USB 模式） -->
-	<xacro:macro name="create_modbus_hand_single" params="hand_type system_suffix side serial_port">
-		<ros2_control name="linkerhand_${system_suffix}_${side}_system" type="system">
-			<hardware>
-				<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-				<param name="serial_port">${serial_port}</param>
-				<param name="hand_type">${hand_type}</param>
-				<param name="hand_side">${side}</param>
-				<param name="max_speed_ratio">1.0</param>
-			</hardware>
-			<xacro:insert_block/>
-		</ros2_control>
-	</xacro:macro>
-
 	<xacro:if value="${'$(arg ros2_control_hardware_type)' == 'real'}">
 		<!-- 确定传递给 marvin_ros2_control 的 gripper_type 参数 -->
 		<!-- 
@@ -109,27 +95,55 @@
 			<xacro:body_interfaces/>
 		</ros2_control>
 
-		<!-- 灵巧手接口：USB 模式（modbus_ros2_control） -->
+		<!-- 灵巧手接口：USB 模式（modbus_ros2_control），直接内联 ros2_control 配置 -->
 		<xacro:if value="${selected_hand_type != '' and hand_control_mode_arg == 'usb'}">
 			<!-- O6/L6: 6-DOF 手 -->
 			<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
 				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
-				<xacro:create_modbus_hand_single hand_type="${selected_hand_type}" system_suffix="6" side="left" serial_port="/dev/ttyUSB1">
+				<ros2_control name="linkerhand_6_left_system" type="system">
+					<hardware>
+						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
+						<param name="serial_port">/dev/ttyUSB1</param>
+						<param name="hand_type">${selected_hand_type}</param>
+						<param name="hand_side">left</param>
+						<param name="max_speed_ratio">1.0</param>
+					</hardware>
 					<xacro:linkerhand_o6_interfaces name="left_hand"/>
-				</xacro:create_modbus_hand_single>
-				<xacro:create_modbus_hand_single hand_type="${selected_hand_type}" system_suffix="6" side="right" serial_port="/dev/ttyUSB0">
+				</ros2_control>
+				<ros2_control name="linkerhand_6_right_system" type="system">
+					<hardware>
+						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
+						<param name="serial_port">/dev/ttyUSB0</param>
+						<param name="hand_type">${selected_hand_type}</param>
+						<param name="hand_side">right</param>
+						<param name="max_speed_ratio">1.0</param>
+					</hardware>
 					<xacro:linkerhand_o6_interfaces name="right_hand"/>
-				</xacro:create_modbus_hand_single>
+				</ros2_control>
 			</xacro:if>
 			<!-- O7: 7-DOF 手 -->
 			<xacro:if value="${selected_hand_type == 'linkerhand_o7'}">
 				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
-				<xacro:create_modbus_hand_single hand_type="${selected_hand_type}" system_suffix="7" side="left" serial_port="/dev/ttyUSB1">
+				<ros2_control name="linkerhand_7_left_system" type="system">
+					<hardware>
+						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
+						<param name="serial_port">/dev/ttyUSB1</param>
+						<param name="hand_type">${selected_hand_type}</param>
+						<param name="hand_side">left</param>
+						<param name="max_speed_ratio">1.0</param>
+					</hardware>
 					<xacro:linkerhand_o7_interfaces name="left_hand"/>
-				</xacro:create_modbus_hand_single>
-				<xacro:create_modbus_hand_single hand_type="${selected_hand_type}" system_suffix="7" side="right" serial_port="/dev/ttyUSB0">
+				</ros2_control>
+				<ros2_control name="linkerhand_7_right_system" type="system">
+					<hardware>
+						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
+						<param name="serial_port">/dev/ttyUSB0</param>
+						<param name="hand_type">${selected_hand_type}</param>
+						<param name="hand_side">right</param>
+						<param name="max_speed_ratio">1.0</param>
+					</hardware>
 					<xacro:linkerhand_o7_interfaces name="right_hand"/>
-				</xacro:create_modbus_hand_single>
+				</ros2_control>
 			</xacro:if>
 		</xacro:if>
 	</xacro:if>
@@ -176,14 +190,6 @@
 				<xacro:linkerhand_o6_interfaces name="left_hand"/>
 				<xacro:linkerhand_o6_interfaces name="right_hand"/>
 			</xacro:if>
-			<xacro:if value="${selected_hand_type == 'linkerhand_o7'}">
-				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
-				<xacro:linkerhand_o7_interfaces name="left_hand"/>
-				<xacro:linkerhand_o7_interfaces name="right_hand"/>
-			</xacro:if>
-
-
-
 			<xacro:if value="${selected_hand_type == 'linkerhand_o7'}">
 				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
 				<xacro:linkerhand_o7_interfaces name="left_hand"/>
