@@ -1,14 +1,10 @@
 <?xml version="1.0" ?>
-<!-- =================================================================================== -->
-<!-- |    Complete Robot Description for FiveAges W2                                     | -->
-<!-- |    This file includes the base robot structure and both arms                    | -->
-<!-- =================================================================================== -->
-<robot name="FiveAges_W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
-	<xacro:arg name="type" default="linkhou_q2"/>
+<robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+	<xacro:property name="PI" value="3.1415926535897931"/>
+	<xacro:arg name="type" default="linkhou_s2"/>
 
 	<xacro:arg name="chassis_joints_movable" default="true"/>
-	<xacro:if value="${'$(arg type)' == 'linkhou_q2'}">
+	<xacro:if value="${'$(arg type)' == 'linkhou_s2'}">
 		<xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
 		<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
 	</xacro:if>
@@ -16,6 +12,26 @@
 	<xacro:if value="${'$(arg type)' == 'body'}">
 		<link name="base_link"/>
 		<xacro:include filename="$(find fiveages_w2_description)/xacro/components/body.xacro"/>
+	</xacro:if>
+
+	<xacro:if value="${'$(arg type)' == 'arms'}">
+		<link name="arm_base"/>
+
+		<joint name="left_arm_base_joint" type="fixed">
+			<parent link="arm_base"/>
+			<child link="left_base_link"/>
+			<origin rpy="-${PI/2} 0 0" xyz="0.0 0.062 0"/>
+		</joint>
+
+		<joint name="right_arm_base_joint" type="fixed">
+			<parent link="arm_base"/>
+			<child link="right_base_link"/>
+			<origin rpy="${PI/2} 0 0" xyz="0 -0.062 0"/>
+		</joint>
+
+		<xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>
+		<xacro:M6_CCS name="left" style="fiveages_w2"/>
+		<xacro:M6_CCS name="right" direction="-1" style="fiveages_w2"/>
 	</xacro:if>
 
 </robot>

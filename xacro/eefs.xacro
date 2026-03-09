@@ -45,17 +45,23 @@
 
         <xacro:if value="${gripper_type == 'rg75'}">
             <xacro:include filename="$(find jodell_description)/xacro/RG75-300.xacro"/>
-            <xacro:RG75-300 name="left" use_flange="true"/>
-            <xacro:RG75-300 name="right" use_flange="true"/>
+            <xacro:RG75-300 name="left" use_flange="true" pad="${selected_gripper_pad}"/>
+            <xacro:RG75-300 name="right" use_flange="true" pad="${selected_gripper_pad}"/>
 
             <joint name="left_gripper_base_joint" type="fixed">
                 <parent link="left_tcp"/>
                 <child link="left_flange"/>
+                <xacro:if value="${selected_gripper_pad == 'heavy_carry'}">
+                    <origin rpy="0 0 ${PI/2}"/>
+                </xacro:if>
             </joint>
 
             <joint name="right_gripper_base_joint" type="fixed">
                 <parent link="right_tcp"/>
                 <child link="right_flange"/>
+                <xacro:if value="${selected_gripper_pad == 'heavy_carry'}">
+                    <origin rpy="0 0 ${PI/2}"/>
+                </xacro:if>
             </joint>
         </xacro:if>
 
