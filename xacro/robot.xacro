@@ -1,117 +1,70 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:macro name="EndEffectors" params="hand_type:='' gripper_type:=''">
+    <xacro:arg name="collider" default="convex"/>
+    <xacro:arg name="chassis_joints_movable" default="false"/>
 
-        <!-- Note: 
-             - gripper_type 不为空时表示使用夹爪（保持原有逻辑）
-             - hand_type 只在需要区分灵巧手时使用（如 linkerhand_o6）
-             - 两者都为空时表示无末端执行器配置
-        -->
+    <!-- 从 type 参数解析出 hand_type 和 gripper_type -->
+    <xacro:arg name="type" default=""/>
+    <xacro:property name="type_arg" value="$(arg type)"/>
 
-        <!-- 无末端执行器配置 -->
-        <xacro:if value="${hand_type == '' and gripper_type == ''}">
-            <link name="left_eef"/>
-            <link name="right_eef"/>
+    <!-- 默认值 -->
+    <xacro:property name="selected_hand_type" value=""/>
+    <xacro:property name="selected_gripper_type" value=""/>
+    <xacro:property name="selected_gripper_pad" value="default"/>
 
-            <joint name="left_eef_joint" type="fixed">
-                <parent link="left_tcp"/>
-                <child link="left_eef"/>
-            </joint>
+    <!-- 从 type 解析 hand_type 和 gripper_type -->
+    <!-- 夹爪类型：selected_gripper_type 不为空即表示使用夹爪 -->
+    <xacro:if value="${type_arg == 'rg75'}">
+        <xacro:property name="selected_gripper_type" value="rg75"/>
+    </xacro:if>
+    <xacro:if value="${type_arg == 'rg75_heavy'}">
+        <xacro:property name="selected_gripper_type" value="rg75"/>
+        <xacro:property name="selected_gripper_pad" value="heavy_carry"/>
+    </xacro:if>
+    <xacro:if value="${type_arg == 'ag2f90'}">
+        <xacro:property name="selected_gripper_type" value="ag2f90_d"/>
+    </xacro:if>
+    <xacro:if value="${type_arg == 'ag2f90_c'}">
+        <xacro:property name="selected_gripper_type" value="ag2f90_c"/>
+    </xacro:if>
+    <xacro:if value="${type_arg == 'ag2f90_d'}">
+        <xacro:property name="selected_gripper_type" value="ag2f90_d"/>
+    </xacro:if>
+    <!-- 灵巧手类型 -->
+    <xacro:if value="${type_arg == 'linkerhand_o6'}">
+        <xacro:property name="selected_hand_type" value="linkerhand_o6"/>
+    </xacro:if>
+    <xacro:if value="${type_arg == 'linkerhand_l6'}">
+        <xacro:property name="selected_hand_type" value="linkerhand_l6"/>
+    </xacro:if>
+    <xacro:if value="${type_arg == 'linkerhand_o7'}">
+        <xacro:property name="selected_hand_type" value="linkerhand_o7"/>
+    </xacro:if>
 
-            <joint name="right_eef_joint" type="fixed">
-                <parent link="right_tcp"/>
-                <child link="right_eef"/>
-            </joint>
-        </xacro:if>
+    <xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
+    <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
+    <xacro:include filename="$(find fiveages_w2_description)/xacro/components/body.xacro"/>
 
-        <!-- 夹爪类型：gripper_type 不为空即表示使用夹爪 -->
-        <xacro:if value="${gripper_type == 'ag2f90_c' or gripper_type == 'ag2f90_d'}">
-            <xacro:include filename="$(find changingtek_description)/xacro/AG2F90-C.xacro"/>
-            <xacro:AG2F90-C name="left" use_flange="true"/>
-            <joint name="left_gripper_fix" type="fixed">
-                <parent link="left_tcp"/>
-                <child link="left_flange"/>
-                <origin xyz="0 0 0.0045"/>
-            </joint>
+    <!-- Left Arm -->
+    <joint name="left_arm_base_joint" type="fixed">
+        <parent link="arm_base"/>
+        <child link="left_base_link"/>
+        <origin rpy="-${PI/2} 0 0" xyz="0.0 0.062 0"/>
+    </joint>
 
-            <xacro:AG2F90-C name="right" use_flange="true"/>
-            <joint name="right_gripper_fix" type="fixed">
-                <parent link="right_tcp"/>
-                <child link="right_flange"/>
-                <origin xyz="0 0 0.0045"/>
-            </joint>
-        </xacro:if>
+    <!-- Right Arm -->
+    <joint name="right_arm_base_joint" type="fixed">
+        <parent link="arm_base"/>
+        <child link="right_base_link"/>
+        <origin rpy="${PI/2} 0 0" xyz="0 -0.062 0"/>
+    </joint>
 
-        <xacro:if value="${gripper_type == 'rg75'}">
-            <xacro:include filename="$(find jodell_description)/xacro/RG75-300.xacro"/>
-            <xacro:RG75-300 name="left" use_flange="true"/>
-            <xacro:RG75-300 name="right" use_flange="true"/>
 
-            <joint name="left_gripper_base_joint" type="fixed">
-                <parent link="left_tcp"/>
-                <child link="left_flange"/>
-            </joint>
+    <xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>
+    <xacro:M6_CCS name="left" style="fiveages_w2"/>
+    <xacro:M6_CCS name="right" direction="-1" style="fiveages_w2"/>
 
-            <joint name="right_gripper_base_joint" type="fixed">
-                <parent link="right_tcp"/>
-                <child link="right_flange"/>
-            </joint>
-        </xacro:if>
-
-        <!-- 灵巧手类型 -->
-        <xacro:if value="${hand_type == 'linkerhand_o6'}">
-            <xacro:include filename="$(find linkerhand_description)/xacro/o6.xacro"/>
-            <xacro:LinkerHandO6 name="left_hand" direction="1" use_flange="true" fixed_joints="false"/>
-            <joint name="left_hand_base_joint" type="fixed">
-                <origin xyz="0 0 0.0045" rpy="0 0 ${PI}"/>
-                <parent link="left_tcp"/>
-                <child link="left_hand_flange"/>
-            </joint>
-
-            <xacro:LinkerHandO6 name="right_hand" direction="-1" use_flange="true" fixed_joints="false"/>
-            <joint name="right_hand_base_joint" type="fixed">
-                <parent link="right_tcp"/>
-                <child link="right_hand_flange"/>
-                <origin xyz="0 0 0.0045"/>
-            </joint>
-        </xacro:if>
-
-        <xacro:if value="${hand_type == 'linkerhand_o7'}">
-            <xacro:include filename="$(find linkerhand_description)/xacro/o7.xacro"/>
-            <xacro:LinkerHandO7 name="left_hand" direction="1" use_flange="true" fixed_joints="false"/>
-            <joint name="left_hand_base_joint" type="fixed">
-                <origin rpy="0 0 ${PI/2}"/>
-                <parent link="left_tcp"/>
-                <child link="left_hand_flange"/>
-            </joint>
-
-            <xacro:LinkerHandO7 name="right_hand" direction="-1" use_flange="true" fixed_joints="false"/>
-            <joint name="right_hand_base_joint" type="fixed">
-                <origin rpy="0 0 ${-PI/2}"/>
-                <parent link="right_tcp"/>
-                <child link="right_hand_flange"/>
-            </joint>
-        </xacro:if>
-
-        <!-- 灵巧手类型 -->
-        <xacro:if value="${hand_type == 'linkerhand_l6'}">
-            <xacro:include filename="$(find linkerhand_description)/xacro/l6.xacro"/>
-            <xacro:LinkerHandL6 name="left_hand" direction="1" use_flange="true" fixed_joints="false"/>
-            <joint name="left_hand_base_joint" type="fixed">
-                <origin xyz="0 0 0.0045" rpy="0 0 ${PI}"/>
-                <parent link="left_tcp"/>
-                <child link="left_hand_flange"/>
-            </joint>
-
-            <xacro:LinkerHandL6 name="right_hand" direction="-1" use_flange="true" fixed_joints="false"/>
-            <joint name="right_hand_base_joint" type="fixed">
-                <parent link="right_tcp"/>
-                <child link="right_hand_flange"/>
-                <origin xyz="0 0 0.0045"/>
-            </joint>
-        </xacro:if>
-
-    </xacro:macro>
+    <xacro:include filename="$(find fiveages_w2_description)/xacro/eefs.xacro"/>
+    <xacro:EndEffectors hand_type="${selected_hand_type}" gripper_type="${selected_gripper_type}"/>
 </robot>
-
