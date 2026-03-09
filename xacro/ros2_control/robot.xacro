@@ -91,26 +91,26 @@
 		<!-- 灵巧手接口：USB 模式（hardware=real_usb，modbus_ros2_control），直接内联 ros2_control 配置 -->
 		<xacro:if value="${ee_drive_type == 'usb'}">
 			<xacro:if value="${selected_hand_type in ('linkerhand_o6', 'linkerhand_l6', 'linkerhand_o7')}">
-				<xacro:property name="usb_hand_series" value="${'7' if selected_hand_type == 'linkerhand_o7' else '6'}"/>
-				<xacro:if value="${usb_hand_series == '6'}">
+				<xacro:property name="usb_hand_series" value="${str('7' if selected_hand_type == 'linkerhand_o7' else '6')}"/>
+				<xacro:if value="${str(usb_hand_series) == '6'}">
 					<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
 				</xacro:if>
-				<xacro:if value="${usb_hand_series == '7'}">
+				<xacro:if value="${str(usb_hand_series) == '7'}">
 					<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
 				</xacro:if>
 
 				<ros2_control name="linkerhand_${usb_hand_series}_left_system" type="system">
 					<hardware>
 						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-						<param name="serial_port">/dev/ttyUSB1</param>
+						<param name="serial_port">/dev/ttyUSB0</param>
 						<param name="hand_type">${selected_hand_type}</param>
 						<param name="hand_side">left</param>
 						<param name="max_speed_ratio">1.0</param>
 					</hardware>
-					<xacro:if value="${usb_hand_series == '6'}">
+					<xacro:if value="${str(usb_hand_series) == '6'}">
 						<xacro:linkerhand_o6_interfaces name="left_hand"/>
 					</xacro:if>
-					<xacro:if value="${usb_hand_series == '7'}">
+					<xacro:if value="${str(usb_hand_series) == '7'}">
 						<xacro:linkerhand_o7_interfaces name="left_hand"/>
 					</xacro:if>
 				</ros2_control>
@@ -118,15 +118,15 @@
 				<ros2_control name="linkerhand_${usb_hand_series}_right_system" type="system">
 					<hardware>
 						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-						<param name="serial_port">/dev/ttyUSB0</param>
+						<param name="serial_port">/dev/ttyUSB2</param>
 						<param name="hand_type">${selected_hand_type}</param>
 						<param name="hand_side">right</param>
 						<param name="max_speed_ratio">1.0</param>
 					</hardware>
-					<xacro:if value="${usb_hand_series == '6'}">
+					<xacro:if value="${str(usb_hand_series) == '6'}">
 						<xacro:linkerhand_o6_interfaces name="right_hand"/>
 					</xacro:if>
-					<xacro:if value="${usb_hand_series == '7'}">
+					<xacro:if value="${str(usb_hand_series) == '7'}">
 						<xacro:linkerhand_o7_interfaces name="right_hand"/>
 					</xacro:if>
 				</ros2_control>
