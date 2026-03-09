@@ -4,36 +4,19 @@
 	<xacro:arg name="ros2_control_hardware_type" default="mock_components"/>
 	<xacro:arg name="device_ip" default="192.168.1.190"/>
 	<xacro:property name="device_ip_arg" value="$(arg device_ip)"/>
-	<xacro:property name="ros2_control_hardware_type_arg" value="$(arg ros2_control_hardware_type)"/>
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/robot.xacro"/>
 
 	<xacro:include filename="$(find m6_ccs_description)/xacro/ros2_control/interfaces.xacro"/>
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/ros2_control/body.xacro"/>
 
-	<!-- quick_start.sh uses hardware:=real (485/marvin) and hardware:=real_usb (USB/modbus hand).
-	     Treat both as "real" branches, but force USB hand mode when hardware==real_usb. -->
-	<xacro:if value="${ros2_control_hardware_type_arg == 'real_usb'}">
-		<xacro:property name="hand_control_mode_arg" value="usb"/>
-	</xacro:if>
-
-	<xacro:if value="${ros2_control_hardware_type_arg == 'real' or ros2_control_hardware_type_arg == 'real_usb'}">
+	<xacro:if value="${'$(arg ros2_control_hardware_type)' == 'real' or '$(arg ros2_control_hardware_type)' == 'real_usb'}">
 		<!-- 确定传递给 marvin_ros2_control 的 gripper_type 参数 -->
-		<!-- 
-			Marvin 模式下的手部控制逻辑：
-			1. 如果 hand_control_mode_arg == 'marvin'（由 type 后缀 _marvin 设定）且 selected_hand_type 不为空，
-			   则将 selected_hand_type (如 linkerhand_o7) 传递给 MarvinHardware 的 gripper_type 参数
-			2. MarvinHardware 会通过 normalizeString() 将 gripper_type 转换为大写
-			3. 在 createTool() 和 contains_gripper() 中检测 gripper_type 是否包含 "LINKERHAND" 或 "HAND"
-			4. 如果检测到手部类型，MarvinHardware 会创建对应的 DexterousHand 对象（O7/O6/L6）
-			5. 手的控制通过 485 总线完成，不需要独立的 modbus_ros2_control 系统
+		<!--
+			手部控制模式由 ros2_control_hardware_type 决定：
+			- hardware=real      : 485/marvin（手作为 MarvinHardware 的 tool，由 gripper_type 传入）
+			- hardware=real_usb  : USB/modbus（手由独立 modbus_ros2_control 系统控制，MarvinHardware 只管机械臂）
 		-->
-		<xacro:property name="marvin_gripper_type" value="${selected_gripper_type}"/>
-		<xacro:if value="${selected_hand_type != '' and hand_control_mode_arg == 'marvin'}">
-			<!-- marvin 模式下，将手部类型传递给 gripper_type，让 MarvinHardware 检测并创建手部对象 -->
-			<xacro:property name="marvin_gripper_type" value="${selected_hand_type}"/>
-		</xacro:if>
-		
 		<ros2_control name="M6_CCS_System" type="system">
 			<hardware>
 				<plugin>marvin_ros2_control/MarvinHardware</plugin>
@@ -45,7 +28,8 @@
 					- 如果是 marvin 模式的手部：传递手部类型（如 linkerhand_o7, linkerhand_o6, linkerhand_l6）
 					- MarvinHardware 会自动检测 gripper_type 中是否包含 "LINKERHAND" 或 "HAND" 来判断是手部还是夹爪
 				-->
-				<param name="gripper_type">${marvin_gripper_type}</param>
+				<!-- 485/marvin(real) + hand: pass hand type; otherwise pass gripper type (or empty). -->
+				<param name="gripper_type">${selected_hand_type if (selected_hand_type != '' and '$(arg ros2_control_hardware_type)' == 'real') else selected_gripper_type}</param>
 				<param name="max_joint_speed">50</param>
 				<param name="max_joint_acceleration">30</param>
 				<!-- <param name="ctrl_mode">JOINT_IMPEDANCE</param> -->
@@ -72,8 +56,8 @@
 					</state_interface>
 				</joint>
 			</xacro:if>
-			<!-- 灵巧手接口：marvin 模式（485 总线，通过 M6_CCS_System） -->
-			<xacro:if value="${selected_hand_type != '' and hand_control_mode_arg == 'marvin'}">
+			<!-- 灵巧手接口：485/marvin（通过 M6_CCS_System） -->
+			<xacro:if value="${selected_hand_type != '' and '$(arg ros2_control_hardware_type)' == 'real'}">
 				<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
 					<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
 					<xacro:linkerhand_o6_interfaces name="left_hand"/>
@@ -102,8 +86,8 @@
 			<xacro:body_interfaces/>
 		</ros2_control>
 
-		<!-- 灵巧手接口：USB 模式（modbus_ros2_control），直接内联 ros2_control 配置 -->
-		<xacro:if value="${selected_hand_type != '' and hand_control_mode_arg == 'usb'}">
+		<!-- 灵巧手接口：USB 模式（hardware=real_usb，modbus_ros2_control），直接内联 ros2_control 配置 -->
+		<xacro:if value="${selected_hand_type != '' and '$(arg ros2_control_hardware_type)' == 'real_usb'}">
 			<!-- O6/L6: 6-DOF 手 -->
 			<xacro:if value="${selected_hand_type == 'linkerhand_o6' or selected_hand_type == 'linkerhand_l6'}">
 				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
@@ -156,16 +140,16 @@
 	</xacro:if>
 
 
-	<xacro:unless value="${ros2_control_hardware_type_arg == 'real' or ros2_control_hardware_type_arg == 'real_usb'}">
+	<xacro:unless value="${'$(arg ros2_control_hardware_type)' == 'real' or '$(arg ros2_control_hardware_type)' == 'real_usb'}">
 		<ros2_control name="fiveages_w2_system" type="system">
 			<hardware>
-				<xacro:if value="${ros2_control_hardware_type_arg == 'gz'}">
+				<xacro:if value="${'$(arg ros2_control_hardware_type)' == 'gz'}">
 					<plugin>gz_ros2_control/GazeboSimSystem</plugin>
 				</xacro:if>
-				<xacro:if value="${ros2_control_hardware_type_arg == 'mock_components'}">
+				<xacro:if value="${'$(arg ros2_control_hardware_type)' == 'mock_components'}">
 					<plugin>mock_components/GenericSystem</plugin>
 				</xacro:if>
-				<xacro:if value="${ros2_control_hardware_type_arg == 'isaac'}">
+				<xacro:if value="${'$(arg ros2_control_hardware_type)' == 'isaac'}">
 					<plugin>topic_based_ros2_control/TopicBasedSystem</plugin>
 					<param name="joint_commands_topic">/isaac/joint_command</param>
 					<param name="joint_states_topic">/isaac/joint_states</param>
