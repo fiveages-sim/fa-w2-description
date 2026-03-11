@@ -376,7 +376,7 @@
     </visual>
   </link>
   <joint name="body_camera_joint" type="fixed">
-    <origin rpy="3.141592653589793 0.378684973 0" xyz="0.10065 0.024257 0.28812"/>
+    <origin rpy="-1.9494812997948965 0 -1.5707963267948966" xyz="0.10065 0.024257 0.28812"/>
     <parent link="body_link4"/>
     <child link="body_camera"/>
   </joint>
@@ -432,7 +432,7 @@
     </visual>
   </link>
   <joint name="head_camera_joint" type="fixed">
-    <origin rpy="3.141592653589793 0.64460396 0" xyz="0.097847  0.046703 0.12364"/>
+    <origin rpy="-2.2154002867948965 0 -1.5707963267948966" xyz="0.097847  0.046703 0.12364"/>
     <parent link="head_link2"/>
     <child link="head_camera"/>
   </joint>
