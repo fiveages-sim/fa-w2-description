@@ -29,8 +29,13 @@
 					- 如果是 marvin 模式的手部：传递手部类型（如 linkerhand_o7, linkerhand_o6, linkerhand_l6）
 					- MarvinHardware 会自动检测 gripper_type 中是否包含 "LINKERHAND" 或 "HAND" 来判断是手部还是夹爪
 				-->
-				<!-- 485/marvin(real) + hand: pass hand type; otherwise pass gripper type (or empty). -->
-				<param name="gripper_type">${selected_hand_type if ee_drive_type == 'marvin' else selected_gripper_type}</param>
+				<!-- 仅在存在手/夹爪类型时设置 gripper_type 参数；两者都为空则不设置。 -->
+				<xacro:if value="${selected_hand_type != '' and ee_drive_type != ''}">
+					<param name="gripper_type">${selected_hand_type}</param>
+				</xacro:if>
+				<xacro:if value="${selected_hand_type == '' and selected_gripper_type != ''}">
+					<param name="gripper_type">${selected_gripper_type}</param>
+				</xacro:if>
 				<param name="max_joint_speed">50</param>
 				<param name="max_joint_acceleration">30</param>
 				<!-- <param name="ctrl_mode">JOINT_IMPEDANCE</param> -->
@@ -57,7 +62,7 @@
 					</state_interface>
 				</joint>
 			</xacro:if>
-			
+
 			<!-- 灵巧手接口：485/marvin（通过 M6_CCS_System） -->
 			<xacro:if value="${ee_drive_type == 'marvin'}">
 				<xacro:if value="${selected_hand_type in ['linkerhand_o6', 'linkerhand_l6']}">
@@ -71,7 +76,7 @@
 					<xacro:linkerhand_o7_interfaces name="right_hand"/>
 				</xacro:if>
 			</xacro:if>
-		
+
 		</ros2_control>
 
 		<ros2_control name="juxie_body" type="system">
