@@ -1,6 +1,6 @@
 <package format="2">
   <name>fiveages_w2_description</name>
-  <version>1.0.2</version>
+  <version>1.1.0</version>
   <description>
     <p>URDF Description package for FiveAges W2</p>
     <p>This package contains configuration data, 3D models and launch files
@@ -20,6 +20,7 @@
   <exec_depend>linkerhand_description</exec_depend>
 
   <exec_depend>ocs2_arm_controller</exec_depend>
+  <exec_depend>ocs2_wbc_controller</exec_depend>
   <exec_depend>basic_joint_controller</exec_depend>
   <exec_depend>adaptive_gripper_controller</exec_depend>
 

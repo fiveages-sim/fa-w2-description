@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+    <xacro:include filename="$(find fiveages_w2_description)/xacro/components/lp02_336_camera.xacro"/>
+
     <xacro:macro name="EndEffectors" params="hand_type:='' gripper_type:=''">
 
         <!-- Note: 
@@ -55,6 +57,11 @@
                     <origin rpy="0 0 ${PI/2}"/>
                 </xacro:if>
             </joint>
+
+            <xacro:lp02_336_camera prefix="left_" parent_link="left_flange"/>
+
+            <xacro:lp02_336_camera prefix="right_" parent_link="right_flange"/>
+
 
             <joint name="right_gripper_base_joint" type="fixed">
                 <parent link="right_tcp"/>

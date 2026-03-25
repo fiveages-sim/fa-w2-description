@@ -20,7 +20,7 @@ model_information {
 
   ; base frame of the robot (from URDF)
   baseFrame                       "base_footprint"
-  ; end-effector frame of the robot (from URDF)
+  ; end-effector frames (from URDF). Torso/body link: see bodyRelative.bodyLinkName
   eeFrame                         "left_eef"
   eeFrame1                        "right_eef"
 }
@@ -30,6 +30,13 @@ model_settings
   usePreComputation               true
   recompileLibraries              true
 }
+
+; 可选：初始 ModeSchedule（不写则等价于 HM_DUAL_RELATIVE_MOBILE_BASE）
+; initialModeSchedule
+; {
+;   eventTimes {}
+;   modeSequence { [0] "HM_DUAL_RELATIVE_MOBILE_BASE" }
+; }
 
 ; DDP settings
 ddp
@@ -172,26 +179,26 @@ inputCost
     ; input costs for the arm DOFs
     arm
     {
-      scaling 1e-3
+      scaling 1e-2
 
          (0,0)   1.0       ; body_joint1
          (1,0)   1.0       ; body_joint2
          (2,0)   1.0       ; body_joint3
          (3,0)   1.0       ; body_joint4
-         (4,0)   1.0      ; left_joint1
-         (5,0)   1.0      ; left_joint2
-         (6,0)   1.0      ; left_joint3
-         (7,0)   1.0      ; left_joint4
-         (8,0)   1.0      ; left_joint5
-         (9,0)   1.0      ; left_joint6
-         (10,0)  1.0      ; left_joint7
-         (11,0)  1.0      ; right_joint1
-         (12,0)  1.0      ; right_joint2
-         (13,0)  1.0      ; right_joint3
-         (14,0)  1.0      ; right_joint4
-         (15,0)  1.0      ; right_joint5
-         (16,0)  1.0      ; right_joint6
-         (17,0)  1.0      ; right_joint7
+         (4,0)   0.1      ; left_joint1
+         (5,0)   0.1      ; left_joint2
+         (6,0)   0.1      ; left_joint3
+         (7,0)   0.1      ; left_joint4
+         (8,0)   0.1      ; left_joint5
+         (9,0)   0.1      ; left_joint6
+         (10,0)  0.1      ; left_joint7
+         (11,0)  0.1      ; right_joint1
+         (12,0)  0.1      ; right_joint2
+         (13,0)  0.1      ; right_joint3
+         (14,0)  0.1      ; right_joint4
+         (15,0)  0.1      ; right_joint5
+         (16,0)  0.1      ; right_joint6
+         (17,0)  0.1      ; right_joint7
     }
   }
 }
@@ -241,6 +248,21 @@ bodyRelative
   muPitch                    20.0
   muPositionX                5.0
   muPositionY                5.0
+}
+
+; 双臂耦合软约束（仅当 ModeSchedule 为 DUAL_COUPLED 等耦合模式时生效；与 ocs2_wheel_humanoid/config/task.info 一致）
+bimanualCoupling
+{
+  activate                        true
+  muPosition                      5.0
+  muOrientation                   5.0
+}
+
+; 躯干锁定：ModeSchedule 中 BodyConstraintMode=LOCKED（命令 BODY_LOCK）时，前 numJoints 个手臂输入（含固定基座下 body 关节）速度硬约束为 0
+waistLock
+{
+  activate                        true
+  numJoints                       4
 }
 
 selfCollision

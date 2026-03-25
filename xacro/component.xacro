@@ -34,4 +34,10 @@
 		<xacro:M6_CCS name="right" direction="-1" style="fiveages_w2"/>
 	</xacro:if>
 
+	<xacro:if value="${'$(arg type)' == 'lp02_336_camera'}">
+		<link name="base_link"/>
+		<xacro:include filename="$(find fiveages_w2_description)/xacro/components/lp02_336_camera.xacro"/>
+		<xacro:lp02_336_camera prefix="" parent_link="base_link"/>
+	</xacro:if>
+
 </robot>
