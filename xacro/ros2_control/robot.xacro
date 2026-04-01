@@ -2,6 +2,8 @@
 <robot name="fiveages_w2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 	<xacro:arg name="ros2_control_hardware_type" default="mock_components"/>
+	<!-- 是否在启动时初始化末端执行器（夹爪/灵巧手） -->
+	<xacro:arg name="init_tool_on_startup" default="true"/>
 
 	<xacro:property name="is_real_hardware" value="${'$(arg ros2_control_hardware_type)' == 'real' or '$(arg ros2_control_hardware_type)' == 'real_usb'}"/>
 	<xacro:property name="ee_drive_type" value="${'usb' if '$(arg ros2_control_hardware_type)' == 'real_usb' else ('marvin' if '$(arg ros2_control_hardware_type)' == 'real' else '')}"/>
@@ -35,6 +37,10 @@
 				</xacro:if>
 				<xacro:if value="${selected_hand_type == '' and selected_gripper_type != ''}">
 					<param name="gripper_type">${selected_gripper_type}</param>
+				</xacro:if>
+				<!-- 仅在配置了末端执行器时传递 init_tool_on_startup -->
+				<xacro:if value="${selected_hand_type != '' or selected_gripper_type != ''}">
+					<param name="init_tool_on_startup">$(arg init_tool_on_startup)</param>
 				</xacro:if>
 				<param name="max_joint_speed">50</param>
 				<param name="max_joint_acceleration">30</param>
