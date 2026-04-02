@@ -168,7 +168,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 * With Jodell RG75 Gripper
   ```bash
   source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75_heavy robot:=fiveages_w2 hardware:=isaac
+  ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75 robot:=fiveages_w2 hardware:=isaac
   ```
 * With ChangingTek AG2F90 Gripper
   ```bash
@@ -204,3 +204,14 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2 hardware:=real enable_head:=false
   ```
+
+## 5. Navigation (Isaac Sim / 点云雷达)
+
+底盘障碍感知使用前后雷达点云：`/fl_lidar/point_cloud`、`/rr_lidar/point_cloud`（参数见 `config/nav2/nav2_params_isaac_gt.yaml`）。
+
+```bash
+source ~/ros2_ws/install/setup.bash
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
+```
+
+若话题带命名空间，可在启动时通过 `GroupAction` 侧 remap，或改 YAML 中对应 `topic` 字段。

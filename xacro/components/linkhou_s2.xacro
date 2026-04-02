@@ -337,7 +337,7 @@
 		</link>
 
 		<joint name="rr_lidar_joint" type="fixed">
-			<origin xyz="0.221633 0.200715 0.325074" rpy="0 ${PI*15/180} ${PI}"/>
+			<origin xyz="0.221633 0.200715 0.325074" rpy="0 -${PI*15/180} ${PI}"/>
 			<parent link="chassis_base"/>
 			<child link="rr_lidar"/>
 		</joint>
