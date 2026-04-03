@@ -1,6 +1,8 @@
 # FiveAges W2 + Isaac Sim：静态地图 + GT 里程计；障碍来自前/后 3D 雷达点云（投影到 2D 代价地图）
 # 点云话题：/fl_lidar/point_cloud、/rr_lidar/point_cloud
 # Linkhou S2 底盘为全向，MPPI 使用 Omni；若实车仅差速接口可改回 DiffDrive
+# MPPI：以 Galbot 稳定基线迁移（PathAngle mode0 + PreferForward 4.5），W2 用更高速度上限；
+# 远距：PathAngle 主导「车头对准轨迹切向」；近距(< 8m)：GoalAngle 开始边走边对终点朝向；途经点树见 config/nav2/*.xml
 
 bt_navigator:
   ros__parameters:
@@ -8,6 +10,7 @@ bt_navigator:
     global_frame: map
     robot_base_frame: base_footprint
     odom_topic: /odom
+    default_nav_through_poses_bt_xml: "$(find-pkg-share fiveages_w2_description)/config/nav2/navigate_through_poses_w_replanning_and_recovery.xml"
     bt_loop_duration: 10
     default_server_timeout: 20
     wait_for_service_timeout: 1000
@@ -64,18 +67,18 @@ controller_server:
       ax_max: 3.0
       ax_min: -3.0
       ay_max: 3.0
-      az_max: 5.0
-      vx_std: 0.2
-      vy_std: 0.2
-      wz_std: 0.4
-      vx_max: 1.0
+      az_max: 2.8
+      vx_std: 0.35
+      vy_std: 0.18
+      wz_std: 0.38
+      vx_max: 1.5
       vx_min: -0.2
-      vy_max: 0.5
-      wz_max: 2.5
-      iteration_count: 1
+      vy_max: 0.3
+      wz_max: 2.2
+      iteration_count: 2
       prune_distance: 1.7
       transform_tolerance: 0.1
-      temperature: 0.3
+      temperature: 0.4
       gamma: 0.015
       motion_model: "Omni"
       visualize: true
@@ -83,7 +86,7 @@ controller_server:
       TrajectoryVisualizer:
         trajectory_step: 5
         time_step: 3
-      critics: ["ConstraintCritic", "CostCritic", "GoalCritic", "GoalAngleCritic", "PathAlignCritic", "PathFollowCritic", "PathAngleCritic", "PreferForwardCritic"]
+      critics: ["ConstraintCritic", "CostCritic", "GoalCritic", "GoalAngleCritic", "PathAngleCritic", "PathAlignCritic", "PathFollowCritic", "PreferForwardCritic"]
       ConstraintCritic:
         enabled: true
         cost_power: 1
@@ -91,13 +94,14 @@ controller_server:
       GoalCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 5.0
+        cost_weight: 8.0
         threshold_to_consider: 1.4
       GoalAngleCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 3.0
-        threshold_to_consider: 0.5
+        cost_weight: 5.5
+        # 距目标 < 5m 时开始边走边对齐终点朝向；远距不生效，由 PathAngle 管朝向
+        threshold_to_consider: 5.0
       PreferForwardCritic:
         enabled: true
         cost_power: 1
@@ -115,7 +119,7 @@ controller_server:
       PathAlignCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 14.0
+        cost_weight: 10.0
         max_path_occupancy_ratio: 0.05
         trajectory_point_step: 3
         threshold_to_consider: 0.5
@@ -124,16 +128,17 @@ controller_server:
       PathFollowCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 5.0
+        cost_weight: 4.5
         offset_from_furthest: 5
         threshold_to_consider: 1.4
       PathAngleCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 2.0
-        offset_from_furthest: 4
-        threshold_to_consider: 0.5
-        max_angle_to_furthest: 1.0
+        cost_weight: 14.0
+        # W2 vx_max 1.5 已让 horizon 前视更远，offset 不必大；过大绕弯时会指向障碍另一侧
+        offset_from_furthest: 6
+        threshold_to_consider: 2.5
+        max_angle_to_furthest: 1.2
         mode: 0
 
 local_costmap:
@@ -150,8 +155,8 @@ local_costmap:
       width: 8
       height: 8
       resolution: 0.05
-      # Linkhou S2 底盘包络近似（可按实车碰撞盒微调）
-      footprint: "[ [0.4, 0.28], [0.4, -0.28], [-0.4, -0.28], [-0.4, 0.28] ]"
+      # W2 碰撞轮廓：16 边形近似椭圆（a=0.35 b=0.28），近圆+前后略长
+      footprint: "[ [0.35, 0.0], [0.3234, 0.1071], [0.2475, 0.1980], [0.1339, 0.2587], [0.0, 0.28], [-0.1339, 0.2587], [-0.2475, 0.1980], [-0.3234, 0.1071], [-0.35, 0.0], [-0.3234, -0.1071], [-0.2475, -0.1980], [-0.1339, -0.2587], [0.0, -0.28], [0.1339, -0.2587], [0.2475, -0.1980], [0.3234, -0.1071] ]"
       plugins: ["voxel_layer", "inflation_layer"]
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
@@ -187,8 +192,8 @@ local_costmap:
           obstacle_min_range: 0.05
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 10.0
-        inflation_radius: 0.8
+        cost_scaling_factor: 15.0
+        inflation_radius: 0.45
       always_send_full_costmap: True
 
 global_costmap:
@@ -200,7 +205,7 @@ global_costmap:
       publish_frequency: 1.0
       global_frame: map
       robot_base_frame: base_footprint
-      footprint: "[ [0.4, 0.28], [0.4, -0.28], [-0.4, -0.28], [-0.4, 0.28] ]"
+      footprint: "[ [0.35, 0.0], [0.3234, 0.1071], [0.2475, 0.1980], [0.1339, 0.2587], [0.0, 0.28], [-0.1339, 0.2587], [-0.2475, 0.1980], [-0.3234, 0.1071], [-0.35, 0.0], [-0.3234, -0.1071], [-0.2475, -0.1980], [-0.1339, -0.2587], [0.0, -0.28], [0.1339, -0.2587], [0.2475, -0.1980], [0.3234, -0.1071] ]"
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -235,8 +240,8 @@ global_costmap:
           obstacle_min_range: 0.05
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 10.0
-        inflation_radius: 0.8
+        cost_scaling_factor: 15.0
+        inflation_radius: 0.45
       always_send_full_costmap: True
 
 planner_server:
@@ -308,10 +313,10 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [1.0, 0.5, 2.5]
-    min_velocity: [-0.2, -0.5, -2.5]
-    max_accel: [2.5, 2.5, 5.0]
-    max_decel: [-2.5, -2.5, -5.0]
+    max_velocity: [1.5, 0.3, 2.2]
+    min_velocity: [-0.2, -0.3, -2.2]
+    max_accel: [2.5, 2.5, 2.8]
+    max_decel: [-2.5, -2.5, -2.8]
     odom_topic: /odom
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]

@@ -214,4 +214,17 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
 ```
 
+### 5.1 German POC 地图
+
+本包自带地图目录：`config/maps/german_poc/`（`map.yaml` 与栅格图像）。`map` 参数**只需写文件夹名**：launch 在该目录下**优先 `map.yaml`**，否则按文件名排序取第一个 `*.yaml`。
+
+带上 `robot:=fiveages_w2` 时，会**先在** `fiveages_w2_description/config/maps/` **解析**，找不到再查 `robot_common_launch/config/maps/`。
+
+```bash
+source ~/ros2_ws/install/setup.bash
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=german_poc
+```
+
+也可显式写 `map.yaml` / 绝对路径；子路径可省略后缀，例如 `map:=german_poc/map` 等价于 `german_poc/map.yaml`。
+
 若话题带命名空间，可在启动时通过 `GroupAction` 侧 remap，或改 YAML 中对应 `topic` 字段。
