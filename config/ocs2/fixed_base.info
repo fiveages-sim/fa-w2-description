@@ -11,7 +11,7 @@ model_information
     ; 机器人底盘类型：
     ;   0 = DefaultManipulator       → 固定基座
     ;   1 = WheelBasedMobileManipulator → 轮式底盘，stateDim = 3(x,y,yaw) + armDim
-    manipulatorModelType    1
+    manipulatorModelType    0
 
     ; baseFrame: Pinocchio 模型的根坐标系
     baseFrame               "base_footprint"
@@ -55,43 +55,33 @@ model_settings
 ;=============================================================================
 ; Initial State
 ; MPC 第一次求解时使用的初始状态向量
-; 总维度 = 3（底盘）+ 20（关节：4腰+2头+7左臂+7右臂）= 23
+; 总维度 = 20（关节：4腰+7左臂+7右臂+2头）
 ;=============================================================================
 
 initialState
 {
-    base
-    {
-        wheelBasedMobileManipulator
-        {
-            (0,0)  0.0   ; x 坐标 [m]
-            (1,0)  0.0   ; y 坐标 [m]
-            (2,0)  0.0   ; yaw 朝向角 [rad]
-        }
-    }
-
     arm
     {
         (0,0)   0.0     ; body_joint1  腰部关节1
         (1,0)   0.0     ; body_joint2  腰部关节2
         (2,0)   0.0     ; body_joint3  腰部关节3
         (3,0)   0.0     ; body_joint4  腰部关节4
-        (4,0)   0.0     ; head_joint1  头部偏航（yaw）
-        (5,0)   0.0     ; head_joint2  头部俯仰（pitch）
-        (6,0)   0.0     ; left_joint1  左臂肩关节1
-        (7,0)   0.0     ; left_joint2  左臂肩关节2
-        (8,0)   0.0     ; left_joint3  左臂肘关节1
-        (9,0)   0.0     ; left_joint4  左臂肘关节2
-        (10,0)  0.0     ; left_joint5  左臂腕关节1
-        (11,0)  0.0     ; left_joint6  左臂腕关节2
-        (12,0)  0.0     ; left_joint7  左臂腕关节3
-        (13,0)  0.0     ; right_joint1 右臂肩关节1
-        (14,0)  0.0     ; right_joint2 右臂肩关节2
-        (15,0)  0.0     ; right_joint3 右臂肘关节1
-        (16,0)  0.0     ; right_joint4 右臂肘关节2
-        (17,0)  0.0     ; right_joint5 右臂腕关节1
-        (18,0)  0.0     ; right_joint6 右臂腕关节2
-        (19,0)  0.0     ; right_joint7 右臂腕关节3
+        (4,0)   0.0     ; left_joint1  左臂肩关节1
+        (5,0)   0.0     ; left_joint2  左臂肩关节2
+        (6,0)   0.0     ; left_joint3  左臂肘关节1
+        (7,0)   0.0     ; left_joint4  左臂肘关节2
+        (8,0)   0.0     ; left_joint5  左臂腕关节1
+        (9,0)   0.0     ; left_joint6  左臂腕关节2
+        (10,0)  0.0     ; left_joint7  左臂腕关节3
+        (11,0)  0.0     ; right_joint1 右臂肩关节1
+        (12,0)  0.0     ; right_joint2 右臂肩关节2
+        (13,0)  0.0     ; right_joint3 右臂肘关节1
+        (14,0)  0.0     ; right_joint4 右臂肘关节2
+        (15,0)  0.0     ; right_joint5 右臂腕关节1
+        (16,0)  0.0     ; right_joint6 右臂腕关节2
+        (17,0)  0.0     ; right_joint7 右臂腕关节3
+        (18,0)  0.0     ; head_joint1  头部偏航（yaw）
+        (19,0)  0.0     ; head_joint2  头部俯仰（pitch）
     }
 }
 
@@ -105,10 +95,10 @@ initialModeSchedule
     {
     }
 
-    ; HM_DUAL_RELATIVE_MOBILE_BASE: 底盘可移动 + 双臂独立追踪各自目标
+    ; HM_DUAL_RELATIVE: 固定底盘 + 双臂独立追踪各自目标
     modeSequence
     {
-        [0]     HM_DUAL_RELATIVE_MOBILE_BASE
+        [0]     HM_DUAL_RELATIVE_FIXED_BASE
     }
 }
 
@@ -197,24 +187,13 @@ bodyTrackingEE
 
 ;=============================================================================
 ; Input Cost
-; 总输入维度 = 2（底盘）+ 20（关节：4腰+2头+7左臂+7右臂）= 22
+; 总输入维度 = 20（关节：4腰+7左臂+7右臂+2头）
 ;=============================================================================
 
 inputCost
 {
     R
     {
-        base
-        {
-            wheelBasedMobileManipulator
-            {
-                scaling 1e-1
-
-                (0,0)   0.8     ; 线速度 vx [m/s]
-                (1,1)   0.8     ; 角速度 omega [rad/s]
-            }
-        }
-
         arm
         {
             scaling 1e-3
@@ -223,22 +202,22 @@ inputCost
             (1,0)   1.0     ; body_joint2 速度惩罚
             (2,0)   1.0     ; body_joint3 速度惩罚
             (3,0)   1.0     ; body_joint4 速度惩罚
-            (4,0)   1.0     ; head_joint1 速度惩罚
-            (5,0)   1.0     ; head_joint2 速度惩罚
-            (6,0)   1.0     ; left_joint1 速度惩罚
-            (7,0)   1.0     ; left_joint2 速度惩罚
-            (8,0)   1.0     ; left_joint3 速度惩罚
-            (9,0)   1.0     ; left_joint4 速度惩罚
-            (10,0)  1.0     ; left_joint5 速度惩罚
-            (11,0)  1.0     ; left_joint6 速度惩罚
-            (12,0)  1.0     ; left_joint7 速度惩罚
-            (13,0)  1.0     ; right_joint1 速度惩罚
-            (14,0)  1.0     ; right_joint2 速度惩罚
-            (15,0)  1.0     ; right_joint3 速度惩罚
-            (16,0)  1.0     ; right_joint4 速度惩罚
-            (17,0)  1.0     ; right_joint5 速度惩罚
-            (18,0)  1.0     ; right_joint6 速度惩罚
-            (19,0)  1.0     ; right_joint7 速度惩罚
+            (4,0)   1.0     ; left_joint1 速度惩罚
+            (5,0)   1.0     ; left_joint2 速度惩罚
+            (6,0)   1.0     ; left_joint3 速度惩罚
+            (7,0)   1.0     ; left_joint4 速度惩罚
+            (8,0)   1.0     ; left_joint5 速度惩罚
+            (9,0)   1.0     ; left_joint6 速度惩罚
+            (10,0)  1.0     ; left_joint7 速度惩罚
+            (11,0)  1.0     ; right_joint1 速度惩罚
+            (12,0)  1.0     ; right_joint2 速度惩罚
+            (13,0)  1.0     ; right_joint3 速度惩罚
+            (14,0)  1.0     ; right_joint4 速度惩罚
+            (15,0)  1.0     ; right_joint5 速度惩罚
+            (16,0)  1.0     ; right_joint6 速度惩罚
+            (17,0)  1.0     ; right_joint7 速度惩罚
+            (18,0)  1.0     ; head_joint1 速度惩罚
+            (19,0)  1.0     ; head_joint2 速度惩罚
         }
     }
 }
@@ -283,6 +262,17 @@ bimanualCoupling
 }
 
 ;=============================================================================
+; Head Input Start Index
+; 头部关节在输入向量中的起始索引，用于推导手臂输入偏移
+; 布局：[腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
+; body_joint1=0, body_joint2=1, body_joint3=2, body_joint4=3
+; left_joint1..7=4..10, right_joint1..7=11..17
+; head_joint1=18, head_joint2=19
+;=============================================================================
+
+headInputStart                          18
+
+;=============================================================================
 ; Waist Lock Constraint
 ; 纯腰部锁定模式（headCoupling.activate = false 时生效）
 ;=============================================================================
@@ -295,9 +285,9 @@ waistLock
 
 ;=============================================================================
 ; Head Coupling Constraint
-; 输入向量布局：[底盘(2) | 腰部(4) | 头部(2) | 左臂(7) | 右臂(7)]
-; body_joint1 索引=2, body_joint2 索引=3, body_joint3 索引=4, body_joint4 索引=5
-; head_joint1 索引=6, head_joint2 索引=7
+; 输入向量布局：[腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
+; body_joint1 索引=0, body_joint2 索引=1, body_joint3 索引=2, body_joint4 索引=3
+; head_joint1 索引=18, head_joint2 索引=19
 ;=============================================================================
 
 headCoupling
@@ -306,10 +296,10 @@ headCoupling
     activate                        true
 
     ; 参与耦合的腰部关节索引（body_joint4）
-    waistJointIndex                 5
+    waistJointIndex                 3
 
     ; 参与耦合的头部关节索引（head_joint1）
-    headJointIndex                  20
+    headJointIndex                  18
 
     ; 耦合系数：u_body4 - alpha * u_head1 = 0
     alpha                           1.0
@@ -317,9 +307,9 @@ headCoupling
     ; 需要锁定的其他腰部关节（body_joint1~3）
     lockedWaistJoints
     {
-        [0] 2                       ; body_joint1 锁定
-        [1] 3                       ; body_joint2 锁定
-        [2] 4                       ; body_joint3 锁定
+        [0] 0                       ; body_joint1 锁定
+        [1] 1                       ; body_joint2 锁定
+        [2] 2                       ; body_joint3 锁定
     }
 }
 
@@ -347,7 +337,7 @@ jointPositionLimits
 
 ;=============================================================================
 ; Joint Velocity Limits
-; 输入布局：[base(2) | waist(4) | head(2) | left_arm(7) | right_arm(7)]
+; 输入布局：[waist(4) | left_arm(7) | right_arm(7) | head(2)]
 ;=============================================================================
 
 jointVelocityLimits
@@ -357,73 +347,55 @@ jointVelocityLimits
 
     lowerBound
     {
-        base
-        {
-            wheelBasedMobileManipulator
-            {
-                (0,0)  -0.5     ; 线速度下界 [m/s]
-                (1,0)  -0.5     ; 角速度下界 [rad/s]
-            }
-        }
-
         arm
         {
             (0,0)  -0.5         ; body_joint1 [rad/s]
             (1,0)  -0.5         ; body_joint2 [rad/s]
             (2,0)  -0.5         ; body_joint3 [rad/s]
             (3,0)  -0.5         ; body_joint4 [rad/s]
-            (4,0)  -1.5         ; head_joint1 [rad/s]
-            (5,0)  -1.5         ; head_joint2 [rad/s]
-            (6,0)  -1.07        ; left_joint1 [rad/s]
-            (7,0)  -1.07        ; left_joint2 [rad/s]
-            (8,0)  -1.07        ; left_joint3 [rad/s]
-            (9,0)  -1.07        ; left_joint4 [rad/s]
-            (10,0) -1.07        ; left_joint5 [rad/s]
-            (11,0) -1.07        ; left_joint6 [rad/s]
-            (12,0) -1.07        ; left_joint7 [rad/s]
-            (13,0) -1.07        ; right_joint1 [rad/s]
-            (14,0) -1.07        ; right_joint2 [rad/s]
-            (15,0) -1.07        ; right_joint3 [rad/s]
-            (16,0) -1.07        ; right_joint4 [rad/s]
-            (17,0) -1.07        ; right_joint5 [rad/s]
-            (18,0) -1.07        ; right_joint6 [rad/s]
-            (19,0) -1.07        ; right_joint7 [rad/s]
+            (4,0)  -1.07        ; left_joint1 [rad/s]
+            (5,0)  -1.07        ; left_joint2 [rad/s]
+            (6,0)  -1.07        ; left_joint3 [rad/s]
+            (7,0)  -1.07        ; left_joint4 [rad/s]
+            (8,0)  -1.07        ; left_joint5 [rad/s]
+            (9,0)  -1.07        ; left_joint6 [rad/s]
+            (10,0) -1.07        ; left_joint7 [rad/s]
+            (11,0) -1.07        ; right_joint1 [rad/s]
+            (12,0) -1.07        ; right_joint2 [rad/s]
+            (13,0) -1.07        ; right_joint3 [rad/s]
+            (14,0) -1.07        ; right_joint4 [rad/s]
+            (15,0) -1.07        ; right_joint5 [rad/s]
+            (16,0) -1.07        ; right_joint6 [rad/s]
+            (17,0) -1.07        ; right_joint7 [rad/s]
+            (18,0) -1.5         ; head_joint1 [rad/s]
+            (19,0) -1.5         ; head_joint2 [rad/s]
         }
     }
 
     upperBound
     {
-        base
-        {
-            wheelBasedMobileManipulator
-            {
-                (0,0)   0.5     ; 线速度上界 [m/s]
-                (1,0)   0.5     ; 角速度上界 [rad/s]
-            }
-        }
-
         arm
         {
             (0,0)  0.5          ; body_joint1 [rad/s]
             (1,0)  0.5          ; body_joint2 [rad/s]
             (2,0)  0.5          ; body_joint3 [rad/s]
             (3,0)  0.5          ; body_joint4 [rad/s]
-            (4,0)  1.5          ; head_joint1 [rad/s]
-            (5,0)  1.5          ; head_joint2 [rad/s]
-            (6,0)  1.07         ; left_joint1 [rad/s]
-            (7,0)  1.07         ; left_joint2 [rad/s]
-            (8,0)  1.07         ; left_joint3 [rad/s]
-            (9,0)  1.07         ; left_joint4 [rad/s]
-            (10,0) 1.07         ; left_joint5 [rad/s]
-            (11,0) 1.07         ; left_joint6 [rad/s]
-            (12,0) 1.07         ; left_joint7 [rad/s]
-            (13,0) 1.07         ; right_joint1 [rad/s]
-            (14,0) 1.07         ; right_joint2 [rad/s]
-            (15,0) 1.07         ; right_joint3 [rad/s]
-            (16,0) 1.07         ; right_joint4 [rad/s]
-            (17,0) 1.07         ; right_joint5 [rad/s]
-            (18,0) 1.07         ; right_joint6 [rad/s]
-            (19,0) 1.07         ; right_joint7 [rad/s]
+            (4,0)  1.07         ; left_joint1 [rad/s]
+            (5,0)  1.07         ; left_joint2 [rad/s]
+            (6,0)  1.07         ; left_joint3 [rad/s]
+            (7,0)  1.07         ; left_joint4 [rad/s]
+            (8,0)  1.07         ; left_joint5 [rad/s]
+            (9,0)  1.07         ; left_joint6 [rad/s]
+            (10,0) 1.07         ; left_joint7 [rad/s]
+            (11,0) 1.07         ; right_joint1 [rad/s]
+            (12,0) 1.07         ; right_joint2 [rad/s]
+            (13,0) 1.07         ; right_joint3 [rad/s]
+            (14,0) 1.07         ; right_joint4 [rad/s]
+            (15,0) 1.07         ; right_joint5 [rad/s]
+            (16,0) 1.07         ; right_joint6 [rad/s]
+            (17,0) 1.07         ; right_joint7 [rad/s]
+            (18,0) 1.5          ; head_joint1 [rad/s]
+            (19,0) 1.5          ; head_joint2 [rad/s]
         }
     }
 }
