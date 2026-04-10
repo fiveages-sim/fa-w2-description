@@ -12,7 +12,7 @@ controller_manager:
 
     # 全身控制器 - 使用ocs2 arm controller
     ocs2_wbc_controller:
-      type: ocs2_arm_controller/Ocs2ArmController
+      type: ocs2_wbc_controller/Ocs2WbcController
 
     # 头部控制器 - 使用basic joint controller
     head_joint_controller:

@@ -212,11 +212,7 @@
       <mass value="3696.2"/>
       <inertia ixx="830.34" ixy="-2.1461E-08" ixz="2.8038E-08" iyy="538.42" iyz="2.5514E-08" izz="538.42"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/lidar.glb"/>
-      </geometry>
-    </visual>
+
   </link>
   <joint name="rr_lidar_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.309 0" xyz="0.21412 0.19406 0.32957"/>
@@ -229,11 +225,7 @@
       <mass value="3696.2"/>
       <inertia ixx="830.34" ixy="-2.1461E-08" ixz="2.8038E-08" iyy="538.42" iyz="2.5514E-08" izz="538.42"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/lidar.glb"/>
-      </geometry>
-    </visual>
+
   </link>
   <joint name="fl_lidar_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.309 3.1416" xyz="-0.21412 -0.19406 0.32957"/>
@@ -241,11 +233,7 @@
     <child link="fl_lidar"/>
   </joint>
   <link name="chassis_camera">
-    <visual>
-      <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/camera.glb"/>
-      </geometry>
-    </visual>
+
   </link>
   <joint name="chassis_camera_joint" type="fixed">
     <origin rpy="0 0 3.141592653589793" xyz="-0.3438 -0.00032028 0.159"/>
