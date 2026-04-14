@@ -168,7 +168,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 * With Jodell RG75 Gripper
   ```bash
   source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75 robot:=fiveages_w2 hardware:=isaac
+  ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75 robot:=fiveages_w2 hardware:=isaac
   ```
 * With ChangingTek AG2F90 Gripper
   ```bash
@@ -212,6 +212,11 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 ```bash
 source ~/ros2_ws/install/setup.bash
 ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
+```
+
+```bash
+source ~/ros2_ws/install/setup.bash
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=warehouse_multiple_shelfs
 ```
 
 ### 5.1 German POC 地图

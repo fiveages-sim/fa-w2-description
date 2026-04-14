@@ -1,8 +1,11 @@
 # FiveAges W2 + Isaac Sim：静态地图 + GT 里程计；障碍来自前/后 3D 雷达点云（投影到 2D 代价地图）
 # 点云话题：/fl_lidar/point_cloud、/rr_lidar/point_cloud
 # Linkhou S2 底盘为全向，MPPI 使用 Omni；若实车仅差速接口可改回 DiffDrive
-# MPPI：以 Galbot 稳定基线迁移（PathAngle mode0 + PreferForward 4.5），W2 用更高速度上限；
-# 远距：PathAngle 主导「车头对准轨迹切向」；近距(< 8m)：GoalAngle 开始边走边对终点朝向；途经点树见 config/nav2/*.xml
+# MPPI：motion_model=Omni（官方 configuring-mppic：全向需 vy_max/vy_std + 横向加速度 ay_max/ay_min）
+# 参考 https://docs.nav2.org/configuration/packages/configuring-mppic.html
+# 全向：PathAngle 须 mode=1（无朝向偏好），mode=0 会与 vy 侧移打架→途中乱转；GoalAngle 阈值勿过大（否则与 PathAngle 抢朝向）
+# 线速度上限适中，避免末段顶障碍层；
+# 卡住恢复：critic 极简 + PathFollow/Goal 阈值按官方 1.4m hand-off；batch 1500、关可视化；controller 须 20Hz 匹配 model_dt=0.05
 
 bt_navigator:
   ros__parameters:
@@ -37,56 +40,69 @@ bt_navigator:
 controller_server:
   ros__parameters:
     use_sim_time: True
+    # 须满足 1/controller_frequency <= model_dt（此处 model_dt=0.05 → 至少 20Hz）
     controller_frequency: 20.0
-    costmap_update_timeout: 0.30
+    costmap_update_timeout: 0.45
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
     failure_tolerance: 0.3
     progress_checker_plugins: ["progress_checker"]
     goal_checker_plugins: ["stopped_goal_checker"]
+    # 与下方插件块名称一致；不设时 FollowPath 未带 id 会 WARN（仍回退用已加载插件）
+    current_progress_checker: "progress_checker"
+    current_goal_checker: "stopped_goal_checker"
     controller_plugins: ["FollowPath"]
     odom_topic: /odom
     use_realtime_priority: false
     enable_stamped_cmd_vel: false
+    # SimpleProgressChecker 只看 xy 位移；到点后原地对朝向时易误判「无进展」→ Failed to make progress
     progress_checker:
-      plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      plugin: "nav2_controller::PoseProgressChecker"
+      required_movement_radius: 0.12
+      required_movement_angle: 0.25
+      movement_time_allowance: 22.0
     stopped_goal_checker:
       plugin: "nav2_controller::StoppedGoalChecker"
-      trans_stopped_velocity: 0.1
+      trans_stopped_velocity: 0.05
       rot_stopped_velocity: 0.1
-      xy_goal_tolerance: 0.12
-      yaw_goal_tolerance: 0.12
+      # 略大于常见末段卡距(~6cm)+抖动，避免「到了却判不停」
+      xy_goal_tolerance: 0.085
+      yaw_goal_tolerance: 0.10
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
       time_steps: 56
       model_dt: 0.05
       batch_size: 2000
+      vx_std: 0.2
+      vy_std: 0.2
+      wz_std: 0.4
+      vx_max: 0.5
+      vx_min: -0.35
+      vy_max: 0.5
+      wz_max: 1.9
       ax_max: 3.0
       ax_min: -3.0
+      ay_min: -3.0
       ay_max: 3.0
-      az_max: 2.8
-      vx_std: 0.35
-      vy_std: 0.18
-      wz_std: 0.38
-      vx_max: 1.5
-      vx_min: -0.2
-      vy_max: 0.3
-      wz_max: 2.2
-      iteration_count: 2
-      prune_distance: 1.7
-      transform_tolerance: 0.1
-      temperature: 0.4
+      az_max: 3.5
+      iteration_count: 1
+      temperature: 0.3
       gamma: 0.015
       motion_model: "Omni"
-      visualize: true
+      visualize: false
+      critic_index_to_visualize: 0
       regenerate_noises: false
       TrajectoryVisualizer:
         trajectory_step: 5
         time_step: 3
-      critics: ["ConstraintCritic", "CostCritic", "GoalCritic", "GoalAngleCritic", "PathAngleCritic", "PathAlignCritic", "PathFollowCritic", "PreferForwardCritic"]
+      TrajectoryValidator:
+        plugin: "mppi::DefaultOptimalTrajectoryValidator"
+        collision_lookahead_time: 2.0
+        consider_footprint: false
+      AckermannConstraints:
+        min_turning_r: 0.2
+      critics: ["ConstraintCritic", "CostCritic", "GoalCritic", "GoalAngleCritic", "PathAlignCritic", "PathFollowCritic", "PathAngleCritic", "PreferForwardCritic"]
       ConstraintCritic:
         enabled: true
         cost_power: 1
@@ -94,52 +110,68 @@ controller_server:
       GoalCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 8.0
+        cost_weight: 5.0
         threshold_to_consider: 1.4
       GoalAngleCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 5.5
-        # 距目标 < 5m 时开始边走边对齐终点朝向；远距不生效，由 PathAngle 管朝向
-        threshold_to_consider: 5.0
+        cost_weight: 3.0
+        threshold_to_consider: 0.5
       PreferForwardCritic:
         enabled: true
         cost_power: 1
         cost_weight: 5.0
         threshold_to_consider: 0.5
+      ObstaclesCritic:
+        enabled: true
+        cost_power: 1
+        repulsion_weight: 1.5
+        critical_weight: 20.0
+        consider_footprint: true
+        collision_cost: 10000.0
+        collision_margin_distance: 0.1
+        near_goal_distance: 0.5
       CostCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 2.0
+        cost_weight: 3.81
         critical_cost: 300.0
         consider_footprint: true
-        collision_cost: 10000.0
-        near_goal_distance: 0.5
+        collision_cost: 1000000.0
+        near_goal_distance: 1.0
         trajectory_point_step: 2
       PathAlignCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 10.0
+        cost_weight: 14.0
         max_path_occupancy_ratio: 0.05
-        trajectory_point_step: 3
+        trajectory_point_step: 4
         threshold_to_consider: 0.5
         offset_from_furthest: 20
         use_path_orientations: false
       PathFollowCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 4.5
+        cost_weight: 5.0
         offset_from_furthest: 5
         threshold_to_consider: 1.4
       PathAngleCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 14.0
-        # W2 vx_max 1.5 已让 horizon 前视更远，offset 不必大；过大绕弯时会指向障碍另一侧
-        offset_from_furthest: 6
-        threshold_to_consider: 2.5
-        max_angle_to_furthest: 1.2
+        cost_weight: 2.0
+        offset_from_furthest: 4
+        threshold_to_consider: 0.5
+        max_angle_to_furthest: 1.0
         mode: 0
+      VelocityDeadbandCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 35.0
+        deadband_velocities: [0.05, 0.05, 0.05]
+      TwirlingCritic:
+        enabled: true
+        twirling_cost_power: 1
+        twirling_cost_weight: 10.0
 
 local_costmap:
   local_costmap:
@@ -290,9 +322,9 @@ behavior_server:
     robot_base_frame: base_footprint
     transform_tolerance: 0.2
     simulate_ahead_time: 2.0
-    max_rotational_vel: 2.0
+    max_rotational_vel: 1.5
     min_rotational_vel: 0.4
-    rotational_acc_lim: 3.2
+    rotational_acc_lim: 2.5
     enable_stamped_cmd_vel: false
 
 waypoint_follower:
@@ -313,10 +345,10 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [1.5, 0.3, 2.2]
-    min_velocity: [-0.2, -0.3, -2.2]
-    max_accel: [2.5, 2.5, 2.8]
-    max_decel: [-2.5, -2.5, -2.8]
+    max_velocity: [1.1, 0.22, 1.5]
+    min_velocity: [-0.2, -0.22, -1.5]
+    max_accel: [2.0, 2.0, 2.2]
+    max_decel: [-2.0, -2.0, -2.2]
     odom_topic: /odom
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]
