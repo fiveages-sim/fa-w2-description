@@ -200,7 +200,7 @@ local_costmap:
         observation_sources: "fl_pc rr_pc"
         fl_pc:
           topic: /fl_lidar/point_cloud
-          max_obstacle_height: 2.0
+          max_obstacle_height: 1.0
           min_obstacle_height: 0.05
           clearing: True
           marking: True
@@ -211,7 +211,7 @@ local_costmap:
           obstacle_min_range: 0.05
         rr_pc:
           topic: /rr_lidar/point_cloud
-          max_obstacle_height: 2.0
+          max_obstacle_height: 1.0
           min_obstacle_height: 0.05
           clearing: True
           marking: True
@@ -371,13 +371,13 @@ collision_monitor:
       type: "pointcloud"
       topic: "/fl_lidar/point_cloud"
       min_height: 0.05
-      max_height: 2.0
+      max_height: 1.0
       enabled: True
     rr_pc:
       type: "pointcloud"
       topic: "/rr_lidar/point_cloud"
       min_height: 0.05
-      max_height: 2.0
+      max_height: 1.0
       enabled: True
 
 docking_server:
