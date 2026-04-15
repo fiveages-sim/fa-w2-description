@@ -1,6 +1,5 @@
 <!--
-  FiveAges W2：与 Galbot Isaac GT 相同的「途经点」行为树策略（1 Hz 重规划 + 收紧 RemovePassedGoals）。
-  W2 包络更大，RemovePassedGoals radius 略大于 Galbot（0.55 m），避免过早摘航点又不过分切角。
+  FiveAges W2：1 Hz 重规划 + RemovePassedGoals；全局路径仅由 SmacPlanner2D 内置平滑（不再叠 BT SmoothPath）。
 -->
 <root BTCPP_format="4" main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
