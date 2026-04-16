@@ -227,7 +227,7 @@ ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
 
 ```bash
 source ~/ros2_ws/install/setup.bash
-ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=german_poc
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=german_poc nav2_profile:=map_only
 ```
 
 也可显式写 `map.yaml` / 绝对路径；子路径可省略后缀，例如 `map:=german_poc/map` 等价于 `german_poc/map.yaml`。
