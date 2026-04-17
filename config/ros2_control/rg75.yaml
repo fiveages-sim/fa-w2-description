@@ -12,7 +12,7 @@ controller_manager:
 
     # 全身控制器 - 使用ocs2 arm controller
     ocs2_wbc_controller:
-      type: ocs2_arm_controller/Ocs2ArmController
+      type: ocs2_wbc_controller/Ocs2WbcController
 
     # 头部控制器 - 使用basic joint controller
     head_joint_controller:
@@ -81,6 +81,10 @@ ocs2_wbc_controller:
     update_rate: 100  # Hz
     mpc_frequency: 50
     info_file_name: fixed_base
+    use_tf_for_base: false
+    tf_topic: /isaac/tf
+    world_frame: world
+    base_frame: base_footprint
     joints:
       - body_joint1
       - body_joint2
@@ -100,6 +104,8 @@ ocs2_wbc_controller:
       - right_joint5
       - right_joint6
       - right_joint7
+      - head_joint1
+      - head_joint2
 
     command_interfaces:
       - position
@@ -112,13 +118,23 @@ ocs2_wbc_controller:
 
     home_1: [ -0.899, -1.714, -0.865, 0.0,
                 1.457133809892805, -1.0633699963902674, -1.1994065285584414, -0.8074199090303408, -0.6949558811978124, -0.6864381599253574, -0.1295225067208675,
-                -1.457133809892805, -1.0633699963902674, 1.1994065285584414, -0.8074199090303408, 0.6949558811978124, -0.6864381599253574, 0.1295225067208675 ]
+                -1.457133809892805, -1.0633699963902674, 1.1994065285584414, -0.8074199090303408, 0.6949558811978124, -0.6864381599253574, 0.1295225067208675, 0.0, 0.0 ]
     home_2: [ -1.353, -2.660, -1.307, 0.0,
                 0.454, -0.872, 0.285, -0.964, -1.461, 0.458, -0.161,
-                -0.454, -0.872, -0.285, -0.964, -1.461, -0.458, 0.161 ]
+                -0.454, -0.872, -0.285, -0.964, -1.461, -0.458, 0.161, 0.0, 0.0 ]
     home_3: [ -1.353, -2.660, -1.307, 0.0,
               2.502, -1.528, -1.562, -1.680, 0.0, -0.787, 0.0,
-              -2.502, -1.528, 1.562, -1.680, 0.0, -0.787, 0.0 ]
+              -2.502, -1.528, 1.562, -1.680, 0.0, -0.787, 0.0, 0.0, 0.0 ]
+
+    #腰部升降配置
+    waist_lifting_enabled: true
+    waist_lifting_duration: 3.0  # 腰部升降运动时间
+    waist_lifting_type: three_joint  # 可选: three_joint 或 single_joint
+    waist_l1: 0.322  # 第一连杆长度
+    waist_l2: 0.355 # 第二连杆长度
+    waist_rotation_direction: [ 1.0, -1.0, 1.0 ]  # 旋转方向
+    waist_angle_offset: [ 0.0, 0.0, 0.0 ]  # 角度偏移
+    waist_default_parameter: [ 0.02,0.5,1.0 ]  #腰部升降的参数配置，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
 
 # 头部关节控制器配置
 head_joint_controller:
