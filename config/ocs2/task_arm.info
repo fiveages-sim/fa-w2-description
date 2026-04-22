@@ -23,7 +23,7 @@ model_information
     eeFrame1                "right_eef"
 
     ; removeJoints: 从 Pinocchio 模型中剔除的关节，不进入 MPC 状态/输入空间
-    ; 头部关节已纳入 MPC 规划（用于腰头耦合约束），仅剔除夹爪和底盘转向/驱动轮关节
+    ; 头部、夹爪和底盘转向/驱动轮关节
     removeJoints
     {
         [0]   "rr_steer_joint"
