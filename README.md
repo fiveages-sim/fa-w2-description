@@ -168,7 +168,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 * With Jodell RG75 Gripper
   ```bash
   source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75 robot:=fiveages_w2 hardware:=isaac
+  ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75 robot:=fiveages_w2 hardware:=isaac
   ```
 * With ChangingTek AG2F90 Gripper
   ```bash
@@ -214,6 +214,11 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
 ```
 
+```bash
+source ~/ros2_ws/install/setup.bash
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=warehouse_multiple_shelfs nav2_profile:=map_only
+```
+
 ### 5.1 German POC 地图
 
 本包自带地图目录：`config/maps/german_poc/`（`map.yaml` 与栅格图像）。`map` 参数**只需写文件夹名**：launch 在该目录下**优先 `map.yaml`**，否则按文件名排序取第一个 `*.yaml`。
@@ -222,7 +227,7 @@ ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
 
 ```bash
 source ~/ros2_ws/install/setup.bash
-ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=german_poc
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=german_poc nav2_profile:=map_only
 ```
 
 也可显式写 `map.yaml` / 绝对路径；子路径可省略后缀，例如 `map:=german_poc/map` 等价于 `german_poc/map.yaml`。

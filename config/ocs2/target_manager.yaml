@@ -12,7 +12,7 @@
     marker_fixed_frame: base_footprint
     # 是否启用VR输入处理
     enable_vr: true
-#    enable_head_control: true
+    enable_head_control: false
     
     # 头部关节映射配置（可选）
     # 如果配置了，将使用此映射而不是自动检测

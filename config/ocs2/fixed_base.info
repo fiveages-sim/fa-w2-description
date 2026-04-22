@@ -234,8 +234,8 @@ endEffector
 
 finalEndEffector
 {
-    muPosition                      10.0
-    muOrientation                   5.0
+    muPosition                      20.0
+    muOrientation                   10.0
 }
 
 ;=============================================================================
@@ -257,8 +257,8 @@ bodyRelative
 bimanualCoupling
 {
     activate                        true
-    muPosition                      5.0
-    muOrientation                   5.0
+    muPosition                      50.0
+    muOrientation                   25.0
 }
 
 ;=============================================================================

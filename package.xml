@@ -1,6 +1,6 @@
 <package format="2">
   <name>fiveages_w2_description</name>
-  <version>1.2.0</version>
+  <version>1.3.0</version>
   <description>
     <p>URDF Description package for FiveAges W2</p>
     <p>This package contains configuration data, 3D models and launch files
@@ -12,8 +12,9 @@
   <license>BSD</license>
 
   <exec_depend>robot_common_launch</exec_depend>
+  <exec_depend>nav2_smac_planner</exec_depend>
 
-  <exec_depend>camera_models</exec_depend>
+  <exec_depend>sensor_models</exec_depend>
   <exec_depend>m6_ccs_description</exec_depend>
   <exec_depend>jodell_description</exec_depend>
   <exec_depend>changingtek_description</exec_depend>
