@@ -216,7 +216,7 @@ ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
 
 ```bash
 source ~/ros2_ws/install/setup.bash
-ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=warehouse_multiple_shelfs
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=warehouse_multiple_shelfs nav2_profile:=map_only
 ```
 
 ### 5.1 German POC 地图
