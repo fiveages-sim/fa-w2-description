@@ -75,7 +75,6 @@ ocs2_arm_controller:
     home_4: [ 1.5708, -1.5708, -1.5708, 0.0, 0.0, 0.0, 0.0,
               -1.5708, -1.5708, 1.5708, 0.0, 0.0, 0.0, 0.0 ]
 
-
 ocs2_wbc_controller:
   ros__parameters:
     use_tf_for_base: true

@@ -1,0 +1,24 @@
+# Common controller defaults shared by all ros2_control variants.
+ocs2_arm_controller:
+  ros__parameters:
+    cartesian_defaults:
+      frame_id: arm_base
+      ik_type: SDK
+      max_linear_velocity: 0.3
+      max_linear_acceleration: 1.0
+      max_linear_jerk: 5.0
+      max_angular_velocity: 0.5
+      max_angular_acceleration: 1.0
+      max_angular_jerk: 5.0
+
+ocs2_wbc_controller:
+  ros__parameters:
+    cartesian_defaults:
+      frame_id: arm_base
+      ik_type: SDK
+      max_linear_velocity: 0.3
+      max_linear_acceleration: 1.0
+      max_linear_jerk: 5.0
+      max_angular_velocity: 0.5
+      max_angular_acceleration: 1.0
+      max_angular_jerk: 5.0
