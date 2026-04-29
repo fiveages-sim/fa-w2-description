@@ -1,68 +1,68 @@
 # This config file is used by ros2_control
-controller_manager:
-  ros__parameters:
-    update_rate: 500  # Hz
-
-    joint_state_broadcaster:
-      type: joint_state_broadcaster/JointStateBroadcaster
-
-    # 双臂控制器 - 使用ocs2 arm controller
-    ocs2_arm_controller:
-      type: ocs2_arm_controller/Ocs2ArmController
-
-    # 全身控制器 - OCS2 轮式人形 WBC
-    ocs2_wbc_controller:
-      type: ocs2_wbc_controller/Ocs2WbcController
-
-    # 头部关节已纳入 ocs2_wbc_controller 统一管理（腰头耦合），不再使用独立头部控制器
-    head_joint_controller:
-       type: basic_joint_controller/BasicJointController
-
-    # 身体控制器 - 使用basic joint controller
-    body_joint_controller:
-      type: basic_joint_controller/BasicJointController
-
-    # 左手夹爪控制器
-    left_gripper_controller:
-      type: adaptive_gripper_controller/AdaptiveGripperController
-
-    # 右手夹爪控制器
-    right_gripper_controller:
-      type: adaptive_gripper_controller/AdaptiveGripperController
+# controller_manager:
+#   ros__parameters:
+#     update_rate: 500  # Hz
+#
+#     joint_state_broadcaster:
+#       type: joint_state_broadcaster/JointStateBroadcaster
+#
+#     # 双臂控制器 - 使用ocs2 arm controller
+#     ocs2_arm_controller:
+#       type: ocs2_arm_controller/Ocs2ArmController
+#
+#     # 全身控制器 - OCS2 轮式人形 WBC
+#     ocs2_wbc_controller:
+#       type: ocs2_wbc_controller/Ocs2WbcController
+#
+#     # 头部关节已纳入 ocs2_wbc_controller 统一管理（腰头耦合），不再使用独立头部控制器
+#     head_joint_controller:
+#        type: basic_joint_controller/BasicJointController
+#
+#     # 身体控制器 - 使用basic joint controller
+#     body_joint_controller:
+#       type: basic_joint_controller/BasicJointController
+#
+#     # 左手夹爪控制器
+#     left_gripper_controller:
+#       type: adaptive_gripper_controller/AdaptiveGripperController
+#
+#     # 右手夹爪控制器
+#     right_gripper_controller:
+#       type: adaptive_gripper_controller/AdaptiveGripperController
 
 
 
 ocs2_arm_controller:
   ros__parameters:
-    # Joint configuration
-    update_rate: 100  # Hz
-    mpc_frequency: 50
-    joints:
-      - left_joint1
-      - left_joint2
-      - left_joint3
-      - left_joint4
-      - left_joint5
-      - left_joint6
-      - left_joint7
-      - right_joint1
-      - right_joint2
-      - right_joint3
-      - right_joint4
-      - right_joint5
-      - right_joint6
-      - right_joint7
+    # # Joint configuration
+    # update_rate: 100  # Hz
+    # mpc_frequency: 50
+    # joints:
+    #   - left_joint1
+    #   - left_joint2
+    #   - left_joint3
+    #   - left_joint4
+    #   - left_joint5
+    #   - left_joint6
+    #   - left_joint7
+    #   - right_joint1
+    #   - right_joint2
+    #   - right_joint3
+    #   - right_joint4
+    #   - right_joint5
+    #   - right_joint6
+    #   - right_joint7
 
-    command_interfaces:
-      - position
-    state_interfaces:
-      - position
+    # command_interfaces:
+    #   - position
+    # state_interfaces:
+    #   - position
 
-    robot_name: m6_ccs
-    home_duration: 5.0
-    movel_trajectory_duration: 6.0
-    movej_interpolation_type: doubles
-    home_interpolation_type: doubles
+    # robot_name: m6_ccs
+    # home_duration: 5.0
+    # movel_trajectory_duration: 6.0
+    # movej_interpolation_type: doubles
+    # home_interpolation_type: doubles
 
 
     # Control parameters
@@ -77,45 +77,45 @@ ocs2_arm_controller:
 
 ocs2_wbc_controller:
   ros__parameters:
-    use_tf_for_base: false
-    tf_topic: /tf
-    world_frame: world
-    base_frame: base_footprint
-    # Joint configuration
-    update_rate: 500  # Hz
-    mpc_frequency: 100
+    # use_tf_for_base: false
+    # tf_topic: /tf
+    # world_frame: world
+    # base_frame: base_footprint
+    # # Joint configuration
+    # update_rate: 500  # Hz
+    # mpc_frequency: 100
     info_file_name: fixed_base
-    # 关节顺序须与 fixed_base.info 的 arm 状态向量一致：
-    # [body_joint1~4 | head_joint1~2 | left_joint1~7 | right_joint1~7]
-    joints:
-      - body_joint1
-      - body_joint2
-      - body_joint3
-      - body_joint4
-      - left_joint1
-      - left_joint2
-      - left_joint3
-      - left_joint4
-      - left_joint5
-      - left_joint6
-      - left_joint7
-      - right_joint1
-      - right_joint2
-      - right_joint3
-      - right_joint4
-      - right_joint5
-      - right_joint6
-      - right_joint7
-      - head_joint1
-      - head_joint2
+    # # 关节顺序须与 fixed_base.info 的 arm 状态向量一致：
+    # # [body_joint1~4 | head_joint1~2 | left_joint1~7 | right_joint1~7]
+    # joints:
+    #   - body_joint1
+    #   - body_joint2
+    #   - body_joint3
+    #   - body_joint4
+    #   - left_joint1
+    #   - left_joint2
+    #   - left_joint3
+    #   - left_joint4
+    #   - left_joint5
+    #   - left_joint6
+    #   - left_joint7
+    #   - right_joint1
+    #   - right_joint2
+    #   - right_joint3
+    #   - right_joint4
+    #   - right_joint5
+    #   - right_joint6
+    #   - right_joint7
+    #   - head_joint1
+    #   - head_joint2
 
-    command_interfaces:
-      - position
-    state_interfaces:
-      - position
+    # command_interfaces:
+    #   - position
+    # state_interfaces:
+    #   - position
 
-    robot_name: fiveages_w2
-    home_duration: 5.0
+    # robot_name: fiveages_w2
+    # home_duration: 5.0
 
     # home_pos 布局：[waist(4) | head(2) | left_arm(7) | right_arm(7)] = 20 个值
     home_pos: [ -0.899, -1.714, -0.865, 0.0,
@@ -127,58 +127,58 @@ ocs2_wbc_controller:
                 2.502, -1.528, -1.562, -1.680, 0.0, -0.787, 0.0,
                 -2.502, -1.528, 1.562, -1.680, 0.0, -0.787, 0.0, 0.0, 0.0]
 
-    #腰部升降配置
-    waist_lifting_enabled: true
-    waist_lifting_duration: 3.0  # 腰部升降运动时间
-    waist_lifting_type: three_joint  # 可选: three_joint 或 single_joint
-    waist_l1: 0.322  # 第一连杆长度
-    waist_l2: 0.355 # 第二连杆长度
-    waist_rotation_direction: [ 1.0, -1.0, 1.0 ]  # 旋转方向
-    waist_angle_offset: [ 0.0, 0.0, 0.0 ]  # 角度偏移
-    waist_lifting_default_parameter: [ 0.02,0.5,1.0 ]  # 腰部升降参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
-    waist_turning_default_parameter: [ 0.2,0.5,1.0 ]  # 腰部旋转参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
+    # #腰部升降配置
+    # waist_lifting_enabled: true
+    # waist_lifting_duration: 3.0  # 腰部升降运动时间
+    # waist_lifting_type: three_joint  # 可选: three_joint 或 single_joint
+    # waist_l1: 0.322  # 第一连杆长度
+    # waist_l2: 0.355 # 第二连杆长度
+    # waist_rotation_direction: [ 1.0, -1.0, 1.0 ]  # 旋转方向
+    # waist_angle_offset: [ 0.0, 0.0, 0.0 ]  # 角度偏移
+    # waist_lifting_default_parameter: [ 0.02,0.5,1.0 ]  # 腰部升降参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
+    # waist_turning_default_parameter: [ 0.2,0.5,1.0 ]  # 腰部旋转参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
 
 # 头部关节控制器配置
 head_joint_controller:
   ros__parameters:
-    update_rate: 100  # Hz
+  #   update_rate: 100  # Hz
     
-    # 头部关节
-    joints:
-      - head_joint1
-      - head_joint2
+  #   # 头部关节
+  #   joints:
+  #     - head_joint1
+  #     - head_joint2
     
-    command_interfaces:
-      - position
-    state_interfaces:
-      - position
-      - velocity
+  #   command_interfaces:
+  #     - position
+  #   state_interfaces:
+  #     - position
+  #     - velocity
 
     home_1: [0.0, 0.0]           # 配置 0: 正视前方
     home_2: [0.0, -0.1]        # 配置 1: 向左看约 -45度
     home_3: [0.0, 0.1]        # 配置 1: 向左看约 -45度
     home_4: [0.0, 0.0]        # 配置 1: 向左看约 -45度
     
-    home_duration: 5.0
-    movej_duration: 5.0
-    hold_position_threshold: 0.1
+    # home_duration: 5.0
+    # movej_duration: 5.0
+    # hold_position_threshold: 0.1
 
 body_joint_controller:
   ros__parameters:
-    update_rate: 100  # Hz
+    # update_rate: 100  # Hz
 
-    # 身体关节
-    joints:
-      - body_joint1
-      - body_joint2
-      - body_joint3
-      - body_joint4
+    # # 身体关节
+    # joints:
+    #   - body_joint1
+    #   - body_joint2
+    #   - body_joint3
+    #   - body_joint4
 
-    command_interfaces:
-      - position
-    state_interfaces:
-      - position
-      - velocity
+    # command_interfaces:
+    #   - position
+    # state_interfaces:
+    #   - position
+    #   - velocity
 
     # 三组不同的 home pose 配置
     # 使用 home_1, home_2, home_3 参数命名规则
@@ -187,31 +187,31 @@ body_joint_controller:
     home_3: [-0.8, -1.6, -0.8, 0.0]
     home_4: [0.0, 0.0, 0.0, 0.0]
 
-    home_duration: 5.0
-    movej_duration: 5.0
-    hold_position_threshold: 0.1
-    movej_interpolation_type: doubles
+    # home_duration: 5.0
+    # movej_duration: 5.0
+    # hold_position_threshold: 0.1
+    # movej_interpolation_type: doubles
 
-    #腰部升降配置
-    waist_lifting_enabled: true
-    waist_lifting_duration: 3.0  # 腰部升降运动时间
-    waist_lifting_type: three_joint  # 可选: three_joint 或 single_joint
-    waist_l1: 0.322  # 第一连杆长度
-    waist_l2: 0.355 # 第二连杆长度
-    waist_rotation_direction: [1.0, -1.0, 1.0]  # 旋转方向
-    waist_angle_offset: [0.0, 0.0, 0.0]  # 角度偏移
-    waist_lifting_default_parameter: [0.02,0.5,1.0]  # 腰部升降参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
-    waist_turning_default_parameter: [0.2,0.5,1.0]  # 腰部旋转参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
+    # #腰部升降配置
+    # waist_lifting_enabled: true
+    # waist_lifting_duration: 3.0  # 腰部升降运动时间
+    # waist_lifting_type: three_joint  # 可选: three_joint 或 single_joint
+    # waist_l1: 0.322  # 第一连杆长度
+    # waist_l2: 0.355 # 第二连杆长度
+    # waist_rotation_direction: [1.0, -1.0, 1.0]  # 旋转方向
+    # waist_angle_offset: [0.0, 0.0, 0.0]  # 角度偏移
+    # waist_lifting_default_parameter: [0.02,0.5,1.0]  # 腰部升降参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
+    # waist_turning_default_parameter: [0.2,0.5,1.0]  # 腰部旋转参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
 
 
 # 左手夹爪控制器配置
-left_gripper_controller:
-  ros__parameters:
-    joint: left_gripper_joint
-    use_effort_interface: false
+# left_gripper_controller:
+#   ros__parameters:
+#     joint: left_gripper_joint
+#     use_effort_interface: false
 
-# 右手夹爪控制器配置
-right_gripper_controller:
-  ros__parameters:
-    joint: right_gripper_joint
-    use_effort_interface: false
+# # 右手夹爪控制器配置
+# right_gripper_controller:
+#   ros__parameters:
+#     joint: right_gripper_joint
+#     use_effort_interface: false
