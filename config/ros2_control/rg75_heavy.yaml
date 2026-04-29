@@ -79,7 +79,7 @@ ocs2_wbc_controller:
     # Joint configuration
     update_rate: 100  # Hz
     mpc_frequency: 50
-    use_tf_for_base: true
+    use_tf_for_base: false
     tf_topic: /tf
     world_frame: world
     base_frame: base_footprint
