@@ -79,7 +79,7 @@ ocs2_wbc_controller:
     # Joint configuration
     update_rate: 100  # Hz
     mpc_frequency: 50
-    use_tf_for_base: true
+    use_tf_for_base: false
     tf_topic: /tf
     world_frame: world
     base_frame: base_footprint
@@ -128,7 +128,8 @@ ocs2_wbc_controller:
     waist_l2: 0.355 # 第二连杆长度
     waist_rotation_direction: [ 1.0, -1.0, 1.0 ]  # 旋转方向
     waist_angle_offset: [ 0.0, 0.0, 0.0 ]  # 角度偏移
-    waist_default_parameter: [ 0.02,0.5,1.0 ]  #腰部升降的参数配置，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
+    waist_lifting_default_parameter: [ 0.02,0.5,1.0 ]  # 腰部升降参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
+    waist_turning_default_parameter: [ 0.02,0.5,1.0 ]  # 腰部旋转参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
 
 # 头部关节控制器配置
 head_joint_controller:
@@ -190,7 +191,8 @@ body_joint_controller:
     waist_l2: 0.355 # 第二连杆长度
     waist_rotation_direction: [1.0, -1.0, 1.0]  # 旋转方向
     waist_angle_offset: [0.0, 0.0, 0.0]  # 角度偏移
-    waist_default_parameter: [0.02,0.5,1.0]  #腰部升降的参数配置，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
+    waist_lifting_default_parameter: [0.02,0.5,1.0]  # 腰部升降参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
+    waist_turning_default_parameter: [0.02,0.5,1.0]  # 腰部旋转参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
 
 
 
