@@ -31,6 +31,14 @@ controller_manager:
     right_gripper_controller:
       type: adaptive_gripper_controller/AdaptiveGripperController
 
+    # 左手夹爪控制器
+    left_hand_controller:
+      type: basic_joint_controller/BasicJointController
+
+    # 右手夹爪控制器
+    right_hand_controller:
+      type: basic_joint_controller/BasicJointController
+
 
 ocs2_arm_controller:
   ros__parameters:
