@@ -24,9 +24,9 @@ ocs2_wbc_controller:
 head_joint_controller:
   ros__parameters:
     home_1: [0.0, 0.0]           # 配置 0: 正视前方
-    home_2: [0.0, -0.1]        # 配置 1: 向左看约 -45度
-    home_3: [0.0, 0.1]        # 配置 1: 向左看约 -45度
-    home_4: [0.0, 0.0]        # 配置 1: 向左看约 -45度
+    home_2: [0.0, -0.1]
+    home_3: [0.0, 0.1]
+    home_4: [0.0, 0.0]
 
 body_joint_controller:
   ros__parameters:
