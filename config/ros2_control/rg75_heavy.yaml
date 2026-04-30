@@ -1,70 +1,13 @@
 # This config file is used by ros2_control
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
-
-    # joint_state_broadcaster:
-    #   type: joint_state_broadcaster/JointStateBroadcaster
-
-    # 双臂控制器 - 使用ocs2 arm controller
-    # ocs2_arm_controller:
-    #   type: ocs2_arm_controller/Ocs2ArmController
-
-    # 全身控制器 - 使用ocs2 arm controller
     ocs2_wbc_controller:
       type: ocs2_arm_controller/Ocs2ArmController
 
-    # 头部控制器 - 使用basic joint controller
-    # head_joint_controller:
-    #   type: basic_joint_controller/BasicJointController
-
-    # 身体控制器 - 使用basic joint controller
-    # body_joint_controller:
-    #   type: basic_joint_controller/BasicJointController
-
-    # 左手夹爪控制器
-    # left_gripper_controller:
-    #   type: adaptive_gripper_controller/AdaptiveGripperController
-
-    # 右手夹爪控制器
-    # right_gripper_controller:
-    #   type: adaptive_gripper_controller/AdaptiveGripperController
-
-
-
 ocs2_arm_controller:
   ros__parameters:
-    # Joint configuration
-    # update_rate: 100  # Hz
-    # mpc_frequency: 50
-    # joints:
-    #   - left_joint1
-    #   - left_joint2
-    #   - left_joint3
-    #   - left_joint4
-    #   - left_joint5
-    #   - left_joint6
-    #   - left_joint7
-    #   - right_joint1
-    #   - right_joint2
-    #   - right_joint3
-    #   - right_joint4
-    #   - right_joint5
-    #   - right_joint6
-    #   - right_joint7
-
-    # command_interfaces:
-    #   - position
-    # state_interfaces:
-    #   - position
-
-    # robot_name: m6_ccs
     robot_type: rg75_heavy
-    home_duration: 5.0
-    movel_duration: 3.0
 
-
-    # Control parameters
     home_1: [ 0.38121723866606716, 0.9668057148619342, 0.8510953865840274, -2.3587703324211944, -0.8949946067703702, -1.0036957954999641, -0.3983295863425328,
               -0.38121723866606716, 0.9668057148619342, -0.8510953865840274, -2.3587703324211944, 0.8949946067703702, -1.0036957954999641, 0.3983295863425328, ]
     home_2: [ 1.457133809892805, -1.0633699963902674, -1.1994065285584414, -0.8074199090303408, -0.6949558811978124, -0.6864381599253574, -0.1295225067208675,
@@ -76,13 +19,6 @@ ocs2_arm_controller:
 
 ocs2_wbc_controller:
   ros__parameters:
-    # Joint configuration
-    update_rate: 100  # Hz
-    mpc_frequency: 50
-    # use_tf_for_base: false
-    # tf_topic: /tf
-    # world_frame: world
-    # base_frame: base_footprint
     info_file_name: task_arm
     joints:
       - body_joint1
@@ -104,14 +40,7 @@ ocs2_wbc_controller:
       - right_joint6
       - right_joint7
 
-    # command_interfaces:
-    #   - position
-    # state_interfaces:
-    #   - position
-
-    # robot_name: fiveages_w2
     robot_type: rg75_heavy
-    home_duration: 5.0
 
     home_pos: [ -0.899, -1.714, -0.865, 0.0,
                 1.457133809892805, -1.0633699963902674, -1.1994065285584414, -0.8074199090303408, -0.6949558811978124, -0.6864381599253574, -0.1295225067208675,
@@ -120,90 +49,13 @@ ocs2_wbc_controller:
                 0.454, -0.872, 0.285, -0.964, -1.461, 0.458, -0.161,
                 -0.454, -0.872, -0.285, -0.964, -1.461, -0.458, 0.161 ]
 
-    #腰部升降配置
-    # waist_lifting_enabled: true
-    # waist_lifting_duration: 3.0  # 腰部升降运动时间
-    # waist_lifting_type: three_joint  # 可选: three_joint 或 single_joint
-    # waist_l1: 0.322  # 第一连杆长度
-    # waist_l2: 0.355 # 第二连杆长度
-    # waist_rotation_direction: [ 1.0, -1.0, 1.0 ]  # 旋转方向
-    # waist_angle_offset: [ 0.0, 0.0, 0.0 ]  # 角度偏移
-    # waist_lifting_default_parameter: [ 0.02,0.5,1.0 ]  # 腰部升降参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
-    # waist_turning_default_parameter: [ 0.02,0.5,1.0 ]  # 腰部旋转参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
-
 # 头部关节控制器配置
 head_joint_controller:
   ros__parameters:
-    # update_rate: 100  # Hz
-    
-    # 头部关节
-    # joints:
-    #   - head_joint1
-    #   - head_joint2
-    
-    # command_interfaces:
-    #   - position
-    # state_interfaces:
-    #   - position
-    #   - velocity
-
     home_1: [0.0, 0.0]
     home_2: [0.0, 0.0]
-    
-    # home_duration: 5.0
-    movej_duration: 3.0
-    # hold_position_threshold: 0.1
 
 body_joint_controller:
   ros__parameters:
-    # update_rate: 100  # Hz
-
-    # 身体关节
-    # joints:
-    #   - body_joint1
-    #   - body_joint2
-    #   - body_joint3
-    #   - body_joint4
-
-    # command_interfaces:
-    #   - position
-    # state_interfaces:
-    #   - position
-    #   - velocity
-
-    # 三组不同的 home pose 配置
-    # 使用 home_1, home_2, home_3 参数命名规则
     home_1: [-0.899, -1.714, -0.865, 0.0]
     home_2: [-1.353, -2.660, -1.307, 0.0]
-#    home_1: [0.0, 0.0, 0.0, 0.0]
-#    home_2: [-0.3, -0.3, 0.1, 0.0]
-
-    # home_duration: 5.0
-    movej_duration: 6.0
-    movej_interpolation_type: "linear"  # "tanh"（默认）或 "linear"
-    # hold_position_threshold: 0.1
-
-    #腰部升降配置
-    # waist_lifting_enabled: true
-    # waist_lifting_duration: 3.0  # 腰部升降运动时间
-    # waist_lifting_type: three_joint  # 可选: three_joint 或 single_joint
-    # waist_l1: 0.322  # 第一连杆长度
-    # waist_l2: 0.355 # 第二连杆长度
-    # waist_rotation_direction: [1.0, -1.0, 1.0]  # 旋转方向
-    # waist_angle_offset: [0.0, 0.0, 0.0]  # 角度偏移
-    # waist_lifting_default_parameter: [0.02,0.5,1.0]  # 腰部升降参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
-    # waist_turning_default_parameter: [0.02,0.5,1.0]  # 腰部旋转参数，第一个为目标速度，第二个为最大加速度，第三个为最大加加速度
-
-
-
-# 左手夹爪控制器配置
-# left_gripper_controller:
-#   ros__parameters:
-#     joint: left_gripper_joint
-#     use_effort_interface: false
-
-# 右手夹爪控制器配置
-# right_gripper_controller:
-#   ros__parameters:
-#     joint: right_gripper_joint
-#     use_effort_interface: false
