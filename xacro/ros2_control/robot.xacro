@@ -29,11 +29,11 @@
 					- 如果是 marvin 模式的手部：传递手部类型（如 linkerhand_o7, linkerhand_o6, linkerhand_l6）
 					- MarvinHardware 会自动检测 gripper_type 中是否包含 "LINKERHAND" 或 "HAND" 来判断是手部还是夹爪
 				-->
-				<!-- 仅在存在手/夹爪类型时设置 gripper_type 参数；两者都为空则不设置。 -->
-				<xacro:if value="${selected_hand_type != '' and ee_drive_type != ''}">
+				<!-- 仅在 Marvin 485 路径设置 gripper_type；real_usb 末端在独立 modbus 系统上，勿传给 MarvinHardware。 -->
+				<xacro:if value="${selected_hand_type != '' and ee_drive_type == 'marvin'}">
 					<param name="gripper_type">${selected_hand_type}</param>
 				</xacro:if>
-				<xacro:if value="${selected_hand_type == '' and selected_gripper_type != ''}">
+				<xacro:if value="${selected_hand_type == '' and selected_gripper_type != '' and ee_drive_type == 'marvin'}">
 					<param name="gripper_type">${selected_gripper_type}</param>
 				</xacro:if>
 				<param name="max_joint_speed">50</param>
