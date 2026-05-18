@@ -197,6 +197,8 @@
 
 		<gazebo>
 			<plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+				<parameters>$(find fiveages_w2_description)/config/ros2_control/common.yaml
+				</parameters>
 				<parameters>$(find fiveages_w2_description)/config/ros2_control/${ros2_control_config_basename}
 				</parameters>
 			</plugin>
