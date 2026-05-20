@@ -9,7 +9,7 @@
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/robot.xacro"/>
 
 	<xacro:include filename="$(find m6_ccs_description)/xacro/ros2_control/interfaces.xacro"/>
-	<xacro:include filename="$(find fiveages_w2_description)/xacro/ros2_control/body.xacro"/>
+	<xacro:include filename="$(find fiveages_body_description)/xacro/ros2_control/body.xacro"/>
 
 	<xacro:if value="${is_real_hardware}">
 		<!-- 确定传递给 marvin_ros2_control 的 gripper_type 参数 -->

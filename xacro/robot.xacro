@@ -44,7 +44,7 @@
 
     <xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
     <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
-    <xacro:include filename="$(find fiveages_w2_description)/xacro/components/body.xacro"/>
+    <xacro:include filename="$(find fiveages_body_description)/xacro/body.xacro"/>
 
     <!-- Left Arm -->
     <joint name="left_arm_base_joint" type="fixed">
