@@ -24,7 +24,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/base_link.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/base_link.glb"/>
+      </geometry>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/shell_default.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -54,7 +59,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/steer_link.glb" scale="1 -1 1"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/steer_link.glb" scale="1 -1 1"/>
       </geometry>
     </visual>
   </link>
@@ -71,7 +76,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/wheel.glb" scale="1 -1 1"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/wheel.glb" scale="1 -1 1"/>
       </geometry>
     </visual>
     <collision>
@@ -94,7 +99,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/steer_link.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/steer_link.glb"/>
       </geometry>
     </visual>
   </link>
@@ -111,7 +116,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/wheel.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/wheel.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -134,7 +139,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/steer_link.glb" scale="1 -1 1"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/steer_link.glb" scale="1 -1 1"/>
       </geometry>
     </visual>
   </link>
@@ -151,7 +156,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/wheel.glb" scale="1 -1 1"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/wheel.glb" scale="1 -1 1"/>
       </geometry>
     </visual>
     <collision>
@@ -174,7 +179,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/steer_link.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/steer_link.glb"/>
       </geometry>
     </visual>
   </link>
@@ -191,7 +196,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/linkhou_s2/wheel.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/linkhou_s2/wheel.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -248,7 +253,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/base.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/body/base.glb"/>
       </geometry>
     </visual>
   </link>
@@ -265,7 +270,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/link1.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/body/link1.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -289,7 +294,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/link2.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/body/link2.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -314,7 +319,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/link3.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/body/link3.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -339,7 +344,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/link4.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/body/link4.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -376,7 +381,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/head_yaw.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/head/head_yaw.glb"/>
       </geometry>
     </visual>
   </link>
@@ -395,7 +400,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://fiveages_w2_description/meshes/body/head_pitch.glb"/>
+        <mesh filename="package://fiveages_w2_common_description/meshes/head/head_pitch.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -429,12 +434,6 @@
     <origin xyz="7.1612E-05 0 0.45765"/>
     <parent link="body_link4"/>
     <child link="arm_base"/>
-  </joint>
-  <link name="head_top_camera"/>
-  <joint name="head_top_camera_joint" type="fixed">
-    <origin rpy="-2.100227811211368 0.0016038446958035316 -1.583610269343787" xyz="0.0877736 0.0245687 0.107989"/>
-    <parent link="head_link2"/>
-    <child link="head_top_camera"/>
   </joint>
   <!-- Left Arm -->
   <joint name="left_arm_base_joint" type="fixed">
