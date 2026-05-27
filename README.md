@@ -49,21 +49,18 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 
 ### 2.2 Component
 
-* Linkhou S2 Base
+* Dual arms (default)
   ```bash
   source ~/ros2_ws/install/setup.bash
   ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2
   ```
-* Body
+* LP02 camera
   ```bash
   source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2 type:=body
+  ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2 type:=lp02_336_camera
   ```
-* Arms
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2 type:=arms
-  ```
+
+Chassis (Linkhou S2), body, and head component visualization live in `fiveages_w2_common_description`. See [fiveages_w2_common_description/README.md](../fiveages_w2_common_description/README.md).
 
 ## 3. ROS2 Control Demos
 

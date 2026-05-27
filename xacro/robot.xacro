@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:arg name="collider" default="convex"/>
+    <xacro:arg name="collider" default="simple"/>
     <xacro:arg name="chassis_joints_movable" default="false"/>
+    <xacro:arg name="variant" default=""/>
 
     <!-- 从 type 参数解析出 hand_type 和 gripper_type -->
     <xacro:arg name="type" default=""/>
@@ -42,9 +43,12 @@
         <xacro:property name="selected_hand_type" value="linkerhand_o7"/>
     </xacro:if>
 
-    <xacro:include filename="$(find fiveages_w2_description)/xacro/components/linkhou_s2.xacro"/>
-    <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)"/>
-    <xacro:include filename="$(find fiveages_w2_description)/xacro/components/body.xacro"/>
+    <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2.xacro"/>
+    <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" variant="$(arg variant)"/>
+    <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/body.xacro"/>
+    <xacro:body variant="$(arg variant)"/>
+    <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/head.xacro"/>
+    <xacro:head variant="$(arg variant)"/>
 
     <!-- Left Arm -->
     <joint name="left_arm_base_joint" type="fixed">
