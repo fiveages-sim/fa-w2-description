@@ -2,7 +2,7 @@
 
 controller_manager:
   ros__parameters:
-    update_rate: 500  # Hz
+    update_rate: 100  # Hz
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -94,8 +94,8 @@ ocs2_wbc_controller:
     world_frame: world
     base_frame: base_footprint
     # Joint configuration
-    update_rate: 500  # Hz
-    mpc_frequency: 100
+    update_rate: 100  # Hz
+    mpc_frequency: 50
     info_file_name: fixed_base
     # 关节顺序须与 fixed_base.info 的 arm 状态向量一致：
     # [body_joint1~4 | left_joint1~7 | right_joint1~7 | head_joint1~2]
