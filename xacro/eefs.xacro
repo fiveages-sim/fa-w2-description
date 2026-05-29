@@ -30,14 +30,14 @@
         <!-- 夹爪类型：gripper_type 不为空即表示使用夹爪 -->
         <xacro:if value="${gripper_type == 'ag2f90_c' or gripper_type == 'ag2f90_d'}">
             <xacro:include filename="$(find changingtek_description)/xacro/AG2F90-C.xacro"/>
-            <xacro:AG2F90-C name="left" use_flange="true"/>
+            <xacro:AG2F90-C name="left" use_flange="true" pad="${selected_gripper_pad}"/>
             <joint name="left_gripper_fix" type="fixed">
                 <parent link="left_tcp"/>
                 <child link="left_flange"/>
                 <origin xyz="0 0 0.0045"/>
             </joint>
 
-            <xacro:AG2F90-C name="right" use_flange="true"/>
+            <xacro:AG2F90-C name="right" use_flange="true" pad="${selected_gripper_pad}"/>
             <joint name="right_gripper_fix" type="fixed">
                 <parent link="right_tcp"/>
                 <child link="right_flange"/>

@@ -169,6 +169,7 @@
 				<xacro:rg75_interfaces name="right"/>
 			</xacro:if>
 
+			<!-- ag2f90_c_soft 在 robot.xacro 中解析为 selected_gripper_type=ag2f90_c + pad=soft -->
 			<xacro:if value="${selected_gripper_type in ('ag2f90_c', 'ag2f90_d')}">
 				<xacro:include filename="$(find changingtek_description)/xacro/ros2_control/AG2F90-C.xacro"/>
 				<xacro:ag2f90c_interfaces name="left"/>
