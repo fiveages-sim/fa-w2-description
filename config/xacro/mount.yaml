@@ -1,0 +1,5 @@
+# Single source of truth: W2 dual-arm mount on arm_base.
+# Loaded by robot_common_launch for robot:=fiveages_w2 (ros2_control + split-body planning URDF).
+
+arm_half_spacing: "0.062"
+arm_mount_z: "0.0"

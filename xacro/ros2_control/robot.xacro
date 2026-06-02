@@ -2,43 +2,77 @@
 <robot name="fiveages_w2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 	<xacro:arg name="ros2_control_hardware_type" default="mock_components"/>
+	<xacro:arg name="arm_ctrl_mode" default="position"/>
 
 	<xacro:property name="is_real_hardware" value="${'$(arg ros2_control_hardware_type)' == 'real' or '$(arg ros2_control_hardware_type)' == 'real_usb'}"/>
 	<xacro:property name="ee_drive_type" value="${'usb' if '$(arg ros2_control_hardware_type)' == 'real_usb' else ('marvin' if '$(arg ros2_control_hardware_type)' == 'real' else '')}"/>
+	<xacro:property name="arm_ctrl_mode_value" value="$(arg arm_ctrl_mode)"/>
+	<xacro:property name="left_ee_type" value="${left_hand_type if left_hand_type != '' else left_gripper_type}"/>
+	<xacro:property name="right_ee_type" value="${right_hand_type if right_hand_type != '' else right_gripper_type}"/>
 
 	<xacro:include filename="$(find fiveages_w2_description)/xacro/robot.xacro"/>
 
 	<xacro:include filename="$(find m6_ccs_description)/xacro/ros2_control/interfaces.xacro"/>
 	<xacro:include filename="$(find fiveages_w2_common_description)/xacro/ros2_control/body.xacro"/>
+	<xacro:include filename="$(find jodell_description)/xacro/ros2_control/RG75-300.xacro"/>
+	<xacro:include filename="$(find changingtek_description)/xacro/ros2_control/AG2F90-C.xacro"/>
+	<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
+	<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
+
+	<xacro:macro name="side_gripper_joint" params="side">
+		<joint name="${side}_gripper_joint">
+			<command_interface name="position"/>
+			<state_interface name="position">
+				<param name="initial_value">0</param>
+			</state_interface>
+		</joint>
+	</xacro:macro>
+
+	<xacro:macro name="side_rg75_interfaces" params="side">
+		<xacro:rg75_interfaces name="${side}"/>
+	</xacro:macro>
+
+	<xacro:macro name="side_ag2f90_interfaces" params="side">
+		<xacro:ag2f90c_interfaces name="${side}"/>
+	</xacro:macro>
+
+	<xacro:macro name="side_hand_interfaces" params="side hand_type">
+		<xacro:if value="${hand_type in ['linkerhand_o6', 'linkerhand_l6']}">
+			<xacro:linkerhand_o6_interfaces name="${side}_hand"/>
+		</xacro:if>
+		<xacro:if value="${hand_type == 'linkerhand_o7'}">
+			<xacro:linkerhand_o7_interfaces name="${side}_hand"/>
+		</xacro:if>
+	</xacro:macro>
+
+	<xacro:macro name="side_usb_hand_system" params="side hand_type serial_port">
+		<xacro:property name="usb_hand_series" value="${str('7' if hand_type == 'linkerhand_o7' else '6')}"/>
+		<ros2_control name="linkerhand_${usb_hand_series}_${side}_system" type="system">
+			<hardware>
+				<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
+				<param name="serial_port">${serial_port}</param>
+				<param name="hand_type">${hand_type}</param>
+				<param name="hand_side">${side}</param>
+				<param name="max_speed_ratio">1.0</param>
+			</hardware>
+			<xacro:side_hand_interfaces side="${side}" hand_type="${hand_type}"/>
+		</ros2_control>
+	</xacro:macro>
 
 	<xacro:if value="${is_real_hardware}">
-		<!-- 确定传递给 marvin_ros2_control 的 gripper_type 参数 -->
-		<!--
-			手部控制模式由 ros2_control_hardware_type 决定：
-			- hardware=real      : 485/marvin（手作为 MarvinHardware 的 tool，由 gripper_type 传入）
-			- hardware=real_usb  : USB/modbus（手由独立 modbus_ros2_control 系统控制，MarvinHardware 只管机械臂）
-		-->
 		<ros2_control name="M6_CCS_System" type="system">
 			<hardware>
 				<plugin>marvin_ros2_control/MarvinHardware</plugin>
 				<param name="arm_type">dual</param>
-				<param name="ctrl_mode">position</param>
-				<!-- 
-					gripper_type 参数说明：
-					- 如果是夹爪：传递夹爪类型（如 rg75, ag2f90_c 等）
-					- 如果是 marvin 模式的手部：传递手部类型（如 linkerhand_o7, linkerhand_o6, linkerhand_l6）
-					- MarvinHardware 会自动检测 gripper_type 中是否包含 "LINKERHAND" 或 "HAND" 来判断是手部还是夹爪
-				-->
-				<!-- 仅在存在手/夹爪类型时设置 gripper_type 参数；两者都为空则不设置。 -->
-				<xacro:if value="${selected_hand_type != '' and ee_drive_type != ''}">
-					<param name="gripper_type">${selected_hand_type}</param>
+				<param name="ctrl_mode">${arm_ctrl_mode_value}</param>
+				<xacro:if value="${ee_drive_type == 'marvin' and left_ee_type != ''}">
+					<param name="left_ee_type">${left_ee_type}</param>
 				</xacro:if>
-				<xacro:if value="${selected_hand_type == '' and selected_gripper_type != ''}">
-					<param name="gripper_type">${selected_gripper_type}</param>
+				<xacro:if value="${ee_drive_type == 'marvin' and right_ee_type != ''}">
+					<param name="right_ee_type">${right_ee_type}</param>
 				</xacro:if>
 				<param name="max_joint_speed">50</param>
 				<param name="max_joint_acceleration">30</param>
-				<!-- <param name="ctrl_mode">JOINT_IMPEDANCE</param> -->
 				<param name="left_dyn_param">0.4,0,0,50.65,0,0,0,0,0,0</param>
 				<param name="right_dyn_param">0.4,0,0,50.85,0,0,0,0,0,0</param>
 				<param name="device_ip">192.168.1.190</param>
@@ -47,98 +81,42 @@
 			<xacro:m6_interfaces name="left"/>
 			<xacro:m6_interfaces name="right"/>
 
-			<!-- 夹爪接口：selected_gripper_type 不为空即表示使用夹爪 -->
-			<xacro:if value="${selected_gripper_type != ''}">
-				<joint name="left_gripper_joint">
-					<command_interface name="position"/>
-					<state_interface name="position">
-						<param name="initial_value">0</param>
-					</state_interface>
-				</joint>
-				<joint name="right_gripper_joint">
-					<command_interface name="position"/>
-					<state_interface name="position">
-						<param name="initial_value">0</param>
-					</state_interface>
-				</joint>
+			<xacro:if value="${left_gripper_type != ''}">
+				<xacro:side_gripper_joint side="left"/>
+			</xacro:if>
+			<xacro:if value="${right_gripper_type != ''}">
+				<xacro:side_gripper_joint side="right"/>
 			</xacro:if>
 
-			<!-- 灵巧手接口：485/marvin（通过 M6_CCS_System） -->
 			<xacro:if value="${ee_drive_type == 'marvin'}">
-				<xacro:if value="${selected_hand_type in ['linkerhand_o6', 'linkerhand_l6']}">
-					<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
-					<xacro:linkerhand_o6_interfaces name="left_hand"/>
-					<xacro:linkerhand_o6_interfaces name="right_hand"/>
+				<xacro:if value="${left_hand_type != ''}">
+					<xacro:side_hand_interfaces side="left" hand_type="${left_hand_type}"/>
 				</xacro:if>
-				<xacro:if value="${selected_hand_type == 'linkerhand_o7'}">
-					<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
-					<xacro:linkerhand_o7_interfaces name="left_hand"/>
-					<xacro:linkerhand_o7_interfaces name="right_hand"/>
+				<xacro:if value="${right_hand_type != ''}">
+					<xacro:side_hand_interfaces side="right" hand_type="${right_hand_type}"/>
 				</xacro:if>
 			</xacro:if>
-
 		</ros2_control>
 
 		<ros2_control name="juxie_body" type="system">
 			<hardware>
 				<plugin>juxie_ros2_control/JxHardware</plugin>
-				<!-- CAN 接口配置 -->
 				<param name="can_interface">can0</param>
-				<!-- 电机 ID 列表（最多 8 个） -->
 				<param name="motor_ids">1,2,3,4,5,6</param>
-				<!-- 控制周期（毫秒） -->
 				<param name="control_period_ms">1</param>
 			</hardware>
-
 			<xacro:body_interfaces/>
 		</ros2_control>
 
-		<!-- 灵巧手接口：USB 模式（hardware=real_usb，modbus_ros2_control），直接内联 ros2_control 配置 -->
 		<xacro:if value="${ee_drive_type == 'usb'}">
-			<xacro:if value="${selected_hand_type in ('linkerhand_o6', 'linkerhand_l6', 'linkerhand_o7')}">
-				<xacro:property name="usb_hand_series" value="${str('7' if selected_hand_type == 'linkerhand_o7' else '6')}"/>
-				<xacro:if value="${str(usb_hand_series) == '6'}">
-					<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
-				</xacro:if>
-				<xacro:if value="${str(usb_hand_series) == '7'}">
-					<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
-				</xacro:if>
-
-				<ros2_control name="linkerhand_${usb_hand_series}_left_system" type="system">
-					<hardware>
-						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-						<param name="serial_port">/dev/ttyUSB0</param>
-						<param name="hand_type">${selected_hand_type}</param>
-						<param name="hand_side">left</param>
-						<param name="max_speed_ratio">1.0</param>
-					</hardware>
-					<xacro:if value="${str(usb_hand_series) == '6'}">
-						<xacro:linkerhand_o6_interfaces name="left_hand"/>
-					</xacro:if>
-					<xacro:if value="${str(usb_hand_series) == '7'}">
-						<xacro:linkerhand_o7_interfaces name="left_hand"/>
-					</xacro:if>
-				</ros2_control>
-
-				<ros2_control name="linkerhand_${usb_hand_series}_right_system" type="system">
-					<hardware>
-						<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
-						<param name="serial_port">/dev/ttyUSB2</param>
-						<param name="hand_type">${selected_hand_type}</param>
-						<param name="hand_side">right</param>
-						<param name="max_speed_ratio">1.0</param>
-					</hardware>
-					<xacro:if value="${str(usb_hand_series) == '6'}">
-						<xacro:linkerhand_o6_interfaces name="right_hand"/>
-					</xacro:if>
-					<xacro:if value="${str(usb_hand_series) == '7'}">
-						<xacro:linkerhand_o7_interfaces name="right_hand"/>
-					</xacro:if>
-				</ros2_control>
+			<xacro:if value="${left_hand_type in ('linkerhand_o6', 'linkerhand_l6', 'linkerhand_o7')}">
+				<xacro:side_usb_hand_system side="left" hand_type="${left_hand_type}" serial_port="/dev/ttyUSB0"/>
+			</xacro:if>
+			<xacro:if value="${right_hand_type in ('linkerhand_o6', 'linkerhand_l6', 'linkerhand_o7')}">
+				<xacro:side_usb_hand_system side="right" hand_type="${right_hand_type}" serial_port="/dev/ttyUSB2"/>
 			</xacro:if>
 		</xacro:if>
 	</xacro:if>
-
 
 	<xacro:unless value="${is_real_hardware}">
 		<ros2_control name="fiveages_w2_system" type="system">
@@ -162,48 +140,38 @@
 			<xacro:m6_interfaces name="left"/>
 			<xacro:m6_interfaces name="right"/>
 
-			<!-- 夹爪接口：selected_gripper_type 不为空即表示使用夹爪 -->
-			<xacro:if value="${selected_gripper_type == 'rg75'}">
-				<xacro:include filename="$(find jodell_description)/xacro/ros2_control/RG75-300.xacro"/>
-				<xacro:rg75_interfaces name="left"/>
-				<xacro:rg75_interfaces name="right"/>
+			<xacro:if value="${left_gripper_type == 'rg75'}">
+				<xacro:side_rg75_interfaces side="left"/>
+			</xacro:if>
+			<xacro:if value="${right_gripper_type == 'rg75'}">
+				<xacro:side_rg75_interfaces side="right"/>
 			</xacro:if>
 
-			<xacro:if value="${selected_gripper_type in ('ag2f90_c', 'ag2f90_d')}">
-				<xacro:include filename="$(find changingtek_description)/xacro/ros2_control/AG2F90-C.xacro"/>
-				<xacro:ag2f90c_interfaces name="left"/>
-				<xacro:ag2f90c_interfaces name="right"/>
+			<xacro:if value="${left_gripper_type in ('ag2f90_c', 'ag2f90_d')}">
+				<xacro:side_ag2f90_interfaces side="left"/>
+			</xacro:if>
+			<xacro:if value="${right_gripper_type in ('ag2f90_c', 'ag2f90_d')}">
+				<xacro:side_ag2f90_interfaces side="right"/>
 			</xacro:if>
 
-			<!-- 灵巧手接口 -->
-			<xacro:if value="${selected_hand_type in ['linkerhand_o6', 'linkerhand_l6']}">
-				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
-				<xacro:linkerhand_o6_interfaces name="left_hand"/>
-				<xacro:linkerhand_o6_interfaces name="right_hand"/>
+			<xacro:if value="${left_hand_type != ''}">
+				<xacro:side_hand_interfaces side="left" hand_type="${left_hand_type}"/>
 			</xacro:if>
-			<xacro:if value="${selected_hand_type == 'linkerhand_o7'}">
-				<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
-				<xacro:linkerhand_o7_interfaces name="left_hand"/>
-				<xacro:linkerhand_o7_interfaces name="right_hand"/>
+			<xacro:if value="${right_hand_type != ''}">
+				<xacro:side_hand_interfaces side="right" hand_type="${right_hand_type}"/>
 			</xacro:if>
-
 		</ros2_control>
 	</xacro:unless>
 
-	<!-- Gazebo plugin configuration -->
 	<xacro:arg name="gazebo" default="false"/>
 	<xacro:if value="$(arg gazebo)">
 		<xacro:property name="ros2_control_config_basename" value="ros2_controllers.yaml"/>
-
 		<gazebo>
 			<plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-				<parameters>$(find fiveages_w2_description)/config/ros2_control/common.yaml
-				</parameters>
-				<parameters>$(find fiveages_w2_description)/config/ros2_control/${ros2_control_config_basename}
-				</parameters>
+				<parameters>$(find fiveages_w2_description)/config/ros2_control/common.yaml</parameters>
+				<parameters>$(find fiveages_w2_description)/config/ros2_control/${ros2_control_config_basename}</parameters>
 			</plugin>
 		</gazebo>
 	</xacro:if>
-
 
 </robot>
