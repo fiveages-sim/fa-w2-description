@@ -95,11 +95,11 @@ initialModeSchedule
     {
     }
 
-    ; HM_DUAL_RELATIVE: 固定底盘 + 双臂独立追踪各自目标
+    ; HM_DUAL_CUSTOM_LOCK_FIXED_BASE: 固定底盘 + 双臂独立 + 自定义关节锁定
     modeSequence
     {
-        [0]     HM_DUAL_RELATIVE_FIXED_BASE
-        ; 可切换到 HM_DUAL_CUSTOM_LOCK_FIXED_BASE 使用 customJointLock.lockedJointIndices 锁定指定关节
+        [0]     HM_DUAL_CUSTOM_LOCK_FIXED_BASE
+        ; 使用 customJointLock.lockedJointIndices 锁定指定关节
     }
 }
 
@@ -337,8 +337,8 @@ customJointLock
         ;[0] 18                     ; head_joint1 锁定示例
         ;[1] 19                     ; head_joint2 锁定示例
         ;[6] 4                      ; left_joint1 锁定示例
-        ;[4] 11                     ; right_joint1 锁定示例
-        ;[5] 12                     ; right_joint1 锁定示例
+        ;[4] 10                     ; right_joint1 锁定示例
+        ;[5] 17                     ; right_joint1 锁定示例
         ;[6] 13                     ; right_joint1 锁定示例
         ;[7] 14                    ; right_joint1 锁定示例
     }
