@@ -99,6 +99,7 @@ initialModeSchedule
     modeSequence
     {
         [0]     HM_DUAL_RELATIVE_FIXED_BASE
+        ; 可切换到 HM_DUAL_CUSTOM_LOCK_FIXED_BASE 使用 customJointLock.lockedJointIndices 锁定指定关节
     }
 }
 
@@ -310,6 +311,36 @@ headCoupling
         [0] 0                       ; body_joint1 锁定
         [1] 1                       ; body_joint2 锁定
         [2] 2                       ; body_joint3 锁定
+    }
+}
+
+;=============================================================================
+; Custom Joint Lock Constraint
+; 自定义关节锁定模式：按输入向量索引把任意关节速度约束为 0
+; 使用模式：
+;   - 初始模式可设置为 HM_DUAL_CUSTOM_LOCK_FIXED_BASE
+;   - 或运行时发送 BODY_CUSTOM_LOCK
+; 输入向量布局：[腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
+; body_joint1~4=0..3, left_joint1~7=4..10, right_joint1~7=11..17, head_joint1~2=18..19
+;=============================================================================
+
+customJointLock
+{
+    activate                        true
+
+    lockedJointIndices
+    {
+        [0] 0                       ; body_joint1 锁定
+        [1] 1                       ; body_joint2 锁定
+        ;[2] 2                       ; body_joint3 锁定
+        ;[3] 3                       ; body_joint4 锁定
+        ;[0] 18                     ; head_joint1 锁定示例
+        ;[1] 19                     ; head_joint2 锁定示例
+        ;[6] 4                      ; left_joint1 锁定示例
+        ;[4] 11                     ; right_joint1 锁定示例
+        ;[5] 12                     ; right_joint1 锁定示例
+        ;[6] 13                     ; right_joint1 锁定示例
+        ;[7] 14                    ; right_joint1 锁定示例
     }
 }
 
