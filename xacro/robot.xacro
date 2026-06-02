@@ -2,77 +2,68 @@
 <robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:arg name="collider" default="simple"/>
+    <!-- OCS2 planning URDF: eef_fixed_joints + chassis_joints_movable=false (see robot_utils planning mappings) -->
+    <xacro:arg name="eef_fixed_joints" default="false"/>
+    <xacro:arg name="chassis" default="linkhou_s2"/>
     <xacro:arg name="chassis_joints_movable" default="false"/>
     <xacro:arg name="variant" default=""/>
 
-    <!-- 从 type 参数解析出 hand_type 和 gripper_type -->
+    <!-- Symmetric shorthand (backward compatible) -->
     <xacro:arg name="type" default=""/>
+    <!-- Per-side end effectors (asymmetric) -->
+    <xacro:arg name="left_type" default=""/>
+    <xacro:arg name="right_type" default=""/>
+    <!-- SSOT: fiveages_w2_description/config/xacro/mount.yaml (injected by robot_common_launch) -->
+    <xacro:arg name="arm_half_spacing" default=""/>
+    <xacro:arg name="arm_mount_z" default=""/>
+
     <xacro:property name="type_arg" value="$(arg type)"/>
+    <xacro:property name="left_type_arg" value="$(arg left_type)"/>
+    <xacro:property name="right_type_arg" value="$(arg right_type)"/>
+    <xacro:property name="effective_left_type" value="${left_type_arg if left_type_arg != '' else type_arg}"/>
+    <xacro:property name="effective_right_type" value="${right_type_arg if right_type_arg != '' else type_arg}"/>
 
-    <!-- 默认值 -->
-    <xacro:property name="selected_hand_type" value=""/>
-    <xacro:property name="selected_gripper_type" value=""/>
-    <xacro:property name="selected_gripper_pad" value="default"/>
+    <xacro:include filename="$(find m6_ccs_description)/xacro/eef_type_resolver.xacro"/>
+    <xacro:set_side_eef_types side="left" type_key="${effective_left_type}"/>
+    <xacro:set_side_eef_types side="right" type_key="${effective_right_type}"/>
 
-    <!-- 从 type 解析 hand_type 和 gripper_type -->
-    <!-- 夹爪类型：selected_gripper_type 不为空即表示使用夹爪 -->
-    <xacro:if value="${type_arg == 'rg75'}">
-        <xacro:property name="selected_gripper_type" value="rg75"/>
-    </xacro:if>
-    <xacro:if value="${type_arg == 'rg75_heavy'}">
-        <xacro:property name="selected_gripper_type" value="rg75"/>
-        <xacro:property name="selected_gripper_pad" value="heavy_carry"/>
-    </xacro:if>
-    <xacro:if value="${type_arg == 'ag2f90'}">
-        <xacro:property name="selected_gripper_type" value="ag2f90_d"/>
-    </xacro:if>
-    <xacro:if value="${type_arg == 'ag2f90_c'}">
-        <xacro:property name="selected_gripper_type" value="ag2f90_c"/>
-    </xacro:if>
-    <xacro:if value="${type_arg == 'ag2f90_c_soft'}">
-        <xacro:property name="selected_gripper_type" value="ag2f90_c"/>
-        <xacro:property name="selected_gripper_pad" value="soft"/>
-    </xacro:if>
-    <xacro:if value="${type_arg == 'ag2f90_d'}">
-        <xacro:property name="selected_gripper_type" value="ag2f90_d"/>
-    </xacro:if>
-    <!-- 灵巧手类型 -->
-    <xacro:if value="${type_arg == 'linkerhand_o6'}">
-        <xacro:property name="selected_hand_type" value="linkerhand_o6"/>
-    </xacro:if>
-    <xacro:if value="${type_arg == 'linkerhand_l6'}">
-        <xacro:property name="selected_hand_type" value="linkerhand_l6"/>
-    </xacro:if>
-    <xacro:if value="${type_arg == 'linkerhand_o7'}">
-        <xacro:property name="selected_hand_type" value="linkerhand_o7"/>
+    <xacro:property name="chassis_arg" value="$(arg chassis)"/>
+    <xacro:property name="chassis_variant" value="$(arg variant)"/>
+    <xacro:if value="${chassis_arg == 'linkhou_s2_sinopec'}">
+        <xacro:property name="chassis_variant" value="sinopec"/>
     </xacro:if>
 
-    <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2.xacro"/>
-    <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" variant="$(arg variant)"/>
+    <xacro:if value="${chassis_arg == 'linkhou_s2' or chassis_arg == 'linkhou_s2_sinopec'}">
+        <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2.xacro"/>
+        <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" variant="${chassis_variant}"/>
+    </xacro:if>
+    <xacro:if value="${chassis_arg == 'linkhou_s2_v2'}">
+        <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2_v2.xacro"/>
+        <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" variant="${chassis_variant}"/>
+    </xacro:if>
+
     <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/body.xacro"/>
-    <xacro:body variant="$(arg variant)"/>
+    <xacro:body variant="${chassis_variant}"/>
     <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/head.xacro"/>
-    <xacro:head variant="$(arg variant)"/>
+    <xacro:head variant="${chassis_variant}"/>
 
-    <!-- Left Arm -->
-    <joint name="left_arm_base_joint" type="fixed">
-        <parent link="arm_base"/>
-        <child link="left_base_link"/>
-        <origin rpy="-${PI/2} 0 0" xyz="0.0 0.062 0"/>
-    </joint>
-
-    <!-- Right Arm -->
-    <joint name="right_arm_base_joint" type="fixed">
-        <parent link="arm_base"/>
-        <child link="right_base_link"/>
-        <origin rpy="${PI/2} 0 0" xyz="0 -0.062 0"/>
-    </joint>
-
+    <xacro:include filename="$(find m6_ccs_description)/xacro/arm_mount.xacro"/>
+    <xacro:set_arm_mount_properties
+        arm_half_spacing="$(arg arm_half_spacing)"
+        arm_mount_z="$(arg arm_mount_z)"/>
+    <xacro:DualArmMountJoints parent="arm_base"/>
 
     <xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>
     <xacro:M6_CCS name="left" style="fiveages_w2"/>
     <xacro:M6_CCS name="right" direction="-1" style="fiveages_w2"/>
 
-    <xacro:include filename="$(find fiveages_w2_description)/xacro/eefs.xacro"/>
-    <xacro:EndEffectors hand_type="${selected_hand_type}" gripper_type="${selected_gripper_type}"/>
+    <xacro:include filename="$(find m6_ccs_description)/xacro/eefs.xacro"/>
+    <xacro:EndEffectors
+        eef_fixed_joints="$(arg eef_fixed_joints)"
+        left_hand_type="${left_hand_type}"
+        left_gripper_type="${left_gripper_type}"
+        left_gripper_pad="${left_gripper_pad}"
+        right_hand_type="${right_hand_type}"
+        right_gripper_type="${right_gripper_type}"
+        right_gripper_pad="${right_gripper_pad}"/>
 </robot>
