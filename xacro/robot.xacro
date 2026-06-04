@@ -13,10 +13,6 @@
     <!-- Per-side end effectors (asymmetric) -->
     <xacro:arg name="left_type" default=""/>
     <xacro:arg name="right_type" default=""/>
-    <!-- SSOT: fiveages_w2_description/config/xacro/mount.yaml (injected by robot_common_launch) -->
-    <xacro:arg name="arm_half_spacing" default=""/>
-    <xacro:arg name="arm_mount_z" default=""/>
-
     <xacro:property name="type_arg" value="$(arg type)"/>
     <xacro:property name="left_type_arg" value="$(arg left_type)"/>
     <xacro:property name="right_type_arg" value="$(arg right_type)"/>
@@ -48,10 +44,7 @@
     <xacro:head variant="${chassis_variant}"/>
 
     <xacro:include filename="$(find m6_ccs_description)/xacro/arm_mount.xacro"/>
-    <xacro:set_arm_mount_properties
-        arm_half_spacing="$(arg arm_half_spacing)"
-        arm_mount_z="$(arg arm_mount_z)"/>
-    <xacro:DualArmMountJoints parent="arm_base"/>
+    <xacro:DualArmMount parent="arm_base"/>
 
     <xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>
     <xacro:M6_CCS name="left" style="fiveages_w2"/>
