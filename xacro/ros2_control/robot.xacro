@@ -49,16 +49,16 @@
 		<xacro:if value="${hand_type == 'linkerhand_o7'}">
 			<xacro:linkerhand_o7_interfaces name="${side}_hand"/>
 		</xacro:if>
-		<xacro:if value="${hand_type == 'freedom_v1' or hand_type == 'freedom-v1'}">
+		<xacro:if value="${hand_type == 'freedom_v1'}">
 			<xacro:freedom_interfaces name="${side}_hand"/>
 		</xacro:if>
-		<xacro:if value="${hand_type == 'inspire_e2' or hand_type == 'inspire-e2'}">
+		<xacro:if value="${hand_type == 'inspire_e2'}">
 			<xacro:inspire_rh56e2_interfaces name="${side}_hand"/>
 		</xacro:if>
 	</xacro:macro>
 
 	<xacro:macro name="side_usb_hand_system" params="side hand_type serial_port">
-		<xacro:property name="usb_hand_system_name" value="${str('linkerhand_7' if hand_type == 'linkerhand_o7' else ('inspire_e2' if hand_type in ('inspire_e2', 'inspire-e2') else 'linkerhand_6'))}"/>
+		<xacro:property name="usb_hand_system_name" value="${str('linkerhand_7' if hand_type == 'linkerhand_o7' else ('inspire_e2' if hand_type == 'inspire_e2' else 'linkerhand_6'))}"/>
 		<ros2_control name="${usb_hand_system_name}_${side}_system" type="system">
 			<hardware>
 				<plugin>modbus_ros2_control/DexterousHandHardware</plugin>
@@ -155,22 +155,22 @@
 		</ros2_control>
 
 		<xacro:if value="${left_drive_type == 'usb' or right_drive_type == 'usb' or left_drive_type == 'usb_can' or right_drive_type == 'usb_can'}">
-			<xacro:if value="${left_drive_type == 'usb' and left_hand_type in ('linkerhand_o6', 'linkerhand_l6', 'linkerhand_o7', 'inspire_e2', 'inspire-e2')}">
+			<xacro:if value="${left_drive_type == 'usb' and left_hand_type in ('linkerhand_o6', 'linkerhand_l6', 'linkerhand_o7', 'inspire_e2')}">
 				<xacro:side_usb_hand_system side="left" hand_type="${left_hand_type}" serial_port="/dev/ttyUSB0"/>
 			</xacro:if>
-			<xacro:if value="${right_drive_type == 'usb' and right_hand_type in ('linkerhand_o6', 'linkerhand_l6', 'linkerhand_o7', 'inspire_e2', 'inspire-e2')}">
+			<xacro:if value="${right_drive_type == 'usb' and right_hand_type in ('linkerhand_o6', 'linkerhand_l6', 'linkerhand_o7', 'inspire_e2')}">
 				<xacro:side_usb_hand_system side="right" hand_type="${right_hand_type}" serial_port="/dev/ttyUSB2"/>
 			</xacro:if>
-			<xacro:if value="${left_drive_type == 'usb' and left_hand_type in ('freedom_v1', 'freedom-v1')}">
+			<xacro:if value="${left_drive_type == 'usb' and left_hand_type == 'freedom_v1'}">
 				<xacro:side_freedom_usb_hand_system side="left" serial_port="/dev/ttyUSB0"/>
 			</xacro:if>
-			<xacro:if value="${right_drive_type == 'usb' and right_hand_type in ('freedom_v1', 'freedom-v1')}">
+			<xacro:if value="${right_drive_type == 'usb' and right_hand_type == 'freedom_v1'}">
 				<xacro:side_freedom_usb_hand_system side="right" serial_port="/dev/ttyUSB2"/>
 			</xacro:if>
-			<xacro:if value="${left_drive_type == 'usb_can' and left_hand_type in ('freedom_v1', 'freedom-v1')}">
+			<xacro:if value="${left_drive_type == 'usb_can' and left_hand_type == 'freedom_v1'}">
 				<xacro:side_freedom_usb_can_hand_system side="left" can_interface="can0" device_id="0"/>
 			</xacro:if>
-			<xacro:if value="${right_drive_type == 'usb_can' and right_hand_type in ('freedom_v1', 'freedom-v1')}">
+			<xacro:if value="${right_drive_type == 'usb_can' and right_hand_type == 'freedom_v1'}">
 				<xacro:side_freedom_usb_can_hand_system side="right" can_interface="can1" device_id="1"/>
 			</xacro:if>
 		</xacro:if>
