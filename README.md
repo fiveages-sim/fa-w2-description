@@ -17,7 +17,7 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
 
 * FiveAges W2 (Basic visualization)
   ```bash
-  source ~/ros2_ws/install/setup.bash
+  source ~/fa_w2_ws/install/setup.bash
   ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple
   ```
 
