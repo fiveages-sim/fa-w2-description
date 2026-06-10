@@ -216,18 +216,27 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=warehouse_multiple_shelfs nav2_profile:=map_only
 ```
 
-### 5.1 内部演示场景地图
+### 5.1 导航地图与 Nav2 配置
 
-本包自带地图目录：`config/maps/german_poc/`（`map.yaml` 与栅格图像）。`map` 参数**只需写文件夹名**：launch 在该目录下**优先 `map.yaml`**，否则按文件名排序取第一个 `*.yaml`。
+本包通过 **`config/navigation.yaml`** 声明导航资源所在包（默认指向 `fiveages_w2_common_description`）：
 
-带上 `robot:=fiveages_w2` 时，会**先在** `fiveages_w2_description/config/maps/` **解析**，找不到再查 `robot_common_launch/config/maps/`。
-
-* 西门子POC演示项目
-```bash
-source ~/ros2_ws/install/setup.bash
-ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=siemens nav2_profile:=map_only
+```yaml
+map_config_package: fiveages_w2_common_description
+nav_config_package: fiveages_w2_common_description
 ```
 
-也可显式写 `map.yaml` / 绝对路径；子路径可省略后缀，例如 `map:=german_poc/map` 等价于 `german_poc/map.yaml`。
+实际地图与 Nav2 文件位于 `fa-w2-components` 子模块：
 
-若话题带命名空间，可在启动时通过 `GroupAction` 侧 remap，或改 YAML 中对应 `topic` 字段。
+- 地图：`fiveages_w2_common_description/config/maps/`（如 `siemens`、`siemens_task2`）
+- Nav2：`fiveages_w2_common_description/config/nav2/`
+
+`robot:=fiveages_w2` 时 launch 读取上述 `navigation.yaml`，再 fallback 到 `robot_common_launch/config/`。无需在 launch 参数里写死包名。
+
+```bash
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py \
+  robot:=fiveages_w2 map:=siemens_task2
+```
+
+工作区 `./quick_start.sh` → 启动 → 导航 会**自动扫描**可用地图列表。
+
+详见 [`fa-w2-components` README](../fa-w2-components/README.md) 导航章节。

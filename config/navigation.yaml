@@ -1,0 +1,4 @@
+# Navigation resource routing for fiveages_w2 (read by robot_common_launch).
+# Maps and Nav2 params live in the component description package.
+map_config_package: fiveages_w2_common_description
+nav_config_package: fiveages_w2_common_description
