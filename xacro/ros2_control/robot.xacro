@@ -25,6 +25,7 @@
 	<xacro:include filename="$(find freedom_description)/xacro/ros2_control/freedomv1.xacro"/>
 	<xacro:include filename="$(find freedom_description)/xacro/ros2_control/freedomv2.xacro"/>
 	<xacro:include filename="$(find inspire_description)/xacro/ros2_control/RH56E2.xacro"/>
+	<xacro:include filename="$(find inspire_description)/xacro/ros2_control/side_systems.xacro"/>
 
 	<xacro:macro name="side_gripper_joint" params="side">
 		<joint name="${side}_gripper_joint">
@@ -189,6 +190,12 @@
 			</xacro:if>
 			<xacro:if value="${right_drive_type == 'usb_can' and right_hand_type == 'freedom_v1'}">
 				<xacro:side_freedom_usb_can_hand_system side="right" can_interface="can1" device_id="1"/>
+			</xacro:if>
+			<xacro:if value="${left_drive_type == 'usb_can' and left_hand_type == 'inspire_e2'}">
+				<xacro:inspire_canfd_side_system side="left" can_interface="can0"/>
+			</xacro:if>
+			<xacro:if value="${right_drive_type == 'usb_can' and right_hand_type == 'inspire_e2'}">
+				<xacro:inspire_canfd_side_system side="right" can_interface="can1"/>
 			</xacro:if>
 		</xacro:if>
 	</xacro:if>
