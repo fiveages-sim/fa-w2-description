@@ -4,7 +4,7 @@
     linear_scale: 0.01
     
     # 角度控制缩放因子（用于手柄/键盘控制）
-    angular_scale: 0.005
+    angular_scale: 0.025
     
     # VR更新频率（Hz）
     vr_update_rate: 500.0
