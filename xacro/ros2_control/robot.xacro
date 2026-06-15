@@ -3,6 +3,8 @@
 
 	<xacro:arg name="ros2_control_hardware_type" default="mock_components"/>
 	<xacro:arg name="arm_ctrl_mode" default="position"/>
+	<xacro:arg name="left_dyn_param" default=""/>
+	<xacro:arg name="right_dyn_param" default=""/>
 
 	<xacro:property name="is_real_hardware" value="${'$(arg ros2_control_hardware_type)' == 'real' or '$(arg ros2_control_hardware_type)' == 'real_usb'}"/>
 	<xacro:property name="ee_drive_type" value="${'usb' if '$(arg ros2_control_hardware_type)' == 'real_usb' else ('marvin' if '$(arg ros2_control_hardware_type)' == 'real' else '')}"/>
@@ -73,8 +75,8 @@
 				</xacro:if>
 				<param name="max_joint_speed">50</param>
 				<param name="max_joint_acceleration">30</param>
-				<param name="left_dyn_param">0.4,0,0,50.65,0,0,0,0,0,0</param>
-				<param name="right_dyn_param">0.4,0,0,50.85,0,0,0,0,0,0</param>
+				<xacro:ee_dyn_param side="left" ee_key="${left_ee_type}" arg_val="$(arg left_dyn_param)"/>
+				<xacro:ee_dyn_param side="right" ee_key="${right_ee_type}" arg_val="$(arg right_dyn_param)"/>
 				<param name="device_ip">192.168.1.190</param>
 			</hardware>
 
