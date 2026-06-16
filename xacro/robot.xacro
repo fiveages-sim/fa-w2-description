@@ -32,17 +32,17 @@
 
     <xacro:if value="${chassis_arg == 'linkhou_s2' or chassis_arg == 'linkhou_s2_sinopec'}">
         <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2.xacro"/>
-        <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" variant="${platform_variant}"/>
+        <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" variant="${platform_variant}" collider="$(arg collider)"/>
     </xacro:if>
     <xacro:if value="${chassis_arg == 'linkhou_s2_v2'}">
         <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2_v2.xacro"/>
-        <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" variant="${platform_variant}"/>
+        <xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" variant="${platform_variant}" collider="$(arg collider)"/>
     </xacro:if>
 
     <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/body.xacro"/>
-    <xacro:body variant="${platform_variant}"/>
+    <xacro:body variant="${platform_variant}" collider="$(arg collider)"/>
     <xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/head.xacro"/>
-    <xacro:head variant="${platform_variant}"/>
+    <xacro:head variant="${platform_variant}" collider="$(arg collider)"/>
 
     <xacro:include filename="$(find m6_ccs_description)/xacro/arm_mount.xacro"/>
     <xacro:DualArmMount parent="arm_base"/>

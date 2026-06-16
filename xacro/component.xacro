@@ -2,6 +2,7 @@
 <robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 	<xacro:arg name="type" default="arms"/>
 	<xacro:arg name="variant" default=""/>
+	<xacro:arg name="collider" default="simple"/>
 
 	<xacro:if value="${'$(arg type)' == 'arms'}">
 		<xacro:include filename="$(find m6_ccs_description)/xacro/arm_mount.xacro"/>
