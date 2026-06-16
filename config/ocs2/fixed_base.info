@@ -22,8 +22,9 @@ model_information
     ; eeFrame1: 右臂末端执行器坐标系名
     eeFrame1                "right_eef"
 
-    ; removeJoints: 从 Pinocchio 模型中剔除的关节，不进入 MPC 状态/输入空间
-    ; 头部关节已纳入 MPC 规划（用于腰头耦合约束），仅剔除夹爪和底盘转向/驱动轮关节
+    ; removeJoints: fallback when using static URDF (non-xacro planning).
+    ; Dynamic planning URDF sets eef_fixed_joints + chassis_joints_movable=false in xacro.
+    ; Head joints are in MPC; entries below mainly cover legacy static models.
     removeJoints
     {
         [0]   "rr_steer_joint"
@@ -36,6 +37,24 @@ model_information
         [7]   "fl_wheel_joint"
         [8]   "left_gripper_joint"
         [9]   "right_gripper_joint"
+        ; RG75 mimic finger (parent gripper_joint removal does not drop mimic DOF in Pinocchio)
+        [10]  "left_right_finger_joint"
+        [11]  "right_right_finger_joint"
+        ; AG2F90 internal linkage (gripper_joint alone is insufficient)
+        [12]  "left_left_in_Joint"
+        [13]  "left_left_up_Joint"
+        [14]  "left_left_2_Joint"
+        [15]  "left_right_2_Joint"
+        [16]  "left_right_1_Joint"
+        [17]  "left_right_in_Joint"
+        [18]  "left_right_up_Joint"
+        [19]  "right_left_in_Joint"
+        [20]  "right_left_up_Joint"
+        [21]  "right_left_2_Joint"
+        [22]  "right_right_2_Joint"
+        [23]  "right_right_1_Joint"
+        [24]  "right_right_in_Joint"
+        [25]  "right_right_up_Joint"
     }
 }
 
