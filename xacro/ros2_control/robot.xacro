@@ -21,6 +21,7 @@
 	<xacro:include filename="$(find fiveages_w2_common_description)/xacro/ros2_control/body.xacro"/>
 	<xacro:include filename="$(find jodell_description)/xacro/ros2_control/RG75-300.xacro"/>
 	<xacro:include filename="$(find changingtek_description)/xacro/ros2_control/AG2F90-C.xacro"/>
+	<xacro:include filename="$(find changingtek_description)/xacro/ros2_control/AG2F120S.xacro"/>
 	<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o6.xacro"/>
 	<xacro:include filename="$(find linkerhand_description)/xacro/ros2_control/o7.xacro"/>
 
@@ -39,6 +40,10 @@
 
 	<xacro:macro name="side_ag2f90_interfaces" params="side">
 		<xacro:ag2f90c_interfaces name="${side}"/>
+	</xacro:macro>
+
+	<xacro:macro name="side_ag2f120s_interfaces" params="side">
+		<xacro:ag2f120s_interfaces name="${side}"/>
 	</xacro:macro>
 
 	<xacro:macro name="side_hand_interfaces" params="side hand_type">
@@ -157,6 +162,13 @@
 			</xacro:if>
 			<xacro:if value="${right_gripper_type in ('ag2f90_c', 'ag2f90_d')}">
 				<xacro:side_ag2f90_interfaces side="right"/>
+			</xacro:if>
+
+			<xacro:if value="${left_gripper_type in ('ag2f120s', 'ag2f120s_d')}">
+				<xacro:side_ag2f120s_interfaces side="left"/>
+			</xacro:if>
+			<xacro:if value="${right_gripper_type in ('ag2f120s', 'ag2f120s_d')}">
+				<xacro:side_ag2f120s_interfaces side="right"/>
 			</xacro:if>
 
 			<xacro:if value="${left_hand_type != ''}">
