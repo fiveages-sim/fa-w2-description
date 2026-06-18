@@ -1,0 +1,480 @@
+; OCS2 Wheel Humanoid Configuration - FiveAges W2
+; =================================================
+
+;=============================================================================
+; Model Information
+; 机器人模型的基本结构描述，告诉 OCS2 如何构建 Pinocchio 运动学/动力学模型
+;=============================================================================
+
+model_information
+{
+    ; 机器人底盘类型：
+    ;   0 = DefaultManipulator       → 固定基座
+    ;   1 = WheelBasedMobileManipulator → 轮式底盘，stateDim = 3(x,y,yaw) + armDim
+    manipulatorModelType    0
+
+    ; baseFrame: Pinocchio 模型的根坐标系
+    baseFrame               "base_footprint"
+
+    ; eeFrame: 左臂末端执行器坐标系名
+    eeFrame                 "left_tcp"
+
+    ; eeFrame1: 右臂末端执行器坐标系名
+    eeFrame1                "right_tcp"
+
+    ; removeJoints: fallback when using static URDF (non-xacro planning).
+    ; Dynamic planning URDF sets eef_fixed_joints + chassis_joints_movable=false in xacro.
+    ; Head joints are in MPC; entries below mainly cover legacy static models.
+    removeJoints
+    {
+        [0]   "rr_steer_joint"
+        [1]   "rr_wheel_joint"
+        [2]   "rl_steer_joint"
+        [3]   "rl_wheel_joint"
+        [4]   "fr_steer_joint"
+        [5]   "fr_wheel_joint"
+        [6]   "fl_steer_joint"
+        [7]   "fl_wheel_joint"
+        [8]   "left_gripper_joint"
+        [9]   "right_gripper_joint"
+        ; RG75 mimic finger (parent gripper_joint removal does not drop mimic DOF in Pinocchio)
+        [10]  "left_right_finger_joint"
+        [11]  "right_right_finger_joint"
+        ; AG2F90 internal linkage (gripper_joint alone is insufficient)
+        [12]  "left_left_in_Joint"
+        [13]  "left_left_up_Joint"
+        [14]  "left_left_2_Joint"
+        [15]  "left_right_2_Joint"
+        [16]  "left_right_1_Joint"
+        [17]  "left_right_in_Joint"
+        [18]  "left_right_up_Joint"
+        [19]  "right_left_in_Joint"
+        [20]  "right_left_up_Joint"
+        [21]  "right_left_2_Joint"
+        [22]  "right_right_2_Joint"
+        [23]  "right_right_1_Joint"
+        [24]  "right_right_in_Joint"
+        [25]  "right_right_up_Joint"
+    }
+}
+
+;=============================================================================
+; Model Settings
+;=============================================================================
+
+model_settings
+{
+    ; usePreComputation: true = 提前缓存 Pinocchio 中间量
+    usePreComputation       true
+
+    ; recompileLibraries: true = 每次启动重新生成 CppAD 动态库
+    recompileLibraries      true
+}
+
+;=============================================================================
+; Initial State
+; MPC 第一次求解时使用的初始状态向量
+; 总维度 = 20（关节：4腰+7左臂+7右臂+2头）
+;=============================================================================
+
+initialState
+{
+    arm
+    {
+        (0,0)   0.0     ; body_joint1  腰部关节1
+        (1,0)   0.0     ; body_joint2  腰部关节2
+        (2,0)   0.0     ; body_joint3  腰部关节3
+        (3,0)   0.0     ; body_joint4  腰部关节4
+        (4,0)   0.0     ; left_joint1  左臂肩关节1
+        (5,0)   0.0     ; left_joint2  左臂肩关节2
+        (6,0)   0.0     ; left_joint3  左臂肘关节1
+        (7,0)   0.0     ; left_joint4  左臂肘关节2
+        (8,0)   0.0     ; left_joint5  左臂腕关节1
+        (9,0)   0.0     ; left_joint6  左臂腕关节2
+        (10,0)  0.0     ; left_joint7  左臂腕关节3
+        (11,0)  0.0     ; right_joint1 右臂肩关节1
+        (12,0)  0.0     ; right_joint2 右臂肩关节2
+        (13,0)  0.0     ; right_joint3 右臂肘关节1
+        (14,0)  0.0     ; right_joint4 右臂肘关节2
+        (15,0)  0.0     ; right_joint5 右臂腕关节1
+        (16,0)  0.0     ; right_joint6 右臂腕关节2
+        (17,0)  0.0     ; right_joint7 右臂腕关节3
+        (18,0)  0.0     ; head_joint1  头部偏航（yaw）
+        (19,0)  0.0     ; head_joint2  头部俯仰（pitch）
+    }
+}
+
+;=============================================================================
+; Initial Mode Schedule
+;=============================================================================
+
+initialModeSchedule
+{
+    eventTimes
+    {
+    }
+
+    ; HM_DUAL_CUSTOM_LOCK_FIXED_BASE: 固定底盘 + 双臂独立 + 自定义关节锁定
+    modeSequence
+    {
+        [0]     HM_DUAL_CUSTOM_LOCK_FIXED_BASE
+        ; 使用 customJointLock.lockedJointIndices 锁定指定关节
+    }
+}
+
+;=============================================================================
+; DDP Settings
+;=============================================================================
+
+ddp
+{
+    algorithm                       SLQ
+
+    nThreads                        3
+    threadPriority                  50
+
+    maxNumIterations                1
+    minRelCost                      0.1
+    constraintTolerance             1e-3
+
+    displayInfo                     false
+    displayShortSummary             false
+    checkNumericalStability         false
+    debugPrintRollout               false
+    debugCaching                    false
+
+    AbsTolODE                       1e-5
+    RelTolODE                       1e-3
+    maxNumStepsPerSecond            100000
+    timeStep                        1e-3
+    backwardPassIntegratorType      ODE45
+
+    constraintPenaltyInitialValue   20.0
+    constraintPenaltyIncreaseRate   2.0
+
+    preComputeRiccatiTerms          true
+
+    useFeedbackPolicy               false
+
+    strategy                        LINE_SEARCH
+    lineSearch
+    {
+        minStepLength                   1e-2
+        maxStepLength                   1.0
+        hessianCorrectionStrategy       DIAGONAL_SHIFT
+        hessianCorrectionMultiple       1e-3
+    }
+}
+
+;=============================================================================
+; MPC Settings
+;=============================================================================
+
+mpc
+{
+    timeHorizon                     1.0     ; [s]
+    solutionTimeWindow              0.2     ; [s]
+    coldStart                       false
+
+    debugPrint                      false
+
+    mpcDesiredFrequency             100     ; [Hz]
+    mrtDesiredFrequency             400     ; [Hz]
+}
+
+;=============================================================================
+; Rollout Settings
+;=============================================================================
+
+rollout
+{
+    AbsTolODE                       1e-5
+    RelTolODE                       1e-3
+    timeStep                        1e-2
+    integratorType                  ODE45
+    maxNumStepsPerSecond            100000
+    checkNumericalStability         false
+}
+
+;=============================================================================
+; Body Tracking End Effector
+;=============================================================================
+
+bodyTrackingEE
+{
+    activate  true
+}
+
+;=============================================================================
+; Input Cost
+; 总输入维度 = 20（关节：4腰+7左臂+7右臂+2头）
+;=============================================================================
+
+inputCost
+{
+    R
+    {
+        arm
+        {
+            scaling 1e-3
+
+            (0,0)   5.0     ; body_joint1 速度惩罚
+            (1,0)   5.0     ; body_joint2 速度惩罚
+            (2,0)   2.0     ; body_joint3 速度惩罚
+            (3,0)   2.0     ; body_joint4 速度惩罚
+            (4,0)   1.0     ; left_joint1 速度惩罚
+            (5,0)   1.0     ; left_joint2 速度惩罚
+            (6,0)   1.0     ; left_joint3 速度惩罚
+            (7,0)   1.0     ; left_joint4 速度惩罚
+            (8,0)   0.1     ; left_joint5 速度惩罚
+            (9,0)   0.1     ; left_joint6 速度惩罚
+            (10,0)  0.1     ; left_joint7 速度惩罚
+            (11,0)  1.0     ; right_joint1 速度惩罚
+            (12,0)  1.0     ; right_joint2 速度惩罚
+            (13,0)  1.0     ; right_joint3 速度惩罚
+            (14,0)  1.0     ; right_joint4 速度惩罚
+            (15,0)  1.0     ; right_joint5 速度惩罚
+            (16,0)  1.0     ; right_joint6 速度惩罚
+            (17,0)  0.1     ; right_joint7 速度惩罚
+            (18,0)  0.1     ; head_joint1 速度惩罚
+            (19,0)  0.1     ; head_joint2 速度惩罚
+        }
+    }
+}
+
+;=============================================================================
+; End Effector Constraint
+;=============================================================================
+
+endEffector
+{
+    muPosition                      10.0
+    muOrientation                   5.0
+}
+
+finalEndEffector
+{
+    muPosition                      20.0
+    muOrientation                   10.0
+}
+
+;=============================================================================
+; Body Constraint (Mode-Aware)
+;=============================================================================
+
+bodyRelative
+{
+    activate                        true
+    bodyLinkName                    "body_link4"
+    muPosition                      5.0
+    muOrientation                   5.0
+}
+
+;=============================================================================
+; Bimanual Coupling Constraint
+;=============================================================================
+
+bimanualCoupling
+{
+    activate                        true
+    muPosition                      50.0
+    muOrientation                   25.0
+}
+
+;=============================================================================
+; Head Input Start Index
+; 头部关节在输入向量中的起始索引，用于推导手臂输入偏移
+; 布局：[腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
+; body_joint1=0, body_joint2=1, body_joint3=2, body_joint4=3
+; left_joint1..7=4..10, right_joint1..7=11..17
+; head_joint1=18, head_joint2=19
+;=============================================================================
+
+headInputStart                          18
+
+;=============================================================================
+; Waist Lock Constraint
+; 纯腰部锁定模式（headCoupling.activate = false 时生效）
+;=============================================================================
+
+waistLock
+{
+    activate                        true
+    numJoints                       4       ; body_joint1~4
+}
+
+;=============================================================================
+; Head Coupling Constraint
+; 输入向量布局：[腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
+; body_joint1 索引=0, body_joint2 索引=1, body_joint3 索引=2, body_joint4 索引=3
+; head_joint1 索引=18, head_joint2 索引=19
+;=============================================================================
+
+headCoupling
+{
+    ; activate: true = 启用头部耦合（body_joint4 与 head_joint1 耦合）
+    activate                        true
+
+    ; 参与耦合的腰部关节索引（body_joint4）
+    waistJointIndex                 3
+
+    ; 参与耦合的头部关节索引（head_joint1）
+    headJointIndex                  18
+
+    ; 耦合系数：u_body4 - alpha * u_head1 = 0
+    alpha                           1.0
+
+    ; 需要锁定的其他腰部关节（body_joint1~3）
+    lockedWaistJoints
+    {
+        [0] 0                       ; body_joint1 锁定
+        [1] 1                       ; body_joint2 锁定
+        [2] 2                       ; body_joint3 锁定
+    }
+}
+
+;=============================================================================
+; Custom Joint Lock Constraint
+; 自定义关节锁定模式：按输入向量索引把任意关节速度约束为 0
+; 使用模式：
+;   - 初始模式可设置为 HM_DUAL_CUSTOM_LOCK_FIXED_BASE
+;   - 或运行时发送 BODY_CUSTOM_LOCK
+; 输入向量布局：[腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
+; body_joint1~4=0..3, left_joint1~7=4..10, right_joint1~7=11..17, head_joint1~2=18..19
+;=============================================================================
+
+customJointLock
+{
+    activate                        true
+
+    lockedJointIndices
+    {
+        [0] 0                       ; body_joint1 锁定
+        [1] 1                       ; body_joint2 锁定
+        ;[2] 2                       ; body_joint3 锁定
+        ;[3] 3                       ; body_joint4 锁定
+        ;[0] 18                     ; head_joint1 锁定示例
+        ;[1] 19                     ; head_joint2 锁定示例
+        ;[6] 4                      ; left_joint1 锁定示例
+        ;[4] 10                     ; right_joint1 锁定示例
+        ;[5] 17                     ; right_joint1 锁定示例
+        ;[6] 13                     ; right_joint1 锁定示例
+        ;[7] 14                    ; right_joint1 锁定示例
+    }
+}
+
+;=============================================================================
+; Arm Lock Constraint
+;=============================================================================
+
+armLock
+{
+    activate                        true
+    leftNumJoints                   7       ; left_joint1~7
+    rightNumJoints                  7       ; right_joint1~7
+}
+
+;=============================================================================
+; Joint Position Limits
+;=============================================================================
+
+jointPositionLimits
+{
+    activate                        true
+    mu                              1e-2
+    delta                           1e-3
+}
+
+;=============================================================================
+; Joint Velocity Limits
+; 输入布局：[waist(4) | left_arm(7) | right_arm(7) | head(2)]
+;=============================================================================
+
+jointVelocityLimits
+{
+    mu                              1e-2
+    delta                           1e-3
+
+    lowerBound
+    {
+        arm
+        {
+            (0,0)  -0.2         ; body_joint1 [rad/s]
+            (1,0)  -0.2         ; body_joint2 [rad/s]
+            (2,0)  -0.5         ; body_joint3 [rad/s]
+            (3,0)  -0.5         ; body_joint4 [rad/s]
+            (4,0)  -2.07        ; left_joint1 [rad/s]
+            (5,0)  -2.07        ; left_joint2 [rad/s]
+            (6,0)  -2.07        ; left_joint3 [rad/s]
+            (7,0)  -2.07        ; left_joint4 [rad/s]
+            (8,0)  -2.57        ; left_joint5 [rad/s]
+            (9,0)  -2.57        ; left_joint6 [rad/s]
+            (10,0) -2.57        ; left_joint7 [rad/s]
+            (11,0) -2.07        ; right_joint1 [rad/s]
+            (12,0) -2.07        ; right_joint2 [rad/s]
+            (13,0) -2.07        ; right_joint3 [rad/s]
+            (14,0) -2.07        ; right_joint4 [rad/s]
+            (15,0) -2.57        ; right_joint5 [rad/s]
+            (16,0) -2.57        ; right_joint6 [rad/s]
+            (17,0) -2.57        ; right_joint7 [rad/s]
+            (18,0) -1.5         ; head_joint1 [rad/s]
+            (19,0) -1.5         ; head_joint2 [rad/s]
+        }
+    }
+
+    upperBound
+    {
+        arm
+        {
+            (0,0)  0.2          ; body_joint1 [rad/s]
+            (1,0)  0.2          ; body_joint2 [rad/s]
+            (2,0)  0.5          ; body_joint3 [rad/s]
+            (3,0)  0.5          ; body_joint4 [rad/s]
+            (4,0)  2.07         ; left_joint1 [rad/s]
+            (5,0)  2.07         ; left_joint2 [rad/s]
+            (6,0)  2.07         ; left_joint3 [rad/s]
+            (7,0)  2.07         ; left_joint4 [rad/s]
+            (8,0)  2.57         ; left_joint5 [rad/s]
+            (9,0)  2.57         ; left_joint6 [rad/s]
+            (10,0) 2.57         ; left_joint7 [rad/s]
+            (11,0) 2.07         ; right_joint1 [rad/s]
+            (12,0) 2.07         ; right_joint2 [rad/s]
+            (13,0) 2.07         ; right_joint3 [rad/s]
+            (14,0) 2.07         ; right_joint4 [rad/s]
+            (15,0) 2.57         ; right_joint5 [rad/s]
+            (16,0) 2.57         ; right_joint6 [rad/s]
+            (17,0) 2.57         ; right_joint7 [rad/s]
+            (18,0) 1.5          ; head_joint1 [rad/s]
+            (19,0) 1.5          ; head_joint2 [rad/s]
+        }
+    }
+}
+
+;=============================================================================
+; Self Collision
+;=============================================================================
+
+selfCollision
+{
+    activate                        true
+
+    mu                              1e-3
+    delta                           1e-2
+    minimumDistance                 0.01
+
+    collisionObjectPairs
+    {
+    }
+
+    collisionLinkPairs
+    {
+        [0] "body_link4, left_link3",
+        [1] "body_link4, left_link4",
+        [2] "body_link4, left_link5",
+        [3] "body_link4, left_link7",
+        [4] "body_link4, right_link3",
+        [5] "body_link4, right_link4",
+        [6] "body_link4, right_link5",
+        [7] "body_link4, right_link7",
+    }
+}
