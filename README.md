@@ -29,6 +29,16 @@ colcon build --packages-up-to fiveages_w2_description --symlink-install
   source ~/ros2_ws/install/setup.bash
   ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=ag2f90
   ```
+* With ChangingTek AG2F120S Gripper
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=ag2f120s
+  ```
+* With ChangingTek AG2F120S-D Gripper
+  ```bash
+  source ~/ros2_ws/install/setup.bash
+  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=ag2f120s_d
+  ```
 * With Jodell RG75 Gripper
   ```bash
   source ~/ros2_ws/install/setup.bash
