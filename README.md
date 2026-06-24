@@ -1,252 +1,131 @@
 # FiveAges W2 Description
 
-This package contains the description files for FiveAges W2 humanoid.
-
-![FiveAges](.images/fiveages_w2.png)
-
-## 1. Build
+轮式人形 W2 的 URDF / ros2_control 描述包。模型在 **`xacro/`**；底盘 / 躯干 / 头部在 [`fiveages_w2_common_description`](../fiveages_w2_common_description/README.md)；双臂与末端复用 [`m6_ccs_description`](../../manipulator/Tianji/m6_ccs_description/README.md)（`M6_CCS` 臂、`eefs.xacro`、共享 ros2_control 宏）。
 
 ```bash
-cd ~/ros2_ws
-colcon build --packages-up-to fiveages_w2_description --symlink-install
+cd ~/ros2_ws && colcon build --packages-up-to fiveages_w2_description --symlink-install
+source install/setup.bash
 ```
 
-## 2. Visualize the robot
+![FiveAges W2](.images/fiveages_w2.png)
 
-### 2.1 Full Robot
+## 1. 可视化与 Launch
 
-* FiveAges W2 (Basic visualization)
-  ```bash
-  source ~/fa_w2_ws/install/setup.bash
-  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple
-  ```
-
-<details>
-<summary><strong>More Configs with End Effector</strong></summary>
-
-* With ChangingTek AG2F90 Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=ag2f90
-  ```
-* With ChangingTek AG2F120S Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=ag2f120s
-  ```
-* With ChangingTek AG2F120S-D Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=ag2f120s_d
-  ```
-* With Jodell RG75 Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=rg75
-  ```
-* With LinkerHand O6
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=linkerhand_o6
-  ```
-* With LinkerHand O7
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=linkerhand_o7
-  ```
-
-</details>
-
-### 2.2 Component
-
-* Dual arms (default)
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2
-  ```
-* LP02 camera
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch robot_common_launch component.launch.py robot:=fiveages_w2 type:=lp02_336_camera
-  ```
-
-Chassis (Linkhou S2), body, and head component visualization live in `fiveages_w2_common_description`. See [fiveages_w2_common_description/README.md](../fiveages_w2_common_description/README.md).
-
-## 3. ROS2 Control Demos
-
-### 3.1 Mock Component
-
-* Full Body Control
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2
-  ```
-* Split Body Control
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2
-  ```
-* Only Body
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2
-  ```
-
-<details>
-<summary><strong>More Full Body Configs</strong></summary>
-
-* With ChangingTek AG2F90 Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=ag2f90 robot:=fiveages_w2
-  ```
-* With Jodell RG75 Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75 robot:=fiveages_w2
-  ```
-* With Jodell RG75 Gripper and Heavy Pad
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=rg75_heavy robot:=fiveages_w2
-  ```
-* With LinkerHand O6
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=linkerhand_o6 robot:=fiveages_w2
-  ```
-* With LinkerHand L6
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=linkerhand_l6 robot:=fiveages_w2
-  ```
-
-* With LinkerHand O7
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py type:=linkerhand_o7 robot:=fiveages_w2
-  ```
-
-</details>
-
-<details>
-<summary><strong>More Split Body Configs</strong></summary>
-
-* With ChangingTek AG2F90 Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=ag2f90 robot:=fiveages_w2
-  ```
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=ag2f90_d robot:=fiveages_w2
-  ```
-* With Jodell RG75 Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75 robot:=fiveages_w2
-  ```
-
-* With Jodell RG75 Gripper and Heavy Pad
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75_heavy robot:=fiveages_w2
-  ```
-* With LinkerHand O6
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=linkerhand_o6 robot:=fiveages_w2
-  ```
-* With LinkerHand L6
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=linkerhand_l6 robot:=fiveages_w2
-  ```
-
-</details>
-
-### 3.2 Isaac Sim
-
-* Empty Hand (Full Body Control)
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 hardware:=isaac
-  ```
-* With Jodell RG75 Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=rg75 robot:=fiveages_w2 hardware:=isaac
-  ```
-* With ChangingTek AG2F90 Gripper
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch ocs2_arm_controller split_body.launch.py type:=ag2f90 robot:=fiveages_w2 hardware:=isaac
-  ```
-
-### 3.3 Joint Control Commands
-
-* Set Head Angles
-  ```bash
-  ros2 topic pub /head_joint_controller/target_joint_position std_msgs/msg/Float64MultiArray "{data: [0.0, 0.5]}"  # 设置目标关节角度（弧度）
-  ```
-  ```bash
-  ros2 topic pub /head_joint_controller/target_joint_position std_msgs/msg/Float64MultiArray "{data: [0.0, 0.0]}"  # 设置目标关节角度（弧度）
-  ```
-* Set Body Angles (Only available on split control)
-  ```bash
-  ros2 topic pub /body_joint_controller/target_joint_position std_msgs/msg/Float64MultiArray "{data: [1.0145214890243484, -2.248923594021317, -1.2333776023323322, 0.0]}"  # 设置目标关节角度（弧度）
-  ```
-  ```bash
-  ros2 topic pub /body_joint_controller/target_joint_position std_msgs/msg/Float64MultiArray "{data: [0.6810335903307411, -1.5096724218776123, -0.8279494910068607, 0.0]}"  # 设置目标关节角度（弧度）
-  ```
-* Set Arm Angles
-  ```bash
-  ros2 topic pub /ocs2_arm_controller/target_joint_position std_msgs/msg/Float64MultiArray "{data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0,0.0,0.0]}"  # 设置目标关节角度（弧度）
-  ```
-
-## 4. Real Robot Deploy
-
-* Only Body
-  ```bash
-  source ~/ros2_ws/install/setup.bash
-  ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2 hardware:=real enable_head:=false
-  ```
-
-## 5. Navigation (Isaac Sim / 点云雷达)
-
-底盘障碍感知使用前后雷达点云：`/fl_lidar/point_cloud`、`/rr_lidar/point_cloud`（参数见 `config/nav2/nav2_params_isaac_gt.yaml`）。
+| 场景 | 入口 | 示例 |
+|------|------|------|
+| 全身 RViz | `humanoid.launch.py` | `… robot:=fiveages_w2 collider:=simple` |
+| 带末端 | 同上 + `type:=<key>` | `… type:=ag2f90`（键名见 [m6_ccs §2](../../manipulator/Tianji/m6_ccs_description/README.md#2-末端执行器)） |
+| 左右不同末端 | `left_type` / `right_type` | `left_type:=rg75 right_type:=linkerhand_o7` |
+| 部件调试 | `component.launch.py` | `… type:=lp02_336_camera` |
+| 全身 WBC（mock） | `ocs2_arm_controller full_body.launch.py` | 默认 `hardware:=mock_components` |
+| 分体控制（mock） | `split_body.launch.py` | 腰 / 头 / 臂独立控制器 |
+| 仅腰体 | `basic_joint_controller demo.launch.py` | `robot:=fiveages_w2` |
+| Isaac | 上述 launch + `hardware:=isaac` | Topic 桥接仿真 |
+| 导航（仿真） | `navigation_isaac_gt.launch.py` | 见 [§6](#6-导航) |
 
 ```bash
-source ~/ros2_ws/install/setup.bash
-ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
+ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=rg75
+ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 type:=linkerhand_o7
 ```
+
+## 2. 末端执行器
+
+`type` / `left_type` / `right_type` 与 m6_ccs **完全相同**（解析：`m6_ccs_description/xacro/eef_type_resolver.xacro`）。
+
+真机驱动方式、支持矩阵、CAN 限制等详见 **[m6_ccs README §2](../../manipulator/Tianji/m6_ccs_description/README.md#2-末端执行器)**，此处不重复。
+
+W2 特有：`hardware:=real` 时臂走 Marvin + `juxie_body`（腰头 CAN）；外接 `usb` / `usb_can` 末端逻辑与 m6_ccs 共用 `external_ee_systems`。
+
+## 3. 平台与模型
+
+| 层级 | 包 / xacro | 说明 |
+|------|------------|------|
+| 底盘 | `fiveages_w2_common` `linkhou_s2` | launch：`chassis:=linkhou_s2`（默认）/ `linkhou_s2_v2` / `linkhou_s2_sinopec` |
+| 躯干 / 头 | `fiveages_w2_common` `body.xacro` / `head.xacro` | OEM 外观：`variant:=sinopec` 等 |
+| 双臂 | `m6_ccs` `M6_CCS` | `skin:=fiveages_w2`；碰撞与 m6 共用 `link*.glb` |
+| 末端 | `m6_ccs` `eefs.xacro` | 与 m6_ccs 一致 |
+
+规划 URDF 默认冻结底盘轮关节与末端主动关节（`chassis_joints_movable:=false`、`eef_fixed_joints` 由 launch 设置）。
+
+## 4. ros2_control 架构
+
+真机拆为 **两个 system**；仿真合并为一个：
+
+| 模式 | System | 硬件插件 |
+|------|--------|----------|
+| 真机 | `M6_CCS_System` | `marvin_ros2_control`（双臂 + 夹爪/手） |
+| 真机 | `juxie_body` | `juxie_ros2_control`（`body_joint1~4`、`head_joint1~2`） |
+| 真机 | 外接末端 *\_system | `modbus_ros2_control` / `can_ros2_control`（按 drive type） |
+| 仿真 | `fiveages_w2_system` | mock / gz / isaac（[`robot_common_launch` simulation_hardware](../../common/robot_common_launch/xacro/ros2_control/simulation_hardware.xacro)） |
+
+手臂侧宏均来自 [m6_ccs §5](../../manipulator/Tianji/m6_ccs_description/README.md#5-ros2_control-共享宏)：`dual_arm_ee_block`、`marvin_hardware_block`、`external_ee_systems` 等。本包 `xacro/ros2_control/robot.xacro` 仅为薄封装。
+
+控制器配置：`config/ros2_control/common.yaml`（`ocs2_wbc_controller` 全身、`ocs2_arm_controller` 双臂、`body_joint_controller` / `head_joint_controller` 等）。
+
+## 5. 真机部署
 
 ```bash
-source ~/ros2_ws/install/setup.bash
-ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=warehouse_multiple_shelfs nav2_profile:=map_only
+colcon build --packages-up-to marvin_ros2_control modbus_ros2_control can_ros2_control juxie_ros2_control --symlink-install
+source install/setup.bash
+
+# 仅腰体（无臂）
+ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2 hardware:=real enable_head:=false
+
+# 全身真机 + 末端（示例：夹爪 / 外接手）
+ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 hardware:=real type:=ag2f90_c
+ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware:=real_usb type:=linkerhand_o7
+ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware:=real_usb type:=inspire_f2 \
+  left_ee_drive_type:=usb_can right_ee_drive_type:=usb_can
 ```
 
-### 5.1 导航地图与 Nav2 配置
+`robot.local.yaml` 片段（`hardware:` 在 `hardware:=real` / `real_usb` 时注入 xacro）：
 
-本包通过 **`config/navigation.yaml`** 声明导航资源所在包（默认指向 `fiveages_w2_common_description`）：
+```yaml
+defaults:
+  end_effectors:
+    type: ag2f90_c
+hardware:
+  device_ip: 192.168.1.190
+  arm_ctrl_mode: position
+  max_joint_speed: 50
+  max_joint_acceleration: 30
+  usb_left_port: /dev/ttyUSB0
+  usb_right_port: /dev/ttyUSB2
+  left_ee_drive_type: marvin
+  right_ee_drive_type: marvin
+```
+
+Launch 可覆盖：`hardware_device_ip:=…`、`hardware_max_joint_speed:=…`、`hardware_usb_left_port:=…`、`hardware_left_ee_drive_type:=tianji_can` 等（规则同 m6_ccs）。
+
+### 分体控制常用话题（`split_body`）
+
+```bash
+# 头
+ros2 topic pub /head_joint_controller/target_joint_position std_msgs/msg/Float64MultiArray "{data: [0.0, 0.5]}"
+# 腰（仅 split_body）
+ros2 topic pub /body_joint_controller/target_joint_position std_msgs/msg/Float64MultiArray \
+  "{data: [1.014, -2.249, -1.233, 0.0]}"
+# 双臂（14 维）
+ros2 topic pub /ocs2_arm_controller/target_joint_position std_msgs/msg/Float64MultiArray \
+  "{data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}"
+```
+
+## 6. 导航
+
+点云话题：`/fl_lidar/point_cloud`、`/rr_lidar/point_cloud`（见 `config/nav2/nav2_params_isaac_gt.yaml`）。
+
+本包 `config/navigation.yaml` 将地图 / Nav2 指向 `fiveages_w2_common_description`：
 
 ```yaml
 map_config_package: fiveages_w2_common_description
 nav_config_package: fiveages_w2_common_description
 ```
 
-实际地图与 Nav2 文件位于 `fa-w2-components` 子模块：
-
-- 地图：`fiveages_w2_common_description/config/maps/`（如 `siemens`、`siemens_task2`）
-- Nav2：`fiveages_w2_common_description/config/nav2/`
-
-`robot:=fiveages_w2` 时 launch 读取上述 `navigation.yaml`，再 fallback 到 `robot_common_launch/config/`。无需在 launch 参数里写死包名。
-
 ```bash
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2
+ros2 launch robot_common_launch navigation_isaac_gt.launch.py robot:=fiveages_w2 map:=siemens_task2
 ros2 launch robot_common_launch navigation_isaac_gt.launch.py \
-  robot:=fiveages_w2 map:=siemens_task2
+  robot:=fiveages_w2 map:=warehouse_multiple_shelfs nav2_profile:=map_only
 ```
 
-工作区 `./quick_start.sh` → 启动 → 导航 会**自动扫描**可用地图列表。
-
-详见 [`fa-w2-components` README](../fa-w2-components/README.md) 导航章节。
+地图与 Nav2 文件：`fiveages_w2_common_description/config/maps/`、`config/nav2/`。工作区 `quick_start.sh` 可扫描可用地图。详见 [fa-w2-components README](../fa-w2-components/README.md)。
