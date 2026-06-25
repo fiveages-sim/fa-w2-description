@@ -14,7 +14,7 @@ source install/setup.bash
 | 场景 | 入口 | 示例 |
 |------|------|------|
 | 全身 RViz | `humanoid.launch.py` | `… robot:=fiveages_w2 collider:=simple` |
-| 带末端 | 同上 + `type:=<key>` | `… type:=ag2f90`（键名见 [m6_ccs §2](../../manipulator/Tianji/m6_ccs_description/README.md#2-末端执行器)） |
+| 带末端 | 同上 + `type:=<key>` | `… type:=erg32`（键名见 [m6_ccs §2](../../manipulator/Tianji/m6_ccs_description/README.md#2-末端执行器)） |
 | 左右不同末端 | `left_type` / `right_type` | `left_type:=rg75 right_type:=linkerhand_o7` |
 | 部件调试 | `component.launch.py` | `… type:=lp02_336_camera` |
 | 全身 WBC（mock） | `ocs2_arm_controller full_body.launch.py` | 默认 `hardware:=mock_components` |
@@ -24,7 +24,10 @@ source install/setup.bash
 | 导航（仿真） | `navigation_isaac_gt.launch.py` | 见 [§6](#6-导航) |
 
 ```bash
+ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=erg32
 ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=rg75
+ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 type:=erg32
+ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 type:=erg32
 ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 type:=linkerhand_o7
 ```
 
@@ -73,6 +76,7 @@ ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2 hardware:=r
 
 # 全身真机 + 末端（示例：夹爪 / 外接手）
 ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 hardware:=real type:=ag2f90_c
+ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 hardware:=real type:=erg32
 ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware:=real_usb type:=linkerhand_o7
 ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware:=real_usb type:=inspire_f2 \
   left_ee_drive_type:=usb_can right_ee_drive_type:=usb_can
