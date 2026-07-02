@@ -243,40 +243,6 @@ inputCost
 }
 
 ;=============================================================================
-; Waist Phi Positive Bias
-; Soft preference for redundant whole-body solutions:
-; discourage WaistLiftingPlaner phi from going below lowerBoundRad.
-; phi = sum(q_i * rotationDirection_i + angleOffset_i)
-; waistJointIndices follows the arm state layout:
-; [body_joint1~4 | left_joint1~7 | right_joint1~7 | head_joint1~2]
-;=============================================================================
-
-waistPhiPositiveBias
-{
-    activate                        true
-    waistJointIndices
-    {
-        [0] 0                       ; body_joint1
-        [1] 1                       ; body_joint2
-        [2] 2                       ; body_joint3
-    }
-    rotationDirection
-    {
-        (0,0)   1.0
-        (1,0)  -1.0
-        (2,0)   1.0
-    }
-    angleOffset
-    {
-        (0,0)   0.0
-        (1,0)   0.0
-        (2,0)   0.0
-    }
-    lowerBoundRad                   0.0
-    mu                              5.0
-}
-
-;=============================================================================
 ; End Effector Constraint
 ;=============================================================================
 
@@ -394,6 +360,33 @@ customJointLock
         ;[5] 17                     ; right_joint1 锁定示例
         ;[6] 13                     ; right_joint1 锁定示例
         ;[7] 14                    ; right_joint1 锁定示例
+    }
+
+    ; 仅在 customJointLock 总开关、此子开关及 CUSTOM_LOCKED 模式
+    ; 三个条件同时满足时生效
+    waistPhiPositiveBias
+    {
+        activate                    true
+        waistJointIndices
+        {
+            [0] 0                   ; body_joint1
+            [1] 1                   ; body_joint2
+            [2] 2                   ; body_joint3
+        }
+        rotationDirection
+        {
+            (0,0)   1.0
+            (1,0)  -1.0
+            (2,0)   1.0
+        }
+        angleOffset
+        {
+            (0,0)   0.0
+            (1,0)   0.0
+            (2,0)   0.0
+        }
+        lowerBoundRad               0.0
+        mu                          5.0
     }
 }
 
