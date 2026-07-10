@@ -1,0 +1,12 @@
+# Experimental WBC overlay: holonomic Linkhou S2 chassis (vx, vy, omega).
+# Does not change common.yaml defaults. Enable via:
+#   quick_start → 全身控制 → 全向移动底盘 [实验性]
+# or:
+#   ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 \
+#     control_variant:=wbc_omni_mobile_base type:=<eef>
+ocs2_wbc_controller:
+  ros__parameters:
+    info_file_name: omni_mobile_base
+    # Prefer external TF when available (Isaac /tf or /isaac/tf). Mock/rviz_only auto-fallback:
+    # integrated base pose + world->base_footprint broadcast (see WbcCtrlComponent).
+    use_tf_for_base: true
