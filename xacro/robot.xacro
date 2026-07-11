@@ -2,8 +2,7 @@
 <robot name="FiveAges W2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:arg name="collider" default="simple"/>
-    <!-- OCS2 planning URDF: eef_fixed_joints + chassis_joints_movable=false (see robot_utils planning mappings) -->
-    <xacro:arg name="eef_fixed_joints" default="false"/>
+    <!-- eef_fixed_joints / chassis_joints_movable: planning URDF mappings from robot_common_launch -->
     <xacro:arg name="chassis" default="linkhou_s2"/>
     <xacro:arg name="chassis_joints_movable" default="false"/>
     <xacro:arg name="variant" default=""/>

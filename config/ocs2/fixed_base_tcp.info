@@ -220,7 +220,7 @@ inputCost
 
             (0,0)   5.0     ; body_joint1 速度惩罚
             (1,0)   5.0     ; body_joint2 速度惩罚
-            (2,0)   2.0     ; body_joint3 速度惩罚
+            (2,0)   5.0     ; body_joint3 速度惩罚
             (3,0)   2.0     ; body_joint4 速度惩罚
             (4,0)   1.0     ; left_joint1 速度惩罚
             (5,0)   1.0     ; left_joint2 速度惩罚
@@ -318,7 +318,7 @@ headCoupling
     ; 参与耦合的腰部关节索引（body_joint4）
     waistJointIndex                 3
 
-    ; 参与耦合的头部关节索引（head_joint1）
+    ; 参与耦合的头部关节索引（head_joint1）；HEAD_COUPLED 下仅此关节可动，其余头部关节仍隐式锁定
     headJointIndex                  18
 
     ; 耦合系数：u_body4 - alpha * u_head1 = 0
@@ -349,12 +349,12 @@ customJointLock
 
     lockedJointIndices
     {
-        [0] 0                       ; body_joint1 锁定
-        [1] 1                       ; body_joint2 锁定
+        [0] 0                       ; body_joint1
+        [1] 1                       ; body_joint2
+        ; 头部在非 HEAD_COUPLED 模式下由框架隐式锁定，无需在此配置
+
         ;[2] 2                       ; body_joint3 锁定
         ;[3] 3                       ; body_joint4 锁定
-        ;[0] 18                     ; head_joint1 锁定示例
-        ;[1] 19                     ; head_joint2 锁定示例
         ;[6] 4                      ; left_joint1 锁定示例
         ;[4] 10                     ; right_joint1 锁定示例
         ;[5] 17                     ; right_joint1 锁定示例
@@ -408,7 +408,7 @@ armLock
 jointPositionLimits
 {
     activate                        true
-    mu                              1e-2
+    mu                              1e-3
     delta                           1e-3
 }
 
@@ -428,7 +428,7 @@ jointVelocityLimits
         {
             (0,0)  -0.2         ; body_joint1 [rad/s]
             (1,0)  -0.2         ; body_joint2 [rad/s]
-            (2,0)  -0.5         ; body_joint3 [rad/s]
+            (2,0)  -0.2         ; body_joint3 [rad/s]
             (3,0)  -0.5         ; body_joint4 [rad/s]
             (4,0)  -2.07        ; left_joint1 [rad/s]
             (5,0)  -2.07        ; left_joint2 [rad/s]
@@ -455,7 +455,7 @@ jointVelocityLimits
         {
             (0,0)  0.2          ; body_joint1 [rad/s]
             (1,0)  0.2          ; body_joint2 [rad/s]
-            (2,0)  0.5          ; body_joint3 [rad/s]
+            (2,0)  0.2          ; body_joint3 [rad/s]
             (3,0)  0.5          ; body_joint4 [rad/s]
             (4,0)  2.07         ; left_joint1 [rad/s]
             (5,0)  2.07         ; left_joint2 [rad/s]
