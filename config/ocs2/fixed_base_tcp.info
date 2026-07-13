@@ -367,6 +367,7 @@ customJointLock
     waistPhiPositiveBias
     {
         activate                    true
+        waistType                   "three_joint"
         waistJointIndices
         {
             [0] 0                   ; body_joint1
