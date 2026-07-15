@@ -70,6 +70,15 @@ ocs2_arm_controller:
     info_file_name: task
     home_duration: 5.0
     movel_trajectory_duration: 6.0
+    movel_duration: 2.0
+    movel_sample_interval: 0.04
+    movel_max_linear_velocity: 0.3
+    movel_max_linear_acceleration: 1.0
+    movel_max_linear_jerk: 2.0
+    movel_max_angular_velocity: 1.0
+    movel_max_angular_acceleration: 2.0
+    movel_max_angular_jerk: 4.0
+    movel_auto_extend_duration: true
     movej_interpolation_type: doubles
     home_interpolation_type: doubles
 
