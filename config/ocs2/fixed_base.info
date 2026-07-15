@@ -81,26 +81,28 @@ initialState
 {
     arm
     {
-        (0,0)   0.0     ; body_joint1  腰部关节1
-        (1,0)   0.0     ; body_joint2  腰部关节2
-        (2,0)   0.0     ; body_joint3  腰部关节3
-        (3,0)   0.0     ; body_joint4  腰部关节4
-        (4,0)   0.0     ; left_joint1  左臂肩关节1
-        (5,0)   0.0     ; left_joint2  左臂肩关节2
-        (6,0)   0.0     ; left_joint3  左臂肘关节1
-        (7,0)   0.0     ; left_joint4  左臂肘关节2
-        (8,0)   0.0     ; left_joint5  左臂腕关节1
-        (9,0)   0.0     ; left_joint6  左臂腕关节2
-        (10,0)  0.0     ; left_joint7  左臂腕关节3
-        (11,0)  0.0     ; right_joint1 右臂肩关节1
-        (12,0)  0.0     ; right_joint2 右臂肩关节2
-        (13,0)  0.0     ; right_joint3 右臂肘关节1
-        (14,0)  0.0     ; right_joint4 右臂肘关节2
-        (15,0)  0.0     ; right_joint5 右臂腕关节1
-        (16,0)  0.0     ; right_joint6 右臂腕关节2
-        (17,0)  0.0     ; right_joint7 右臂腕关节3
-        (18,0)  0.0     ; head_joint1  头部偏航（yaw）
-        (19,0)  0.0     ; head_joint2  头部俯仰（pitch）
+            scaling 1e-3
+
+            (0,0)   5.0     ; body_joint1 速度惩罚
+            (1,0)   5.0     ; body_joint2 速度惩罚
+            (2,0)   5.0     ; body_joint3 速度惩罚
+            (3,0)   2.0     ; body_joint4 速度惩罚
+            (4,0)   1.0     ; left_joint1 速度惩罚
+            (5,0)   1.0     ; left_joint2 速度惩罚
+            (6,0)   1.0     ; left_joint3 速度惩罚
+            (7,0)   1.0     ; left_joint4 速度惩罚
+            (8,0)   0.1     ; left_joint5 速度惩罚
+            (9,0)   0.1     ; left_joint6 速度惩罚
+            (10,0)  0.1     ; left_joint7 速度惩罚
+            (11,0)  1.0     ; right_joint1 速度惩罚
+            (12,0)  1.0     ; right_joint2 速度惩罚
+            (13,0)  1.0     ; right_joint3 速度惩罚
+            (14,0)  1.0     ; right_joint4 速度惩罚
+            (15,0)  1.0     ; right_joint5 速度惩罚
+            (16,0)  1.0     ; right_joint6 速度惩罚
+            (17,0)  0.1     ; right_joint7 速度惩罚
+            (18,0)  0.1     ; head_joint1 速度惩罚
+            (19,0)  0.1     ; head_joint2 速度惩罚
     }
 }
 
@@ -318,7 +320,7 @@ headCoupling
     ; 参与耦合的腰部关节索引（body_joint4）
     waistJointIndex                 3
 
-    ; 参与耦合的头部关节索引（head_joint1）
+    ; 参与耦合的头部关节索引（head_joint1）；HEAD_COUPLED 下仅此关节可动，其余头部关节仍隐式锁定
     headJointIndex                  18
 
     ; 耦合系数：u_body4 - alpha * u_head1 = 0
@@ -349,12 +351,12 @@ customJointLock
 
     lockedJointIndices
     {
-        [0] 0                       ; body_joint1 锁定
-        [1] 1                       ; body_joint2 锁定
+        [0] 0                       ; body_joint1
+        [1] 1                       ; body_joint2
+        ; 头部在非 HEAD_COUPLED 模式下由框架隐式锁定，无需在此配置
+
         ;[2] 2                       ; body_joint3 锁定
         ;[3] 3                       ; body_joint4 锁定
-        ;[0] 18                     ; head_joint1 锁定示例
-        ;[1] 19                     ; head_joint2 锁定示例
         ;[6] 4                      ; left_joint1 锁定示例
         ;[4] 10                     ; right_joint1 锁定示例
         ;[5] 17                     ; right_joint1 锁定示例
@@ -367,6 +369,7 @@ customJointLock
     waistPhiPositiveBias
     {
         activate                    true
+        waistType                   "three_joint"
         waistJointIndices
         {
             [0] 0                   ; body_joint1
