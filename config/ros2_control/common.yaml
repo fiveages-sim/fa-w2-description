@@ -7,6 +7,14 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
+    # FT sensor broadcasters — publish left_ft_sensor / right_ft_sensor as WrenchStamped.
+    # Names and sides are controlled by robot.local.yaml → xacro; broadcaster auto-detects
+    # whether the sensor is declared.
+    left_ft_broadcaster:
+      type: force_torque_sensor_broadcaster/ForceTorqueSensorBroadcaster
+    right_ft_broadcaster:
+      type: force_torque_sensor_broadcaster/ForceTorqueSensorBroadcaster
+
     # 双臂控制器 - 使用ocs2 arm controller
     ocs2_arm_controller:
       type: ocs2_arm_controller/Ocs2ArmController
@@ -236,3 +244,17 @@ right_gripper_controller:
   ros__parameters:
     joint: right_gripper_joint
     use_effort_interface: false
+
+# FT sensor broadcasters — publish WrenchStamped from sensor state interfaces.
+# Auto-detects sensor presence: if the URDF declares left_ft_sensor / right_ft_sensor,
+# the broadcaster activates; otherwise it stays inactive. Default topics:
+#   /left_ft_broadcaster/wrench  /right_ft_broadcaster/wrench
+left_ft_broadcaster:
+  ros__parameters:
+    sensor_name: left_ft_sensor
+    frame_id: left_eef
+
+right_ft_broadcaster:
+  ros__parameters:
+    sensor_name: right_ft_sensor
+    frame_id: right_eef
