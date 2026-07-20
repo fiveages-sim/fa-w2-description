@@ -386,6 +386,8 @@ customJointLock
             (1,0)   0.0
             (2,0)   0.0
         }
+        yawJointIndex               3       ; body_joint4 yaw compensation
+        yawOffset                   0.0
         lowerBoundRad               0.0
         mu                          5.0
     }
