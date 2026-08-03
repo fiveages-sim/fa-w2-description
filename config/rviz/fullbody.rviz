@@ -38,6 +38,8 @@ Panels:
     Name: OCS2FSMPanel
   - Class: arms_rviz_control_plugin/JointControlPanel
     Name: JointControlPanel
+  - Class: arms_rviz_control_plugin/ComplianceForcePanel
+    Name: ComplianceForcePanel
 Visualization Manager:
   Class: ""
   Displays:
@@ -821,6 +823,8 @@ Visualization Manager:
     Saved: ~
 Window Geometry:
   Displays:
+    collapsed: false
+  ComplianceForcePanel:
     collapsed: false
   GripperControlPanel:
     collapsed: false
