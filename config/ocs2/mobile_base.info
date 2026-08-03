@@ -21,6 +21,7 @@ model_information
 
     ; eeFrame1: 右臂末端执行器坐标系名
     eeFrame1                "right_eef"
+    bodyFrame               "body_link4"
 
     ; removeJoints: 从 Pinocchio 模型中剔除的关节，不进入 MPC 状态/输入空间
     ; 头部关节已纳入 MPC 规划（用于腰头耦合约束），仅剔除夹爪和底盘转向/驱动轮关节
@@ -193,6 +194,8 @@ rollout
 bodyTrackingEE
 {
     activate  true
+    muPosition 5.0
+    muOrientation 5.0
 }
 
 ;=============================================================================
@@ -266,7 +269,8 @@ finalEndEffector
 bodyRelative
 {
     activate                        true
-    bodyLinkName                    "body_link4"
+    xLowerBound                     0.00
+    xUpperBound                     0.25
     muPosition                      5.0
     muOrientation                   5.0
 }

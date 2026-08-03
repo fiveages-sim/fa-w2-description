@@ -13,6 +13,7 @@ model_information
     baseFrame               "base_footprint"
     eeFrame                 "left_eef"
     eeFrame1                "right_eef"
+    bodyFrame               "body_link4"
 
     ; Joints to remove (fixed joints, mimic joints detected automatically)
     removeJoints
@@ -261,7 +262,8 @@ finalEndEffector
 bodyRelative
 {
     activate                   true
-    bodyLinkName               "body_link4"
+    xLowerBound                0.00
+    xUpperBound                0.25
     muPosition                 0.5
     muOrientation              1.0
 }
@@ -410,4 +412,3 @@ selfCollision
           [7] "body_link4, left_link3",
     }
 }
-
