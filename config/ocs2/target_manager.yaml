@@ -9,6 +9,8 @@
     marker_fixed_frame: base_footprint
     # 是否启用VR输入处理
     enable_vr: true
+    # 全身控制下 VR 目标相对底盘保持；发布前转换到 WBC 控制 frame
+    vr_follow_frame: base_footprint
     enable_head_control: false
     
     # 头部关节映射配置（可选）
