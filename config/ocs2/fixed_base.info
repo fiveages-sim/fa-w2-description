@@ -131,7 +131,7 @@ ddp
 {
     algorithm                       SLQ
 
-    nThreads                        3
+    nThreads                        5
     threadPriority                  50
 
     maxNumIterations                1
@@ -180,7 +180,7 @@ mpc
     debugPrint                      false
 
     mpcDesiredFrequency             100     ; [Hz]
-    mrtDesiredFrequency             400     ; [Hz]
+    mrtDesiredFrequency             500     ; [Hz]
 }
 
 ;=============================================================================
@@ -229,18 +229,18 @@ inputCost
             (5,0)   1.0     ; left_joint2 速度惩罚
             (6,0)   1.0     ; left_joint3 速度惩罚
             (7,0)   1.0     ; left_joint4 速度惩罚
-            (8,0)   0.1     ; left_joint5 速度惩罚
-            (9,0)   0.1     ; left_joint6 速度惩罚
-            (10,0)  0.1     ; left_joint7 速度惩罚
+            (8,0)   0.5     ; left_joint5 速度惩罚
+            (9,0)   0.5     ; left_joint6 速度惩罚
+            (10,0)  0.5     ; left_joint7 速度惩罚
             (11,0)  1.0     ; right_joint1 速度惩罚
             (12,0)  1.0     ; right_joint2 速度惩罚
             (13,0)  1.0     ; right_joint3 速度惩罚
             (14,0)  1.0     ; right_joint4 速度惩罚
             (15,0)  1.0     ; right_joint5 速度惩罚
             (16,0)  1.0     ; right_joint6 速度惩罚
-            (17,0)  0.1     ; right_joint7 速度惩罚
-            (18,0)  0.1     ; head_joint1 速度惩罚
-            (19,0)  0.1     ; head_joint2 速度惩罚
+            (17,0)  0.5     ; right_joint7 速度惩罚
+            (18,0)  0.5     ; head_joint1 速度惩罚
+            (19,0)  0.5     ; head_joint2 速度惩罚
         }
     }
 }
@@ -251,13 +251,13 @@ inputCost
 
 endEffector
 {
-    muPosition                      50.0
+    muPosition                      10.0
     muOrientation                   5.0
 }
 
 finalEndEffector
 {
-    muPosition                      50.0
+    muPosition                      10.0
     muOrientation                   10.0
 }
 
@@ -427,7 +427,7 @@ jointPositionLimits
 jointVelocityLimits
 {
     mu                              1e-2
-    delta                           1e-3
+    delta                           1e-2
 
     lowerBound
     {
