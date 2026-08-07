@@ -88,6 +88,12 @@ ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware
 defaults:
   end_effectors:
     type: ag2f90_c
+  ft:
+    left: kwr75_485
+    right: none
+  tcp_offset:
+    xyz: "0 0 0"
+    rpy: "0 0 0"              # radians; e.g. "0 0 ${PI/2}"
 hardware:
   device_ip: 192.168.1.190
   arm_ctrl_mode: position
@@ -99,7 +105,7 @@ hardware:
   right_ee_drive_type: marvin
 ```
 
-Launch 可覆盖：`hardware_device_ip:=…`、`hardware_max_joint_speed:=…`、`hardware_usb_left_port:=…`、`hardware_left_ee_drive_type:=tianji_can` 等（规则同 m6_ccs）。
+Launch 可覆盖：`ft:=…`、`tcp_offset_rpy:=…`、`hardware_device_ip:=…`、`hardware_max_joint_speed:=…`、`hardware_usb_left_port:=…`、`hardware_left_ee_drive_type:=tianji_can` 等（规则同 m6_ccs）。
 
 ### 分体控制常用话题（`split_body`）
 
