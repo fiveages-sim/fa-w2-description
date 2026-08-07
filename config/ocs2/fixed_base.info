@@ -21,6 +21,7 @@ model_information
 
     ; eeFrame1: 右臂末端执行器坐标系名
     eeFrame1                "right_eef"
+    bodyFrame               "body_link4"
 
     ; removeJoints: fallback when using static URDF (non-xacro planning).
     ; Dynamic planning URDF sets eef_fixed_joints + chassis_joints_movable=false in xacro.
@@ -203,6 +204,8 @@ rollout
 bodyTrackingEE
 {
     activate  true
+    muPosition 5.0
+    muOrientation 5.0
 }
 
 ;=============================================================================
@@ -233,8 +236,8 @@ inputCost
             (12,0)  1.0     ; right_joint2 速度惩罚
             (13,0)  1.0     ; right_joint3 速度惩罚
             (14,0)  1.0     ; right_joint4 速度惩罚
-            (15,0)  1.0     ; right_joint5 速度惩罚
-            (16,0)  1.0     ; right_joint6 速度惩罚
+            (15,0)  0.5     ; right_joint5 速度惩罚
+            (16,0)  0.5     ; right_joint6 速度惩罚
             (17,0)  0.5     ; right_joint7 速度惩罚
             (18,0)  0.5     ; head_joint1 速度惩罚
             (19,0)  0.5     ; head_joint2 速度惩罚
@@ -254,7 +257,7 @@ endEffector
 
 finalEndEffector
 {
-    muPosition                      10.0
+    muPosition                      20.0
     muOrientation                   10.0
 }
 
@@ -265,7 +268,8 @@ finalEndEffector
 bodyRelative
 {
     activate                        true
-    bodyLinkName                    "body_link4"
+    xLowerBound                     0.00
+    xUpperBound                     0.25
     muPosition                      5.0
     muOrientation                   5.0
 }
