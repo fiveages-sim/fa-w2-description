@@ -264,9 +264,11 @@ right_gripper_controller:
 left_ft_broadcaster:
   ros__parameters:
     sensor_name: left_ft_sensor
-    frame_id: left_eef
+    # KWR75 is mounted at the wrist/TCP; *_eef may be the gripper tip and
+    # gives the wrong moment origin for payload torque compensation.
+    frame_id: left_tcp
 
 right_ft_broadcaster:
   ros__parameters:
     sensor_name: right_ft_sensor
-    frame_id: right_eef
+    frame_id: right_tcp
