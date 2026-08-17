@@ -99,13 +99,18 @@ hardware:
   arm_ctrl_mode: position
   max_joint_speed: 50
   max_joint_acceleration: 30
+  body_can_interface: can0
   usb_left_port: /dev/ttyUSB0
   usb_right_port: /dev/ttyUSB2
+  left_ee_can_interface: can0
+  right_ee_can_interface: can1
+  left_read_tactile: "false"
+  right_read_tactile: "false"
   left_ee_drive_type: marvin
   right_ee_drive_type: marvin
 ```
 
-Launch 可覆盖：`ft:=…`、`tcp_offset_rpy:=…`、`hardware_device_ip:=…`、`hardware_max_joint_speed:=…`、`hardware_usb_left_port:=…`、`hardware_left_ee_drive_type:=tianji_can` 等（规则同 m6_ccs）。
+Launch 可覆盖：`ft:=…`、`tcp_offset_rpy:=…`、`hardware_device_ip:=…`、`hardware_max_joint_speed:=…`、`hardware_body_can_interface:=…`、`hardware_usb_left_port:=…`、`hardware_left_ee_can_interface:=…`、`hardware_left_read_tactile:=true`、`hardware_left_ee_drive_type:=usb_can` 等（规则同 m6_ccs）。
 
 ### 分体控制常用话题（`split_body`）
 
