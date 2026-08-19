@@ -48,20 +48,28 @@ ocs2_arm_controller:
     compliance_hybrid_force_xmax_margin_ratio: 0.2    # 软限渐缓区比例
     compliance_hybrid_joint_vmax: 0.8                 # 关节速度上限 [rad/s]
     compliance_hybrid_joint_limit_margin: 0.02        # 关节限位裕度 [rad]
-    compliance_hybrid_dls_lambda: 0.05                # DLS 正则化
+
+    # ── 逆解（v_des → qdot）──
+    # DLS: qdot = Jᵀ(JJᵀ+λ²I)⁻¹v，事后 clamp 关节速度（可能破坏末端速度方向）。
+    # QP : min 0.5·qdotᵀ(JᵀJ+λ²I)qdot − (Jᵀv)ᵀqdot  s.t. |qdot_i|≤joint_vmax，
+    #      限位在求解中被正确处理（投影），适合接近速度限位/奇异时避免过冲。
+    compliance_hybrid_inverse_method: DLS      # "DLS" 或 "QP"
+    compliance_hybrid_dls_lambda: 0.05         # DLS 正则化
+    compliance_hybrid_qp_lambda: 1.0           # QP 正则化权重（需≥DLS λ，保证投影梯度收敛）
 
     # ── 力信号与零力校准 ──
     # wrench EMA：α 太小（如 0.10）时滤波滞后大，接触刚性物体时相位裕度不足 → 力振荡。
     # 噪声大时减小，抗动态振荡时增大（建议 0.15~0.25）。
     compliance_wrench_lpf_alpha: 0.15        # wrench EMA 滤波
-    compliance_zero_cal_duration: 10.0       # 零力校准时长 [s]
-    compliance_zero_cal_settle: 0.2          # 校准前等待 [s]
+    compliance_zero_cal_duration: 0.5        # 零力校准时长 [s]（工具重力已由模型扣除，此处仅平均残余零漂，无需长等待）
+    compliance_zero_cal_settle: 0.0          # 校准前等待 [s]
     compliance_zero_cal_still_vel: 0.02      # 静止阈值 [rad/s]
     compliance_gravity_accel: 9.81
     compliance_ft_timeout_sec: 0.2           # FT 超时 [s]
 
     # ── 遥操作与坐标系 ──
     compliance_teleop_enable: true
-    compliance_teleop_base_frame: base_link     # 力/位姿参考系
-    compliance_teleop_unstamped_frame: world    # left_target(Pose)的假设坐标系=发送端 control_base_frame_；VR 直发(base_link系)时改 base_link
+    # 力/位姿参考系（含 left_target 无 frame_id 假设的系）不在此硬编码：
+    # 控制器 auto_declare 默认取自本模式 .info 的 model_information.baseFrame
+    # （分体/全身=base_footprint，双臂台架=arm_base 等），与 target_manager 同源一致。
     compliance_gravity_frame: world            # 重力补偿参考系
