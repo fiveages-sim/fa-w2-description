@@ -17,6 +17,19 @@
 	<xacro:arg name="right_ee_can_interface" default="can1"/>
 	<xacro:arg name="left_read_tactile" default="false"/>
 	<xacro:arg name="right_read_tactile" default="false"/>
+	<xacro:arg name="enable_waist" default="true"/>
+	<xacro:arg name="device_address_left" default=""/>
+	<xacro:arg name="device_address_right" default=""/>
+	<xacro:arg name="serial_number_left" default=""/>
+	<xacro:arg name="serial_number_right" default=""/>
+	<xacro:arg name="mit_kp" default="3.0"/>
+	<xacro:arg name="mit_kd" default="0.05"/>
+	<xacro:arg name="effort_limit" default="1.5"/>
+	<xacro:arg name="read_feedback" default="true"/>
+	<xacro:arg name="require_initial_feedback" default="true"/>
+	<xacro:arg name="command_deadband" default="0.0"/>
+	<xacro:arg name="connect_timeout_ms" default="5000"/>
+	<xacro:arg name="enable_timeout_s" default="5.0"/>
 
 	<xacro:property name="is_real_hardware" value="${'$(arg ros2_control_hardware_type)' == 'real' or '$(arg ros2_control_hardware_type)' == 'real_usb'}"/>
 	<xacro:property name="ee_drive_type" value="${'usb' if '$(arg ros2_control_hardware_type)' == 'real_usb' else ('marvin' if '$(arg ros2_control_hardware_type)' == 'real' else '')}"/>
@@ -46,17 +59,19 @@
 			<xacro:dual_arm_ee_block mode="real"/>
 		</ros2_control>
 
-		<ros2_control name="juxie_body" type="system">
-			<hardware>
-				<plugin>juxie_ros2_control/JxHardware</plugin>
-				<param name="can_interface">$(arg body_can_interface)</param>
-				<param name="motor_ids">1,2,3,4,5,6</param>
-				<param name="control_period_ms">2</param>
-				<param name="max_position_step_nct">25</param>
-				<param name="max_position_accel_nct">5</param>
-			</hardware>
-			<xacro:body_interfaces/>
-		</ros2_control>
+		<xacro:if value="${'$(arg enable_waist)' == 'true'}">
+			<ros2_control name="juxie_body" type="system">
+				<hardware>
+					<plugin>juxie_ros2_control/JxHardware</plugin>
+					<param name="can_interface">$(arg body_can_interface)</param>
+					<param name="motor_ids">1,2,3,4,5,6</param>
+					<param name="control_period_ms">2</param>
+					<param name="max_position_step_nct">25</param>
+					<param name="max_position_accel_nct">5</param>
+				</hardware>
+				<xacro:body_interfaces/>
+			</ros2_control>
+		</xacro:if>
 
 		<xacro:external_ee_systems
 			usb_left_port="$(arg usb_left_port)"
@@ -64,7 +79,19 @@
 			left_ee_can_interface="$(arg left_ee_can_interface)"
 			right_ee_can_interface="$(arg right_ee_can_interface)"
 			left_read_tactile="$(arg left_read_tactile)"
-			right_read_tactile="$(arg right_read_tactile)"/>
+			right_read_tactile="$(arg right_read_tactile)"
+			device_address_left="$(arg device_address_left)"
+			device_address_right="$(arg device_address_right)"
+			serial_number_left="$(arg serial_number_left)"
+			serial_number_right="$(arg serial_number_right)"
+			mit_kp="$(arg mit_kp)"
+			mit_kd="$(arg mit_kd)"
+			effort_limit="$(arg effort_limit)"
+			read_feedback="$(arg read_feedback)"
+			require_initial_feedback="$(arg require_initial_feedback)"
+			command_deadband="$(arg command_deadband)"
+			connect_timeout_ms="$(arg connect_timeout_ms)"
+			enable_timeout_s="$(arg enable_timeout_s)"/>
 	</xacro:if>
 
 	<xacro:unless value="${is_real_hardware}">
