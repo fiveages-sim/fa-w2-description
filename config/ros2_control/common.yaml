@@ -2,7 +2,7 @@
 
 controller_manager:
   ros__parameters:
-    update_rate: 500  # Hz
+    update_rate: 100  # Hz
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -68,9 +68,6 @@ ocs2_arm_controller:
 
     robot_name: m6_ccs
     info_file_name: task
-    # Optional virtual planning/control point below each TCP:
-    left_ee_frame: left_eef
-    right_ee_frame: right_eef
     home_duration: 5.0
     movel_trajectory_duration: 6.0
     movel_duration: 2.0
@@ -103,8 +100,8 @@ ocs2_arm_controller:
 ocs2_wbc_controller:
   ros__parameters:
     # Joint configuration
-    update_rate: 500  # Hz
-    mpc_frequency: 100
+    update_rate: 100  # Hz
+    mpc_frequency: 50
     info_file_name: fixed_base
     # 关节顺序须与 fixed_base.info 的 arm 状态向量一致：
     # [body_joint1~4 | left_joint1~7 | right_joint1~7 | head_joint1~2]
@@ -137,6 +134,8 @@ ocs2_wbc_controller:
 
     robot_name: fiveages_w2
     home_duration: 5.0
+    movej_interpolation_type: doubles
+    movej_trajectory_blend_ratio: 0.1
 
     #腰部升降配置
     waist_lifting_enabled: true
@@ -213,9 +212,10 @@ body_joint_controller:
       - velocity
 
     home_duration: 5.0
-    movej_duration: 5.0
+    movej_duration: 2.0
     hold_position_threshold: 0.1
     movej_interpolation_type: doubles
+    home_interpolation_type: doubles
 
     home_1: [-0.9, -1.8, -0.9, 0.0]
     home_2: [-1.3, -2.6, -1.3, 0.0]

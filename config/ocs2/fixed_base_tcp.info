@@ -223,19 +223,19 @@ inputCost
 
             (0,0)   5.0     ; body_joint1 速度惩罚
             (1,0)   5.0     ; body_joint2 速度惩罚
-            (2,0)   5.0     ; body_joint3 速度惩罚
+            (2,0)   2.0     ; body_joint3 速度惩罚
             (3,0)   2.0     ; body_joint4 速度惩罚
-            (4,0)   1.0     ; left_joint1 速度惩罚
-            (5,0)   1.0     ; left_joint2 速度惩罚
-            (6,0)   1.0     ; left_joint3 速度惩罚
-            (7,0)   1.0     ; left_joint4 速度惩罚
+            (4,0)   0.5     ; left_joint1 速度惩罚
+            (5,0)   0.5     ; left_joint2 速度惩罚
+            (6,0)   0.5     ; left_joint3 速度惩罚
+            (7,0)   0.5     ; left_joint4 速度惩罚
             (8,0)   0.1     ; left_joint5 速度惩罚
             (9,0)   0.1     ; left_joint6 速度惩罚
             (10,0)  0.1     ; left_joint7 速度惩罚
-            (11,0)  1.0     ; right_joint1 速度惩罚
-            (12,0)  1.0     ; right_joint2 速度惩罚
-            (13,0)  1.0     ; right_joint3 速度惩罚
-            (14,0)  1.0     ; right_joint4 速度惩罚
+            (11,0)  0.5     ; right_joint1 速度惩罚
+            (12,0)  0.5     ; right_joint2 速度惩罚
+            (13,0)  0.5     ; right_joint3 速度惩罚
+            (14,0)  0.5     ; right_joint4 速度惩罚
             (15,0)  0.1     ; right_joint5 速度惩罚
             (16,0)  0.1     ; right_joint6 速度惩罚
             (17,0)  0.1     ; right_joint7 速度惩罚
@@ -450,7 +450,7 @@ jointVelocityLimits
         {
             (0,0)  -0.2         ; body_joint1 [rad/s]
             (1,0)  -0.2         ; body_joint2 [rad/s]
-            (2,0)  -0.2         ; body_joint3 [rad/s]
+            (2,0)  -0.4         ; body_joint3 [rad/s]
             (3,0)  -0.5         ; body_joint4 [rad/s]
             (4,0)  -2.07        ; left_joint1 [rad/s]
             (5,0)  -2.07        ; left_joint2 [rad/s]
@@ -477,7 +477,7 @@ jointVelocityLimits
         {
             (0,0)  0.2          ; body_joint1 [rad/s]
             (1,0)  0.2          ; body_joint2 [rad/s]
-            (2,0)  0.2          ; body_joint3 [rad/s]
+            (2,0)  0.4          ; body_joint3 [rad/s]
             (3,0)  0.5          ; body_joint4 [rad/s]
             (4,0)  2.07         ; left_joint1 [rad/s]
             (5,0)  2.07         ; left_joint2 [rad/s]
