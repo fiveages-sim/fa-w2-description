@@ -77,12 +77,13 @@ ros2 launch basic_joint_controller demo.launch.py robot:=fiveages_w2 hardware:=r
 # 全身真机 + 末端（示例：夹爪 / 外接手）
 ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 hardware:=real type:=ag2f90_c
 ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 hardware:=real type:=erg32
-ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware:=real_usb type:=linkerhand_o7
-ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware:=real_usb type:=inspire_f2 \
+ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware:=real type:=linkerhand_o7 \
+  left_ee_drive_type:=usb right_ee_drive_type:=usb
+ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 hardware:=real type:=inspire_f2 \
   left_ee_drive_type:=usb_can right_ee_drive_type:=usb_can
 ```
 
-`robot.local.yaml` 片段（`hardware:` 在 `hardware:=real` / `real_usb` 时注入 xacro）：
+`robot.local.yaml` 片段（`hardware:` 在 `hardware:=real` 时注入 xacro）：
 
 ```yaml
 defaults:
