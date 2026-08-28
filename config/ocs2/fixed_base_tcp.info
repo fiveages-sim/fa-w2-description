@@ -173,7 +173,7 @@ ddp
 
 mpc
 {
-    timeHorizon                     1.0     ; [s]
+    timeHorizon                     0.4     ; [s]
     solutionTimeWindow              0.2     ; [s]
     coldStart                       false
 
