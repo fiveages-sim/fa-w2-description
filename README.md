@@ -26,6 +26,7 @@ source install/setup.bash
 ```bash
 ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=erg32
 ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 collider:=simple type:=rg75
+ros2 launch robot_common_launch humanoid.launch.py robot:=fiveages_w2 chassis:=linkhou_s2_v2 variant:=white
 ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 type:=erg32
 ros2 launch ocs2_arm_controller split_body.launch.py robot:=fiveages_w2 type:=erg32
 ros2 launch ocs2_arm_controller full_body.launch.py robot:=fiveages_w2 type:=linkerhand_o7
@@ -43,9 +44,9 @@ W2 特有：`hardware:=real` 时臂走 Marvin + `juxie_body`（腰头 CAN）；�
 
 | 层级 | 包 / xacro | 说明 |
 |------|------------|------|
-| 底盘 | `fiveages_w2_common` `linkhou_s2` | launch：`chassis:=linkhou_s2`（默认）/ `linkhou_s2_v2` / `linkhou_s2_sinopec` |
-| 躯干 / 头 | `fiveages_w2_common` `body.xacro` / `head.xacro` | OEM 外观：`variant:=sinopec` 等 |
-| 双臂 | `m6_ccs` `M6_CCS` | `skin:=fiveages_w2`；碰撞与 m6 共用 `link*.glb` |
+| 底盘 | `fiveages_w2_common` `linkhou_s2` | launch：`chassis:=linkhou_s2`（默认）/ `linkhou_s2_v2` / `linkhou_s2_sinopec`；`chassis:=linkhou_s2_v2 variant:=white` 用白色壳/电池 |
+| 躯干 / 头 | `fiveages_w2_common` `body.xacro` / `head.xacro` | OEM 外观：`variant:=sinopec`；白色：`variant:=white` |
+| 双臂 | `m6_ccs` `M6_CCS` | 默认 `skin:=fiveages_w2`；`variant:=white` 时改用 M6-CCS 原色（`skin:=default`）；碰撞与 m6 共用 `link*.glb` |
 | 末端 | `m6_ccs` `eefs.xacro` | 与 m6_ccs 一致 |
 
 规划 URDF 默认冻结底盘轮关节与末端主动关节（`chassis_joints_movable:=false`、`eef_fixed_joints` 由 launch 设置）。
