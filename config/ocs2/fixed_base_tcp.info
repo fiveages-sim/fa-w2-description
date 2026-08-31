@@ -22,6 +22,7 @@ model_information
     ; eeFrame1: 右臂末端执行器坐标系名
     eeFrame1                "right_tcp"
     bodyFrame               "body_link4"
+    headFrame               "head_link2"
 
     ; removeJoints: fallback when using static URDF (non-xacro planning).
     ; Dynamic planning URDF sets eef_fixed_joints + chassis_joints_movable=false in xacro.
@@ -202,6 +203,13 @@ rollout
 ;=============================================================================
 
 bodyTrackingEE
+{
+    activate  true
+    muPosition 5.0
+    muOrientation 5.0
+}
+
+headTrackingEE
 {
     activate  true
     muPosition 5.0

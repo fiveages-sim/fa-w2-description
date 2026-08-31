@@ -12,6 +12,8 @@
     # 全身控制下 VR 目标相对底盘保持；发布前转换到 WBC 控制 frame
     vr_follow_frame: base_footprint
     enable_head_control: false
+    # 仅 full_body.launch.py 在确认使用 Ocs2WbcController 时覆盖为 true
+    enable_wbc_head_tracking_marker: false
     
     # 头部关节映射配置（可选）
     # 如果配置了，将使用此映射而不是自动检测
@@ -31,11 +33,10 @@
       head_pitch: 1.0   # pitch轴方向：1.0表示正方向，-1.0表示反向
       head_roll: 1.0     # roll轴方向：1.0表示正方向，-1.0表示反向
     
-    # 头部 TF link（仅 enable_head_control=true 时生效）
-    # HeadMarker 用它从 TF 取头部实际位置来更新 RViz 头部 marker；当前未开头部控制时可忽略
+    # 头部 TF link：旧关节 Marker 和 WBC 6D Marker 共用
+    # WBC 路径只在切入 BODY_HEAD_TRACKING 时用它初始化目标位姿
     head_link_name: "head_link2"
 
     # VR 头显参考 link（VR 校准时关联头显与机器人头部）
     # 由 VRInputHandler 使用；与 head_link_name 独立，即使不开头部控制也会生效
     reference_link: "head_link2"
-
