@@ -17,6 +17,8 @@
 	<xacro:arg name="right_ee_can_interface" default="can1"/>
 	<xacro:arg name="left_read_tactile" default="false"/>
 	<xacro:arg name="right_read_tactile" default="false"/>
+	<xacro:arg name="left_ee_rw_rate" default=""/>
+	<xacro:arg name="right_ee_rw_rate" default=""/>
 
 	<xacro:property name="is_real_hardware" value="${'$(arg ros2_control_hardware_type)' == 'real'}"/>
 	<xacro:property name="ee_drive_type" value="${'marvin' if is_real_hardware else ''}"/>
@@ -64,7 +66,9 @@
 			left_ee_can_interface="$(arg left_ee_can_interface)"
 			right_ee_can_interface="$(arg right_ee_can_interface)"
 			left_read_tactile="$(arg left_read_tactile)"
-			right_read_tactile="$(arg right_read_tactile)"/>
+			right_read_tactile="$(arg right_read_tactile)"
+			left_ee_rw_rate="$(arg left_ee_rw_rate)"
+			right_ee_rw_rate="$(arg right_ee_rw_rate)"/>
 	</xacro:if>
 
 	<xacro:unless value="${is_real_hardware}">
