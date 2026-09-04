@@ -9,8 +9,9 @@
 		<xacro:DualArmBase/>
 
 		<xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>
-		<xacro:M6_CCS name="left" skin="fiveages_w2" variant="$(arg variant)"/>
-		<xacro:M6_CCS name="right" direction="-1" skin="fiveages_w2" variant="$(arg variant)"/>
+		<xacro:property name="arm_skin" value="${'default' if '$(arg variant)' == 'white' else 'fiveages_w2'}"/>
+		<xacro:M6_CCS name="left" skin="${arm_skin}" variant="$(arg variant)"/>
+		<xacro:M6_CCS name="right" direction="-1" skin="${arm_skin}" variant="$(arg variant)"/>
 	</xacro:if>
 
 </robot>

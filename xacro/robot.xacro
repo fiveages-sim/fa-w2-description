@@ -52,10 +52,12 @@
     <xacro:DualArmMount parent="arm_base"/>
 
     <xacro:include filename="$(find m6_ccs_description)/xacro/arm.xacro"/>
-    <xacro:M6_CCS name="left" skin="fiveages_w2" variant="${platform_variant}"
+    <!-- white platform: M6-CCS factory (default) visuals; otherwise W2 repaint -->
+    <xacro:property name="arm_skin" value="${'default' if platform_variant == 'white' else 'fiveages_w2'}"/>
+    <xacro:M6_CCS name="left" skin="${arm_skin}" variant="${platform_variant}"
         tcp_offset_xyz="$(arg left_tcp_offset_xyz)"
         tcp_offset_rpy="$(arg left_tcp_offset_rpy)"/>
-    <xacro:M6_CCS name="right" direction="-1" skin="fiveages_w2" variant="${platform_variant}"
+    <xacro:M6_CCS name="right" direction="-1" skin="${arm_skin}" variant="${platform_variant}"
         tcp_offset_xyz="$(arg right_tcp_offset_xyz)"
         tcp_offset_rpy="$(arg right_tcp_offset_rpy)"/>
 
