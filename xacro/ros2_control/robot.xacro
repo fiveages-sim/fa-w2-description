@@ -39,6 +39,7 @@
 					right_dyn_param="$(arg right_dyn_param)"/>
 			</hardware>
 			<xacro:dual_arm_ee_block mode="real"/>
+			<xacro:marvin_ft_sensor_interfaces/>
 		</ros2_control>
 
 		<ros2_control name="juxie_body" type="system">
