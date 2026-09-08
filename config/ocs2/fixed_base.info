@@ -417,8 +417,8 @@ customJointLock
         cy                          363.642456
         width                       1280
         height                      720
-        muAlignment                 5.0
-        muFront                     5.0
+        muAlignment                 1.0
+        muFront                     1.0
         minDepth                    0.3
     }
 }
