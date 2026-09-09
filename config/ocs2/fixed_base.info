@@ -418,6 +418,7 @@ customJointLock
         width                       1280
         height                      720
         horizontalDeadbandDeg       10.0    ; 水平免惩罚半角（度），仅惩罚超出部分
+        verticalDeadbandDeg         10.0    ; 垂直免惩罚半角（度），仅惩罚超出部分
         muAlignmentHorizontal       1.0     ; 左右对齐权重
         muAlignmentVertical         0.0     ; 上下对齐权重，0 表示关闭
         muFront                     1.0
