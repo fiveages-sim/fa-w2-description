@@ -135,6 +135,7 @@ ocs2_wbc_controller:
     robot_name: fiveages_w2
     home_duration: 5.0
     movej_interpolation_type: doubles
+    movej_max_velocity: 1.2
     movej_trajectory_blend_ratio: 0.1
 
     #腰部升降配置
@@ -216,6 +217,7 @@ body_joint_controller:
     movej_duration: 2.0
     hold_position_threshold: 0.1
     movej_interpolation_type: doubles
+    movej_max_velocity: 1.2
     home_interpolation_type: doubles
 
     home_1: [-0.9, -1.8, -0.9, 0.0]
