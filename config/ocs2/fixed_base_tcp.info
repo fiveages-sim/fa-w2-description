@@ -484,8 +484,8 @@ jointVelocityLimits
         {
             (0,0)  -0.2         ; body_joint1 [rad/s]
             (1,0)  -0.2         ; body_joint2 [rad/s]
-            (2,0)  -0.4         ; body_joint3 [rad/s]
-            (3,0)  -0.5         ; body_joint4 [rad/s]
+            (2,0)  -1.0         ; body_joint3 [rad/s]
+            (3,0)  -1.0         ; body_joint4 [rad/s]
             (4,0)  -2.07        ; left_joint1 [rad/s]
             (5,0)  -2.07        ; left_joint2 [rad/s]
             (6,0)  -2.07        ; left_joint3 [rad/s]
@@ -511,8 +511,8 @@ jointVelocityLimits
         {
             (0,0)  0.2          ; body_joint1 [rad/s]
             (1,0)  0.2          ; body_joint2 [rad/s]
-            (2,0)  0.4          ; body_joint3 [rad/s]
-            (3,0)  0.5          ; body_joint4 [rad/s]
+            (2,0)  1.0          ; body_joint3 [rad/s]
+            (3,0)  1.0          ; body_joint4 [rad/s]
             (4,0)  2.07         ; left_joint1 [rad/s]
             (5,0)  2.07         ; left_joint2 [rad/s]
             (6,0)  2.07         ; left_joint3 [rad/s]
