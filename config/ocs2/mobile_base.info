@@ -110,7 +110,11 @@ initialModeSchedule
     ; HM_DUAL_RELATIVE_MOBILE_BASE: 底盘可移动 + 双臂独立追踪各自目标
     modeSequence
     {
-        [0]     HM_DUAL_RELATIVE_MOBILE_BASE
+        [0]
+        {
+            bodyMode "HM_DUAL_RELATIVE_MOBILE_BASE"
+            headMode "HEAD_DISABLE"
+        }
     }
 }
 
