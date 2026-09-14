@@ -97,7 +97,11 @@ initialModeSchedule
     ; Start in HM_DUAL_RELATIVE_MOBILE_BASE (dual arms, body RELATIVE, base mobile)
     modeSequence
     {
-        [0]     HM_DUAL_RELATIVE_MOBILE_BASE
+        [0]
+        {
+            bodyMode "HM_DUAL_RELATIVE_MOBILE_BASE"
+            headMode "HEAD_DISABLE"
+        }
     }
 }
 

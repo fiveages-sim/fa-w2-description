@@ -119,7 +119,11 @@ initialModeSchedule
     ; HM_DUAL_CUSTOM_LOCK_FIXED_BASE: 固定底盘 + 双臂独立 + 自定义关节锁定
     modeSequence
     {
-        [0]     HM_DUAL_CUSTOM_LOCK_FIXED_BASE
+        [0]
+        {
+            bodyMode "HM_DUAL_CUSTOM_LOCK_FIXED_BASE"
+            headMode "HEAD_GAZE"
+        }
         ; 使用 customJointLock.lockedJointIndices 锁定指定关节
     }
 }
