@@ -293,8 +293,8 @@ bodyRelative
 bimanualCoupling
 {
     activate                        true
-    muPosition                      50.0
-    muOrientation                   25.0
+    muPosition                      10.0
+    muOrientation                   1.25
 }
 
 ;=============================================================================
