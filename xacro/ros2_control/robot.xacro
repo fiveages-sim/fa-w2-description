@@ -19,8 +19,13 @@
 	<xacro:arg name="right_read_tactile" default="false"/>
 	<xacro:arg name="left_ee_rw_rate" default=""/>
 	<xacro:arg name="right_ee_rw_rate" default=""/>
+	<!-- 头部（Juxie ID 5/6）底层控制模式：csp=位置命令 / csv=速度命令（头部电机只认速度时会用） -->
+	<xacro:arg name="head_control_mode" default="csp"/>
+	<!-- csv 模式下的头部减速比（电机端/输出端），逗号分隔，依次对应 ID 5、6；空 = 暂按 1:1 并告警 -->
+	<xacro:arg name="head_gear_ratios" default=""/>
 
 	<xacro:property name="is_real_hardware" value="${'$(arg ros2_control_hardware_type)' == 'real'}"/>
+	<xacro:property name="head_csv" value="${'$(arg head_control_mode)' == 'csv'}"/>
 	<xacro:property name="ee_drive_type" value="${'marvin' if is_real_hardware else ''}"/>
 	<xacro:property name="left_drive_type" value="${'$(arg left_ee_drive_type)' if '$(arg left_ee_drive_type)' != '' else ee_drive_type}"/>
 	<xacro:property name="right_drive_type" value="${'$(arg right_ee_drive_type)' if '$(arg right_ee_drive_type)' != '' else ee_drive_type}"/>
@@ -53,11 +58,17 @@
 				<plugin>juxie_ros2_control/JxHardware</plugin>
 				<param name="can_interface">$(arg body_can_interface)</param>
 				<param name="motor_ids">1,2,3,4,5,6</param>
+				<xacro:if value="${head_csv}">
+					<!-- 头部电机跑 CSV：这两个 ID 只认速度命令（位置命令会被驱动忽略） -->
+					<param name="velocity_motor_ids">5,6</param>
+					<param name="gear_ratios">$(arg head_gear_ratios)</param>
+					<param name="check_firmware_version">false</param>
+				</xacro:if>
 				<param name="control_period_ms">2</param>
 				<param name="max_position_step_nct">25</param>
 				<param name="max_position_accel_nct">5</param>
 			</hardware>
-			<xacro:body_interfaces/>
+			<xacro:body_interfaces head_velocity="${head_csv}"/>
 		</ros2_control>
 
 		<xacro:external_ee_systems
@@ -76,7 +87,7 @@
 			<hardware>
 				<xacro:simulation_hardware_plugin hardware_type="$(arg ros2_control_hardware_type)"/>
 			</hardware>
-			<xacro:body_interfaces/>
+			<xacro:body_interfaces head_velocity="${head_csv}"/>
 			<xacro:dual_arm_ee_block mode="sim"/>
 		</ros2_control>
 	</xacro:unless>
