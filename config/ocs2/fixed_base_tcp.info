@@ -75,7 +75,8 @@ model_settings
 
 ;=============================================================================
 ; Initial State
-; MPC 第一次求解时使用的初始状态向量
+; 模型初始化 / 离线 dummy 使用的初值；WBC 在线控制以实际关节观测初始化。
+; 规划 URDF 的双臂 joint4 上限为 0，零初值位于边界；离线运动验证应选用合适的 HOME。
 ; 总维度 = 20（关节：4腰+7左臂+7右臂+2头）
 ;=============================================================================
 
@@ -184,6 +185,8 @@ mpc
 
     debugPrint                      false
 
+    ; 独立 MPC/MRT 节点的期望频率；WBC 控制器实际频率由 ROS 参数
+    ; mpc_frequency / update_rate 决定，不能仅依据本节判断实际运行频率。
     mpcDesiredFrequency             100     ; [Hz]
     mrtDesiredFrequency             400     ; [Hz]
 }
@@ -223,6 +226,8 @@ headTrackingEE
 ;=============================================================================
 ; Input Cost
 ; 总输入维度 = 20（关节：4腰+7左臂+7右臂+2头）
+; R 为 20x20 方阵；独立关节速度惩罚使用 (i,i)，实际权重 = scaling * 配置值。
+; 此项惩罚输入相对参考输入的偏差；速度上下限另见 jointVelocityLimits。
 ;=============================================================================
 
 inputCost
@@ -234,25 +239,25 @@ inputCost
             scaling 1e-3
 
             (0,0)   5.0     ; body_joint1 速度惩罚
-            (1,0)   5.0     ; body_joint2 速度惩罚
-            (2,0)   2.0     ; body_joint3 速度惩罚
-            (3,0)   2.0     ; body_joint4 速度惩罚
-            (4,0)   0.5     ; left_joint1 速度惩罚
-            (5,0)   0.5     ; left_joint2 速度惩罚
-            (6,0)   0.5     ; left_joint3 速度惩罚
-            (7,0)   0.5     ; left_joint4 速度惩罚
-            (8,0)   0.1     ; left_joint5 速度惩罚
-            (9,0)   0.1     ; left_joint6 速度惩罚
-            (10,0)  0.1     ; left_joint7 速度惩罚
-            (11,0)  0.5     ; right_joint1 速度惩罚
-            (12,0)  0.5     ; right_joint2 速度惩罚
-            (13,0)  0.5     ; right_joint3 速度惩罚
-            (14,0)  0.5     ; right_joint4 速度惩罚
-            (15,0)  0.1     ; right_joint5 速度惩罚
-            (16,0)  0.1     ; right_joint6 速度惩罚
-            (17,0)  0.1     ; right_joint7 速度惩罚
-            (18,0)  0.1     ; head_joint1 速度惩罚
-            (19,0)  0.1     ; head_joint2 速度惩罚
+            (1,1)   5.0     ; body_joint2 速度惩罚
+            (2,2)   2.0     ; body_joint3 速度惩罚
+            (3,3)   2.0     ; body_joint4 速度惩罚
+            (4,4)   0.5     ; left_joint1 速度惩罚
+            (5,5)   0.5     ; left_joint2 速度惩罚
+            (6,6)   0.5     ; left_joint3 速度惩罚
+            (7,7)   0.5     ; left_joint4 速度惩罚
+            (8,8)   0.1     ; left_joint5 速度惩罚
+            (9,9)   0.1     ; left_joint6 速度惩罚
+            (10,10) 0.1     ; left_joint7 速度惩罚
+            (11,11) 0.5     ; right_joint1 速度惩罚
+            (12,12) 0.5     ; right_joint2 速度惩罚
+            (13,13) 0.5     ; right_joint3 速度惩罚
+            (14,14) 0.5     ; right_joint4 速度惩罚
+            (15,15) 0.1     ; right_joint5 速度惩罚
+            (16,16) 0.1     ; right_joint6 速度惩罚
+            (17,17) 0.1     ; right_joint7 速度惩罚
+            (18,18) 0.1     ; head_joint1 速度惩罚
+            (19,19) 0.1     ; head_joint2 速度惩罚
         }
     }
 }
@@ -310,7 +315,7 @@ headInputStart                          18
 
 ;=============================================================================
 ; Waist Lock Constraint
-; 纯腰部锁定模式（headCoupling.activate = false 时生效）
+; 仅身体模式为 LOCKED 时锁定腰部；与 headCoupling 的注册开关相互独立。
 ;=============================================================================
 
 waistLock
@@ -328,7 +333,7 @@ waistLock
 
 headCoupling
 {
-    ; activate: true = 启用头部耦合（body_joint4 与 head_joint1 耦合）
+    ; 注册头腰耦合约束；仅身体模式为 HEAD_COUPLED 时生效。
     activate                        true
 
     ; 参与耦合的腰部关节索引（body_joint4）
@@ -367,15 +372,14 @@ customJointLock
     {
         [0] 0                       ; body_joint1
         [1] 1                       ; body_joint2
-        ; 头部在非 HEAD_COUPLED 模式下由框架隐式锁定，无需在此配置
+        ; HEAD_GAZE / HEAD_TRACKING 下头部可动；其余模式由框架处理隐式锁定。
+        ; [n] 是连续列表序号，右侧数值才是输入索引；启用示例时须保持序号连续。
 
         ;[2] 2                       ; body_joint3 锁定
         ;[3] 3                       ; body_joint4 锁定
-        ;[6] 4                      ; left_joint1 锁定示例
-        ;[4] 10                     ; right_joint1 锁定示例
-        ;[5] 17                     ; right_joint1 锁定示例
-        ;[6] 13                     ; right_joint1 锁定示例
-        ;[7] 14                    ; right_joint1 锁定示例
+        ;[4] 4                       ; left_joint1 锁定示例
+        ;[5] 11                      ; right_joint1 锁定示例
+        ;[6] 17                      ; right_joint7 锁定示例
     }
 
     ; 仅在 customJointLock 总开关、此子开关及 CUSTOM_LOCKED 模式
@@ -463,6 +467,7 @@ armLock
 
 ;=============================================================================
 ; Joint Position Limits
+; 从规划 URDF 读取上下限，以 relaxed barrier 软惩罚实现，并非硬裁剪。
 ;=============================================================================
 
 jointPositionLimits
@@ -475,6 +480,8 @@ jointPositionLimits
 ;=============================================================================
 ; Joint Velocity Limits
 ; 输入布局：[waist(4) | left_arm(7) | right_arm(7) | head(2)]
+; 上下限为列向量 (i,0)，以 relaxed barrier 软惩罚实现，并非硬裁剪。
+; 本节速度限值独立读取，不会自动与 URDF velocity 取较小值。
 ;=============================================================================
 
 jointVelocityLimits
@@ -539,6 +546,7 @@ jointVelocityLimits
 
 ;=============================================================================
 ; Self Collision
+; 只检测下方显式列出的碰撞对，未配置的双臂之间及头部碰撞不会自动加入。
 ;=============================================================================
 
 selfCollision

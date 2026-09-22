@@ -1,5 +1,5 @@
-; OCS2 Wheel Humanoid Configuration - FiveAges W2 (Mobile Base)
-; =============================================================
+; OCS2 Wheel Humanoid Configuration - FiveAges W2 (Mobile Base TCP)
+; ===============================================================
 
 ;=============================================================================
 ; Model Information
@@ -17,15 +17,16 @@ model_information
     baseFrame               "base_footprint"
 
     ; eeFrame: 左臂末端执行器坐标系名
-    eeFrame                 "left_eef"
+    eeFrame                 "left_tcp"
 
     ; eeFrame1: 右臂末端执行器坐标系名
-    eeFrame1                "right_eef"
+    eeFrame1                "right_tcp"
     bodyFrame               "body_link4"
     headFrame               "head_link2"
 
-    ; removeJoints: 从 Pinocchio 模型中剔除的关节，不进入 MPC 状态/输入空间
-    ; 头部关节已纳入 MPC 规划（用于腰头耦合约束），仅剔除夹爪和底盘转向/驱动轮关节
+    ; removeJoints: fallback when using static URDF (non-xacro planning).
+    ; Dynamic planning URDF sets eef_fixed_joints + chassis_joints_movable=false in xacro.
+    ; Head joints are in MPC; entries below mainly cover legacy static models.
     removeJoints
     {
         [0]   "rr_steer_joint"
@@ -38,6 +39,24 @@ model_information
         [7]   "fl_wheel_joint"
         [8]   "left_gripper_joint"
         [9]   "right_gripper_joint"
+        ; RG75 mimic finger (parent gripper_joint removal does not drop mimic DOF in Pinocchio)
+        [10]  "left_right_finger_joint"
+        [11]  "right_right_finger_joint"
+        ; AG2F90 internal linkage (gripper_joint alone is insufficient)
+        [12]  "left_left_in_Joint"
+        [13]  "left_left_up_Joint"
+        [14]  "left_left_2_Joint"
+        [15]  "left_right_2_Joint"
+        [16]  "left_right_1_Joint"
+        [17]  "left_right_in_Joint"
+        [18]  "left_right_up_Joint"
+        [19]  "right_left_in_Joint"
+        [20]  "right_left_up_Joint"
+        [21]  "right_left_2_Joint"
+        [22]  "right_right_2_Joint"
+        [23]  "right_right_1_Joint"
+        [24]  "right_right_in_Joint"
+        [25]  "right_right_up_Joint"
     }
 }
 
@@ -56,8 +75,9 @@ model_settings
 
 ;=============================================================================
 ; Initial State
-; MPC 第一次求解时使用的初始状态向量
-; 总维度 = 3（底盘）+ 20（关节：4腰+7左臂+7右臂+2头）= 23
+; 模型初始化 / 离线 dummy 使用的初值；WBC 在线控制以实际关节观测初始化。
+; 规划 URDF 的双臂 joint4 上限为 0，零初值位于边界；离线运动验证应选用合适的 HOME。
+; 总状态维度 = 3（底盘 x/y/yaw）+ 20（关节：4腰+7左臂+7右臂+2头）= 23
 ;=============================================================================
 
 initialState
@@ -107,14 +127,15 @@ initialModeSchedule
     {
     }
 
-    ; HM_DUAL_RELATIVE_MOBILE_BASE: 底盘可移动 + 双臂独立追踪各自目标
+    ; HM_DUAL_CUSTOM_LOCK: 底盘可动 + 双臂独立 + 自定义关节锁定
     modeSequence
     {
         [0]
         {
-            bodyMode "HM_DUAL_RELATIVE_MOBILE_BASE"
-            headMode "HEAD_DISABLE"
+            bodyMode "HM_DUAL_CUSTOM_LOCK"
+            headMode "HEAD_GAZE"
         }
+        ; 使用 customJointLock.lockedJointIndices 锁定指定关节
     }
 }
 
@@ -168,12 +189,14 @@ ddp
 
 mpc
 {
-    timeHorizon                     1.0     ; [s]
+    timeHorizon                     0.4     ; [s]
     solutionTimeWindow              0.2     ; [s]
     coldStart                       false
 
     debugPrint                      false
 
+    ; 独立 MPC/MRT 节点的期望频率；WBC 控制器实际频率由 ROS 参数
+    ; mpc_frequency / update_rate 决定，不能仅依据本节判断实际运行频率。
     mpcDesiredFrequency             100     ; [Hz]
     mrtDesiredFrequency             400     ; [Hz]
 }
@@ -212,7 +235,10 @@ headTrackingEE
 
 ;=============================================================================
 ; Input Cost
-; 总输入维度 = 2（底盘）+ 20（关节：4腰+7左臂+7右臂+2头）= 22
+; 总输入维度 = 2（底盘 vx/omega）+ 20（关节：4腰+7左臂+7右臂+2头）= 22
+; R 为 22x22 方阵，base 块为 2x2、arm 块为 20x20；均使用段内对角索引 (i,i)。
+; 实际权重 = 各块 scaling * 配置值；底盘沿用原移动配置的速度惩罚。
+; 此项惩罚输入相对参考输入的偏差；速度上下限另见 jointVelocityLimits。
 ;=============================================================================
 
 inputCost
@@ -235,25 +261,25 @@ inputCost
             scaling 1e-3
 
             (0,0)   5.0     ; body_joint1 速度惩罚
-            (1,0)   5.0     ; body_joint2 速度惩罚
-            (2,0)   5.0     ; body_joint3 速度惩罚
-            (3,0)   2.0     ; body_joint4 速度惩罚
-            (4,0)   1.0     ; left_joint1 速度惩罚
-            (5,0)   1.0     ; left_joint2 速度惩罚
-            (6,0)   1.0     ; left_joint3 速度惩罚
-            (7,0)   1.0     ; left_joint4 速度惩罚
-            (8,0)   0.1     ; left_joint5 速度惩罚
-            (9,0)   0.1     ; left_joint6 速度惩罚
-            (10,0)  0.1     ; left_joint7 速度惩罚
-            (11,0)  1.0     ; right_joint1 速度惩罚
-            (12,0)  1.0     ; right_joint2 速度惩罚
-            (13,0)  1.0     ; right_joint3 速度惩罚
-            (14,0)  1.0     ; right_joint4 速度惩罚
-            (15,0)  0.1     ; right_joint5 速度惩罚
-            (16,0)  0.1     ; right_joint6 速度惩罚
-            (17,0)  0.1     ; right_joint7 速度惩罚
-            (18,0)  0.1     ; head_joint1 速度惩罚
-            (19,0)  0.1     ; head_joint2 速度惩罚
+            (1,1)   5.0     ; body_joint2 速度惩罚
+            (2,2)   2.0     ; body_joint3 速度惩罚
+            (3,3)   2.0     ; body_joint4 速度惩罚
+            (4,4)   0.5     ; left_joint1 速度惩罚
+            (5,5)   0.5     ; left_joint2 速度惩罚
+            (6,6)   0.5     ; left_joint3 速度惩罚
+            (7,7)   0.5     ; left_joint4 速度惩罚
+            (8,8)   0.1     ; left_joint5 速度惩罚
+            (9,9)   0.1     ; left_joint6 速度惩罚
+            (10,10) 0.1     ; left_joint7 速度惩罚
+            (11,11) 0.5     ; right_joint1 速度惩罚
+            (12,12) 0.5     ; right_joint2 速度惩罚
+            (13,13) 0.5     ; right_joint3 速度惩罚
+            (14,14) 0.5     ; right_joint4 速度惩罚
+            (15,15) 0.1     ; right_joint5 速度惩罚
+            (16,16) 0.1     ; right_joint6 速度惩罚
+            (17,17) 0.1     ; right_joint7 速度惩罚
+            (18,18) 0.1     ; head_joint1 速度惩罚
+            (19,19) 0.1     ; head_joint2 速度惩罚
         }
     }
 }
@@ -294,8 +320,8 @@ bodyRelative
 bimanualCoupling
 {
     activate                        true
-    muPosition                      5.0
-    muOrientation                   5.0
+    muPosition                      10.0
+    muOrientation                   1.25
 }
 
 ;=============================================================================
@@ -311,7 +337,7 @@ headInputStart                          20
 
 ;=============================================================================
 ; Waist Lock Constraint
-; 纯腰部锁定模式（headCoupling.activate = false 时生效）
+; 仅身体模式为 LOCKED 时锁定腰部；与 headCoupling 的注册开关相互独立。
 ;=============================================================================
 
 waistLock
@@ -329,13 +355,13 @@ waistLock
 
 headCoupling
 {
-    ; activate: true = 启用头部耦合（body_joint4 与 head_joint1 耦合）
+    ; 注册头腰耦合约束；仅身体模式为 HEAD_COUPLED 时生效。
     activate                        true
 
     ; 参与耦合的腰部关节索引（body_joint4）
     waistJointIndex                 5
 
-    ; 参与耦合的头部关节索引（head_joint1）
+    ; 参与耦合的头部关节索引（head_joint1）；HEAD_COUPLED 下仅此关节可动，其余头部关节仍隐式锁定
     headJointIndex                  20
 
     ; 耦合系数：u_body4 - alpha * u_head1 = 0
@@ -352,7 +378,10 @@ headCoupling
 
 ;=============================================================================
 ; Custom Joint Lock Constraint
-; 启用后可通过 BODY_CUSTOM_LOCK / HM_DUAL_CUSTOM_LOCK 进入自定义锁定模式
+; 自定义关节锁定模式：按输入向量索引把任意关节速度约束为 0
+; 使用模式：
+;   - 初始模式可设置为 HM_DUAL_CUSTOM_LOCK
+;   - 或运行时发送 BODY_CUSTOM_LOCK
 ; 输入向量布局：[底盘(2) | 腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
 ; body_joint1~4=2..5, left_joint1~7=6..12, right_joint1~7=13..19, head_joint1~2=20..21
 ;=============================================================================
@@ -365,25 +394,28 @@ customJointLock
     {
         [0] 2                       ; body_joint1
         [1] 3                       ; body_joint2
-        ; 头部在非 HEAD_COUPLED 模式下由框架隐式锁定，无需在此配置
+        ; HEAD_GAZE / HEAD_TRACKING 下头部可动；其余模式由框架处理隐式锁定。
+        ; [n] 是连续列表序号，右侧数值才是输入索引；启用示例时须保持序号连续。
 
         ;[2] 4                       ; body_joint3 锁定
         ;[3] 5                       ; body_joint4 锁定
         ;[4] 6                       ; left_joint1 锁定示例
         ;[5] 13                      ; right_joint1 锁定示例
+        ;[6] 19                      ; right_joint7 锁定示例
     }
 
     ; 仅在 customJointLock 总开关、此子开关及 CUSTOM_LOCKED 模式
     ; 三个条件同时满足时生效
+    ; 下列腰部/偏航索引属于 arm 状态段，代码自动加 3 个底盘状态偏移；不要加输入偏移 2。
     waistPhiPositiveBias
     {
         activate                    true
         waistType                   "three_joint"
         waistJointIndices
         {
-            [0] 2                   ; body_joint1
-            [1] 3                   ; body_joint2
-            [2] 4                   ; body_joint3
+            [0] 0                   ; body_joint1
+            [1] 1                   ; body_joint2
+            [2] 2                   ; body_joint3
         }
         rotationDirection
         {
@@ -397,7 +429,7 @@ customJointLock
             (1,0)   0.0
             (2,0)   0.0
         }
-        yawJointIndex               5       ; body_joint4 yaw compensation
+        yawJointIndex               3       ; body_joint4 yaw compensation
         yawOffset                   0.0
         lowerBoundRad               0.0
         mu                          5.0
@@ -425,7 +457,7 @@ headMidpointGaze
     horizontalDeadbandDeg       10.0    ; 水平免惩罚半角（度），仅惩罚超出部分
     verticalDeadbandDeg         10.0    ; 垂直免惩罚半角（度），仅惩罚超出部分
     muAlignmentHorizontal       1.0     ; 左右对齐权重
-    muAlignmentVertical         0.0     ; 上下对齐权重，0 表示关闭
+    muAlignmentVertical         1.0     ; 上下对齐权重，0 表示关闭
     muFront                     1.0
     minDepth                    0.3
 }
@@ -433,10 +465,11 @@ headMidpointGaze
 ; HOME 关节参考：打开后把未排除关节软拉向 controller HOME。
 ; mu 与关节限位同量级，避免压过末端追踪。
 ; 排除 body_joint1/2（自定义锁定链）；纳入 body_joint3（俯仰）与 body_joint4（yaw）。
+; excludeJointIndices 使用 arm 段内索引，不包含底盘状态偏移。
 homeJointReference
 {
     activate                        true
-    activateDefault                 false
+    activateDefault                 true
     mu                              1e-3
     excludeJointIndices
     {
@@ -458,6 +491,7 @@ armLock
 
 ;=============================================================================
 ; Joint Position Limits
+; 从规划 URDF 读取上下限，以 relaxed barrier 软惩罚实现，并非硬裁剪。
 ;=============================================================================
 
 jointPositionLimits
@@ -470,6 +504,9 @@ jointPositionLimits
 ;=============================================================================
 ; Joint Velocity Limits
 ; 输入布局：[base(2) | waist(4) | left_arm(7) | right_arm(7) | head(2)]
+; base / arm 子块各自使用段内索引，底盘限速沿用原移动配置。
+; 上下限为列向量 (i,0)，以 relaxed barrier 软惩罚实现，并非硬裁剪。
+; 本节速度限值独立读取，不会自动与 URDF velocity 取较小值。
 ;=============================================================================
 
 jointVelocityLimits
@@ -483,31 +520,31 @@ jointVelocityLimits
         {
             wheelBasedMobileManipulator
             {
-                (0,0)  -0.5     ; 线速度下界 [m/s]
-                (1,0)  -0.5     ; 角速度下界 [rad/s]
+                (0,0)  -0.5     ; 线速度 [m/s]
+                (1,0)  -0.5     ; 角速度 [rad/s]
             }
         }
 
         arm
         {
-            (0,0)  -0.5         ; body_joint1 [rad/s]
-            (1,0)  -0.5         ; body_joint2 [rad/s]
-            (2,0)  -0.5         ; body_joint3 [rad/s]
-            (3,0)  -0.5         ; body_joint4 [rad/s]
-            (4,0)  -1.07        ; left_joint1 [rad/s]
-            (5,0)  -1.07        ; left_joint2 [rad/s]
-            (6,0)  -1.07        ; left_joint3 [rad/s]
-            (7,0)  -1.07        ; left_joint4 [rad/s]
-            (8,0)  -1.07        ; left_joint5 [rad/s]
-            (9,0)  -1.07        ; left_joint6 [rad/s]
-            (10,0) -1.07        ; left_joint7 [rad/s]
-            (11,0) -1.07        ; right_joint1 [rad/s]
-            (12,0) -1.07        ; right_joint2 [rad/s]
-            (13,0) -1.07        ; right_joint3 [rad/s]
-            (14,0) -1.07        ; right_joint4 [rad/s]
-            (15,0) -1.07        ; right_joint5 [rad/s]
-            (16,0) -1.07        ; right_joint6 [rad/s]
-            (17,0) -1.07        ; right_joint7 [rad/s]
+            (0,0)  -0.2         ; body_joint1 [rad/s]
+            (1,0)  -0.2         ; body_joint2 [rad/s]
+            (2,0)  -1.0         ; body_joint3 [rad/s]
+            (3,0)  -1.0         ; body_joint4 [rad/s]
+            (4,0)  -2.07        ; left_joint1 [rad/s]
+            (5,0)  -2.07        ; left_joint2 [rad/s]
+            (6,0)  -2.07        ; left_joint3 [rad/s]
+            (7,0)  -2.07        ; left_joint4 [rad/s]
+            (8,0)  -2.57        ; left_joint5 [rad/s]
+            (9,0)  -2.57        ; left_joint6 [rad/s]
+            (10,0) -2.57        ; left_joint7 [rad/s]
+            (11,0) -2.07        ; right_joint1 [rad/s]
+            (12,0) -2.07        ; right_joint2 [rad/s]
+            (13,0) -2.07        ; right_joint3 [rad/s]
+            (14,0) -2.07        ; right_joint4 [rad/s]
+            (15,0) -2.57        ; right_joint5 [rad/s]
+            (16,0) -2.57        ; right_joint6 [rad/s]
+            (17,0) -2.57        ; right_joint7 [rad/s]
             (18,0) -1.5         ; head_joint1 [rad/s]
             (19,0) -1.5         ; head_joint2 [rad/s]
         }
@@ -519,31 +556,31 @@ jointVelocityLimits
         {
             wheelBasedMobileManipulator
             {
-                (0,0)   0.5     ; 线速度上界 [m/s]
-                (1,0)   0.5     ; 角速度上界 [rad/s]
+                (0,0)  0.5     ; 线速度 [m/s]
+                (1,0)  0.5     ; 角速度 [rad/s]
             }
         }
 
         arm
         {
-            (0,0)  0.5          ; body_joint1 [rad/s]
-            (1,0)  0.5          ; body_joint2 [rad/s]
-            (2,0)  0.5          ; body_joint3 [rad/s]
-            (3,0)  0.5          ; body_joint4 [rad/s]
-            (4,0)  1.07         ; left_joint1 [rad/s]
-            (5,0)  1.07         ; left_joint2 [rad/s]
-            (6,0)  1.07         ; left_joint3 [rad/s]
-            (7,0)  1.07         ; left_joint4 [rad/s]
-            (8,0)  1.07         ; left_joint5 [rad/s]
-            (9,0)  1.07         ; left_joint6 [rad/s]
-            (10,0) 1.07         ; left_joint7 [rad/s]
-            (11,0) 1.07         ; right_joint1 [rad/s]
-            (12,0) 1.07         ; right_joint2 [rad/s]
-            (13,0) 1.07         ; right_joint3 [rad/s]
-            (14,0) 1.07         ; right_joint4 [rad/s]
-            (15,0) 1.07         ; right_joint5 [rad/s]
-            (16,0) 1.07         ; right_joint6 [rad/s]
-            (17,0) 1.07         ; right_joint7 [rad/s]
+            (0,0)  0.2          ; body_joint1 [rad/s]
+            (1,0)  0.2          ; body_joint2 [rad/s]
+            (2,0)  1.0          ; body_joint3 [rad/s]
+            (3,0)  1.0          ; body_joint4 [rad/s]
+            (4,0)  2.07         ; left_joint1 [rad/s]
+            (5,0)  2.07         ; left_joint2 [rad/s]
+            (6,0)  2.07         ; left_joint3 [rad/s]
+            (7,0)  2.07         ; left_joint4 [rad/s]
+            (8,0)  2.57         ; left_joint5 [rad/s]
+            (9,0)  2.57         ; left_joint6 [rad/s]
+            (10,0) 2.57         ; left_joint7 [rad/s]
+            (11,0) 2.07         ; right_joint1 [rad/s]
+            (12,0) 2.07         ; right_joint2 [rad/s]
+            (13,0) 2.07         ; right_joint3 [rad/s]
+            (14,0) 2.07         ; right_joint4 [rad/s]
+            (15,0) 2.57         ; right_joint5 [rad/s]
+            (16,0) 2.57         ; right_joint6 [rad/s]
+            (17,0) 2.57         ; right_joint7 [rad/s]
             (18,0) 1.5          ; head_joint1 [rad/s]
             (19,0) 1.5          ; head_joint2 [rad/s]
         }
@@ -552,6 +589,7 @@ jointVelocityLimits
 
 ;=============================================================================
 ; Self Collision
+; 只检测下方显式列出的碰撞对，未配置的双臂之间及头部碰撞不会自动加入。
 ;=============================================================================
 
 selfCollision
@@ -587,7 +625,7 @@ selfCollision
 ; 越界时按 penaltyWeight / penaltyActivationDeg 软惩罚，避免伤害耦合腕部。
 ;
 ; 索引为 arm 段内相对索引（代码自动叠加 base 偏移，固定/移动底盘都适用）：
-;   布局 [腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
+;   arm 段布局 [腰部(4) | 左臂(7) | 右臂(7) | 头部(2)]
 ;   left_joint6/7 = 9/10, right_joint6/7 = 16/17
 ;
 ; 参数须与 双臂/分体 控制器使用的八边形一致，并在真机上验证。
