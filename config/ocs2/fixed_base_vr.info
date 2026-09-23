@@ -236,12 +236,12 @@ inputCost
     {
         arm
         {
-            scaling 1e-3
+            scaling 3e-2
 
-            (0,0)   5.0     ; body_joint1 速度惩罚
-            (1,1)   5.0     ; body_joint2 速度惩罚
-            (2,2)   2.0     ; body_joint3 速度惩罚
-            (3,3)   2.0     ; body_joint4 速度惩罚
+            (0,0)   0.05     ; body_joint1 速度惩罚
+            (1,1)   0.05     ; body_joint2 速度惩罚
+            (2,2)   0.05     ; body_joint3 速度惩罚
+            (3,3)   0.05     ; body_joint4 速度惩罚
             (4,4)   0.5     ; left_joint1 速度惩罚
             (5,5)   0.5     ; left_joint2 速度惩罚
             (6,6)   0.5     ; left_joint3 速度惩罚
@@ -268,8 +268,8 @@ inputCost
 
 endEffector
 {
-    muPosition                      10.0
-    muOrientation                   5.0
+    muPosition                      20.0
+    muOrientation                   10.0
 }
 
 finalEndEffector
@@ -298,8 +298,8 @@ bodyRelative
 bimanualCoupling
 {
     activate                        true
-    muPosition                      10.0
-    muOrientation                   1.25
+    muPosition                      20.0
+    muOrientation                   2.5
 }
 
 ;=============================================================================
@@ -493,10 +493,10 @@ jointVelocityLimits
     {
         arm
         {
-            (0,0)  -0.2         ; body_joint1 [rad/s]
-            (1,0)  -0.2         ; body_joint2 [rad/s]
-            (2,0)  -1.0         ; body_joint3 [rad/s]
-            (3,0)  -1.0         ; body_joint4 [rad/s]
+            (0,0)  -1.1         ; body_joint1 [rad/s]
+            (1,0)  -1.1         ; body_joint2 [rad/s]
+            (2,0)  -1.1         ; body_joint3 [rad/s]
+            (3,0)  -1.1         ; body_joint4 [rad/s]
             (4,0)  -2.07        ; left_joint1 [rad/s]
             (5,0)  -2.07        ; left_joint2 [rad/s]
             (6,0)  -2.07        ; left_joint3 [rad/s]
@@ -520,10 +520,10 @@ jointVelocityLimits
     {
         arm
         {
-            (0,0)  0.2          ; body_joint1 [rad/s]
-            (1,0)  0.2          ; body_joint2 [rad/s]
-            (2,0)  1.0          ; body_joint3 [rad/s]
-            (3,0)  1.0          ; body_joint4 [rad/s]
+            (0,0)  1.1          ; body_joint1 [rad/s]
+            (1,0)  1.1          ; body_joint2 [rad/s]
+            (2,0)  1.1          ; body_joint3 [rad/s]
+            (3,0)  1.1          ; body_joint4 [rad/s]
             (4,0)  2.07         ; left_joint1 [rad/s]
             (5,0)  2.07         ; left_joint2 [rad/s]
             (6,0)  2.07         ; left_joint3 [rad/s]
