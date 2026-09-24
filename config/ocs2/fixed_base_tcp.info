@@ -179,7 +179,7 @@ ddp
 
 mpc
 {
-    timeHorizon                     0.4     ; [s]
+    timeHorizon                     1.0     ; [s]
     solutionTimeWindow              0.2     ; [s]
     coldStart                       false
 
@@ -188,7 +188,7 @@ mpc
     ; 独立 MPC/MRT 节点的期望频率；WBC 控制器实际频率由 ROS 参数
     ; mpc_frequency / update_rate 决定，不能仅依据本节判断实际运行频率。
     mpcDesiredFrequency             100     ; [Hz]
-    mrtDesiredFrequency             400     ; [Hz]
+    mrtDesiredFrequency             500     ; [Hz]
 }
 
 ;=============================================================================
@@ -213,7 +213,7 @@ bodyTrackingEE
 {
     activate  true
     muPosition 5.0
-    muOrientation 5.0
+    muOrientation 0.5
 }
 
 headTrackingEE
@@ -236,26 +236,26 @@ inputCost
     {
         arm
         {
-            scaling 1e-3
+            scaling 1e-2
 
             (0,0)   5.0     ; body_joint1 速度惩罚
             (1,1)   5.0     ; body_joint2 速度惩罚
             (2,2)   2.0     ; body_joint3 速度惩罚
             (3,3)   2.0     ; body_joint4 速度惩罚
-            (4,4)   0.5     ; left_joint1 速度惩罚
-            (5,5)   0.5     ; left_joint2 速度惩罚
-            (6,6)   0.5     ; left_joint3 速度惩罚
-            (7,7)   0.5     ; left_joint4 速度惩罚
-            (8,8)   0.1     ; left_joint5 速度惩罚
-            (9,9)   0.1     ; left_joint6 速度惩罚
-            (10,10) 0.1     ; left_joint7 速度惩罚
-            (11,11) 0.5     ; right_joint1 速度惩罚
-            (12,12) 0.5     ; right_joint2 速度惩罚
-            (13,13) 0.5     ; right_joint3 速度惩罚
-            (14,14) 0.5     ; right_joint4 速度惩罚
-            (15,15) 0.1     ; right_joint5 速度惩罚
-            (16,16) 0.1     ; right_joint6 速度惩罚
-            (17,17) 0.1     ; right_joint7 速度惩罚
+            (4,4)   1.5     ; left_joint1 速度惩罚
+            (5,5)   1.5     ; left_joint2 速度惩罚
+            (6,6)   1.5     ; left_joint3 速度惩罚
+            (7,7)   1.5     ; left_joint4 速度惩罚
+            (8,8)   1.1     ; left_joint5 速度惩罚
+            (9,9)   1.1     ; left_joint6 速度惩罚
+            (10,10) 1.1     ; left_joint7 速度惩罚
+            (11,11) 1.5     ; right_joint1 速度惩罚
+            (12,12) 1.5     ; right_joint2 速度惩罚
+            (13,13) 1.5     ; right_joint3 速度惩罚
+            (14,14) 1.5     ; right_joint4 速度惩罚
+            (15,15) 1.1     ; right_joint5 速度惩罚
+            (16,16) 1.1     ; right_joint6 速度惩罚
+            (17,17) 1.1     ; right_joint7 速度惩罚
             (18,18) 0.1     ; head_joint1 速度惩罚
             (19,19) 0.1     ; head_joint2 速度惩罚
         }
@@ -449,8 +449,6 @@ homeJointReference
     mu                              1e-3
     excludeJointIndices
     {
-        [0] 0                       ; body_joint1
-        [1] 1                       ; body_joint2
     }
 }
 
@@ -493,10 +491,10 @@ jointVelocityLimits
     {
         arm
         {
-            (0,0)  -0.2         ; body_joint1 [rad/s]
-            (1,0)  -0.2         ; body_joint2 [rad/s]
-            (2,0)  -1.0         ; body_joint3 [rad/s]
-            (3,0)  -1.0         ; body_joint4 [rad/s]
+            (0,0)  -0.3         ; body_joint1 [rad/s]
+            (1,0)  -0.3         ; body_joint2 [rad/s]
+            (2,0)  -0.5         ; body_joint3 [rad/s]
+            (3,0)  -0.5         ; body_joint4 [rad/s]
             (4,0)  -2.07        ; left_joint1 [rad/s]
             (5,0)  -2.07        ; left_joint2 [rad/s]
             (6,0)  -2.07        ; left_joint3 [rad/s]
@@ -520,10 +518,10 @@ jointVelocityLimits
     {
         arm
         {
-            (0,0)  0.2          ; body_joint1 [rad/s]
-            (1,0)  0.2          ; body_joint2 [rad/s]
-            (2,0)  1.0          ; body_joint3 [rad/s]
-            (3,0)  1.0          ; body_joint4 [rad/s]
+            (0,0)  0.3          ; body_joint1 [rad/s]
+            (1,0)  0.3          ; body_joint2 [rad/s]
+            (2,0)  0.5          ; body_joint3 [rad/s]
+            (3,0)  0.5          ; body_joint4 [rad/s]
             (4,0)  2.07         ; left_joint1 [rad/s]
             (5,0)  2.07         ; left_joint2 [rad/s]
             (6,0)  2.07         ; left_joint3 [rad/s]
