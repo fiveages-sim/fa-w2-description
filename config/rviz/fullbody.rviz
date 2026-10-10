@@ -822,6 +822,8 @@ Visualization Manager:
       Yaw: 0.46536651253700256
     Saved: ~
 Window Geometry:
+  ComplianceForcePanel:
+    collapsed: false
   Displays:
     collapsed: false
   ComplianceForcePanel:
