@@ -21,12 +21,87 @@
 	<xacro:arg name="right_ee_rw_rate" default=""/>
 	<!-- 头部（Juxie ID 5/6）底层控制模式：csp=位置命令 / csv=速度命令（头部电机只认速度时会用） -->
 	<xacro:arg name="head_control_mode" default="csp"/>
-	<!-- csv 模式下的头部减速比（电机端/输出端），逗号分隔，依次对应 ID 5、6；空 = 暂按 1:1 并告警 -->
+	<!-- 腰部（Juxie ID 1/2/3/4）底层控制模式：csp=位置命令 / csv=速度命令 -->
+	<xacro:arg name="waist_control_mode" default="csp"/>
+	<!-- CSV 减速比（电机端/输出端）：一个公共值或 ID 1~6 的六个值；空 = 1:1 并告警 -->
 	<xacro:arg name="head_gear_ratios" default=""/>
 
-	<xacro:property name="is_real_hardware" value="${'$(arg ros2_control_hardware_type)' == 'real'}"/>
-	<xacro:property name="head_csv" value="${'$(arg head_control_mode)' == 'csv'}"/>
-	<xacro:property name="ee_drive_type" value="${'marvin' if is_real_hardware else ''}"/>
+        <!-- ── 腰部电流环的默认值：**描述包自己读**（launch / Python 不参与）─────────
+             来源 = 同目录的 config/ros2_control/juxie_joint_impedance.yaml（与 common.yaml 同处），
+             改数值只动那一个 yaml。profile 的 hardware 段写同名键仍然覆盖（launch 会把它当
+             xacro 参数传进来）。控制器侧的精确重力前馈会从本文件的产物（/robot_description）
+             里派生，不用另外配一遍。 -->
+        <xacro:property name="juxie_impedance"
+                value="${xacro.load_yaml('$(find fiveages_w2_description)/config/ros2_control/juxie_joint_impedance.yaml')}"/>
+
+        <!-- Juxie 腰部(1~4)/头部(5,6) 控制模式：position = CSP（位置命令，默认），
+             velocity = CSV（速度命令，6 个电机全部生效）。
+             切 CSV 的关节会自动额外导出 velocity 命令口。 -->
+        <xacro:arg name="body_control_mode" default="position"/>
+        <!-- 只让部分电机走 CSV 时填这里（control_mode 保持 position），如 "5,6"；留空=不用。 -->
+        <xacro:arg name="body_velocity_motor_ids" default="${'1,2,3,4,5,6' if '$(arg waist_control_mode)' == 'csv' and '$(arg head_control_mode)' == 'csv' else '1,2,3,4' if '$(arg waist_control_mode)' == 'csv' else '5,6' if '$(arg head_control_mode)' == 'csv' else ''}"/>
+        <!-- 只让这几个电机进电流环（力矩）时填这里，如 "4"；留空=不用。
+             电流环关节会自动额外导出 **velocity** 命令口（**不是 effort**）：上层照旧只写
+             position+velocity，电流在驱动内部算。导出 effort 会让 CtrlInterfaces 切到 MIX。 -->
+        <xacro:arg name="body_current_motor_ids" default=""/>
+        <!-- 电流环命令限幅（mA）与变化率限制（mA/s，0=关闭）：模块自身不平滑也不限幅。 -->
+        <xacro:arg name="max_current_ma" default="${juxie_impedance['max_current_ma']}"/>
+        <xacro:arg name="current_slew_rate_ma_s" default="${juxie_impedance['current_slew_rate_ma_s']}"/>
+        <!-- 底层阻抗层（只在 current_motor_ids 里的电机上生效）。
+             单位**全部是 mA**（与反馈 Iq 同量纲 ⇒ 不需要 Kt）：
+               I = Kp·(q_d−q) + Kd·(q̇_d−q̇) + 重力 + 偏置
+                   + (|q̇|<v_eps ? 0 : sign(q̇)·(库仉 + 粘性·|q̇|))
+             q_d / q̇_d 来自上层的 position / velocity 命令口。
+             每个参数：逗号列表 = 逐电机；1 个值 = 全部同值；留空 = 全 0。 -->
+        <xacro:arg name="impedance_kp_ma_rad" default="${juxie_impedance['impedance_kp_ma_rad']}"/>
+        <xacro:arg name="impedance_kd_ma_s_rad" default="${juxie_impedance['impedance_kd_ma_s_rad']}"/>
+        <xacro:arg name="friction_coulomb_ma" default="${juxie_impedance['friction_coulomb_ma']}"/>
+        <xacro:arg name="friction_viscous_ma_s_rad" default="${juxie_impedance['friction_viscous_ma_s_rad']}"/>
+        <xacro:arg name="friction_offset_ma" default="${juxie_impedance['friction_offset_ma']}"/>
+        <xacro:arg name="gravity_feedforward_ma" default="${juxie_impedance['gravity_feedforward_ma']}"/>
+        <xacro:arg name="friction_vel_eps_rad_s" default="${juxie_impedance['friction_vel_eps_rad_s']}"/>
+        <!-- 摩擦前馈的符号取哪个速度：measured（默认）| reference。
+             reference = |q̇_d| >= v_eps 时改用参考速度 ⇒ 换向时抢先一步，
+             真机实测跟踪 RMS 0.223° → 0.093°（2026-10-12，三角波 ±4°/0.05 rad/s）。 -->
+        <xacro:arg name="friction_ff_velocity" default="${juxie_impedance['friction_ff_velocity']}"/>
+        <!-- 摩擦前馈幅值上限 mA（0 = 不限）。前馈 = f_c + f_v·|v|，|v|≈0.19 rad/s 就会顶满
+             电流上限，而 f_v 只在 0.04 rad/s 以内辨识过 ⇒ 建议限在 1200 左右。 -->
+        <xacro:arg name="friction_ff_max_ma" default="${juxie_impedance['friction_ff_max_ma']}"/>
+        <!-- 腰部重力前馈查找表（数据文件路径，留空 = 关闭）。
+             ⚠️ 这是**不依赖任何控制器**的重力补偿：WBC 必须同时 claim 20 个关节，手臂
+             （M6_CCS）一出错它就激活不了；而驱动照样会把腰切进电流环 ⇒ 没人补重力 ⇒
+             腰 1/2/3 只剩弹簧、下沉几度。模型放在驱动里就没有这个问题。
+             表由 scripts/identify_juxie_friction_gravity.py table 离线生成（标称手臂姿态 +
+             真机实测的 ma=30 mA/(N·m)），驱动从**实测**腰部角度做三线性插值。 -->
+        <xacro:arg name="gravity_ff_table" default="${juxie_impedance['gravity_ff_table']}"/>
+        <!-- 上层（ocs2_wbc_controller）推送的【精确】重力前馈话题（含真实手臂姿态）。
+             驱动：**话题新鲜就用它、过期就退回上面的查表**（取其一，不叠加）。
+             留空 = 只用查表。话题布局：Float64MultiArray，下标 = 电机ID−1，单位 mA。 -->
+        <xacro:arg name="gravity_ff_topic" default="${juxie_impedance['gravity_ff_topic']}"/>
+        <!-- τ→电流系数（mA/(N·m)）：与上面那张查表的标定同源，写在同一个 yaml 里。
+             驱动自己不读它（查表已标定好）—— 它是**给上层控制器**的：控制器从本文件的
+             产物（/robot_description）里读，把 RNEA 算出的 N·m 换成 mA。 -->
+        <xacro:arg name="gravity_ff_ma_per_nm" default="${juxie_impedance['gravity_ff_ma_per_nm']}"/>
+        <xacro:arg name="gravity_ff_topic_timeout_s" default="${juxie_impedance['gravity_ff_topic_timeout_s']}"/>
+        <!-- 逐电机反馈超时门槛（read() 拍数；CM 500 Hz ⇒ 10 拍 = 20 ms）。
+             超过就【锁存该电机为 CSP 保持】并忽略上层命令 —— 绝不清零电流（重力关节会掉）。
+             设成 1~2 拍会误判：反馈是模块收到控制帧后才回的，与 CM 的 read() 天然异步。 -->
+        <xacro:arg name="feedback_timeout_cycles" default="${juxie_impedance['feedback_timeout_cycles']}"/>
+        <!-- 减速比（电机端/输出端），顺序 = motor_ids = 1,2,3,4,5,6。现场实测后用
+             scripts/identify_gear_ratio.py 填（本机 2026-10-08：腰部 156 / 头部 100）。 -->
+        <xacro:arg name="body_gear_ratios" default="$(arg head_gear_ratios)"/>
+
+        <xacro:property name="juxie_csv_ids"
+                value="${[v.strip() for v in '$(arg body_velocity_motor_ids)'.split(',') if v.strip()]}"/>
+        <xacro:property name="juxie_csv_all" value="${'$(arg body_control_mode)' == 'velocity'}"/>
+        <xacro:property name="juxie_waist_velocity"
+                value="${juxie_csv_all or '1' in juxie_csv_ids or '2' in juxie_csv_ids or '3' in juxie_csv_ids or '4' in juxie_csv_ids}"/>
+        <xacro:property name="juxie_head_velocity"
+                value="${juxie_csv_all or '5' in juxie_csv_ids or '6' in juxie_csv_ids}"/>
+        <xacro:property name="juxie_current_ids" value="$(arg body_current_motor_ids)"/>
+
+	<xacro:property name="is_real_hardware" value="${'$(arg ros2_control_hardware_type)' == 'real' or '$(arg ros2_control_hardware_type)' == 'real_usb'}"/>
+	<xacro:property name="ee_drive_type" value="${'usb' if '$(arg ros2_control_hardware_type)' == 'real_usb' else ('marvin' if '$(arg ros2_control_hardware_type)' == 'real' else '')}"/>
 	<xacro:property name="left_drive_type" value="${'$(arg left_ee_drive_type)' if '$(arg left_ee_drive_type)' != '' else ee_drive_type}"/>
 	<xacro:property name="right_drive_type" value="${'$(arg right_ee_drive_type)' if '$(arg right_ee_drive_type)' != '' else ee_drive_type}"/>
 
@@ -58,17 +133,33 @@
 				<plugin>juxie_ros2_control/JxHardware</plugin>
 				<param name="can_interface">$(arg body_can_interface)</param>
 				<param name="motor_ids">1,2,3,4,5,6</param>
-				<xacro:if value="${head_csv}">
-					<!-- 头部电机跑 CSV：这两个 ID 只认速度命令（位置命令会被驱动忽略） -->
-					<param name="velocity_motor_ids">5,6</param>
-					<param name="gear_ratios">$(arg head_gear_ratios)</param>
-					<param name="check_firmware_version">false</param>
-				</xacro:if>
 				<param name="control_period_ms">2</param>
 				<param name="max_position_step_nct">25</param>
 				<param name="max_position_accel_nct">5</param>
+				<param name="control_mode">$(arg body_control_mode)</param>
+				<param name="velocity_motor_ids">$(arg body_velocity_motor_ids)</param>
+				<param name="current_motor_ids">$(arg body_current_motor_ids)</param>
+				<param name="max_current_ma">$(arg max_current_ma)</param>
+				<param name="current_slew_rate_ma_s">$(arg current_slew_rate_ma_s)</param>
+				<param name="impedance_kp_ma_rad">$(arg impedance_kp_ma_rad)</param>
+				<param name="impedance_kd_ma_s_rad">$(arg impedance_kd_ma_s_rad)</param>
+				<param name="friction_coulomb_ma">$(arg friction_coulomb_ma)</param>
+				<param name="friction_viscous_ma_s_rad">$(arg friction_viscous_ma_s_rad)</param>
+				<param name="friction_offset_ma">$(arg friction_offset_ma)</param>
+				<param name="gravity_feedforward_ma">$(arg gravity_feedforward_ma)</param>
+				<param name="friction_vel_eps_rad_s">$(arg friction_vel_eps_rad_s)</param>
+				<param name="friction_ff_velocity">$(arg friction_ff_velocity)</param>
+				<param name="friction_ff_max_ma">$(arg friction_ff_max_ma)</param>
+				<param name="gravity_ff_table">$(arg gravity_ff_table)</param>
+				<param name="gravity_ff_topic">$(arg gravity_ff_topic)</param>
+				<param name="gravity_ff_ma_per_nm">$(arg gravity_ff_ma_per_nm)</param>
+				<param name="gravity_ff_topic_timeout_s">$(arg gravity_ff_topic_timeout_s)</param>
+				<param name="feedback_timeout_cycles">$(arg feedback_timeout_cycles)</param>
+				<param name="gear_ratios">$(arg body_gear_ratios)</param>
 			</hardware>
-			<xacro:body_interfaces head_velocity="${head_csv}"/>
+			<xacro:body_interfaces waist_velocity="${juxie_waist_velocity}"
+				head_velocity="${juxie_head_velocity}"
+				current_ids="${juxie_current_ids}"/>
 		</ros2_control>
 
 		<xacro:external_ee_systems
@@ -87,7 +178,13 @@
 			<hardware>
 				<xacro:simulation_hardware_plugin hardware_type="$(arg ros2_control_hardware_type)"/>
 			</hardware>
-			<xacro:body_interfaces head_velocity="${head_csv}"/>
+			<!-- 仿真分支用**接口超集**（腰 + 头都给 position+velocity）：
+			     config 里的 velocity_command_joints / torque_command_joints 都能 claim 到，
+			     否则 WBC 会因为缺 <joint>/velocity 而起不来。
+			     仿真里没有 juxie 驱动、也没有摩擦模型，多声明一个接口没有副作用。
+			     ⚠️ 注意 build_xacro_mappings 只在 hardware=real 时透传 profile 的 hardware 段，
+			        所以这里**不能**依赖 $(arg body_velocity_motor_ids) 之类的值。 -->
+			<xacro:body_interfaces waist_velocity="true" head_velocity="true"/>
 			<xacro:dual_arm_ee_block mode="sim"/>
 		</ros2_control>
 	</xacro:unless>

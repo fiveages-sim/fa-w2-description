@@ -1,0 +1,75 @@
+# Juxie 腰部(motor 1~4) 电流环 / 底层阻抗层 —— 随**描述包**一起发布的默认值
+# （与控制器默认值 config/ros2_control/common.yaml 同目录，同一个 install(DIRECTORY config)）。
+#
+# 怎么生效：本文件由**描述包自己的 xacro 直接读**（xacro.load_yaml，见
+#   xacro/ros2_control/robot.xacro），作为 xacro arg 的默认值 → URDF 的 juxie_body <param>
+#   → jx_hardware::on_init()。**launch / Python 不参与**；profile 的 hardware 段写同名键
+#   即覆盖本文件（现场只写「与默认值不同的项」）。
+#   文件名是契约（robot.xacro 里按这个名 load_yaml，改这里也要改那个 xacro）。
+#
+# 生效链路回顾（上层接口**不变**：仍然只写 position(q_d) + velocity(q̇_d)，没有 effort 口）：
+#   驱动内部按阻抗律把 (q_d, q̇_d) 与实测 (q, q̇) 算成电流（0x05 帧）下发：
+#       I = Kp·(q_d−q) + Kd·(q̇_d−q̇) + 重力前馈 + 摩擦前馈
+#   ⚠️ 驱动不再自己保位 ⇒ 没有重力前馈就会下沉几度（见 gravity_ff_table）。
+#
+# 启用腰部电流环要做三件事（缺一个会出问题）：
+#   ① profile 里的 body_current_motor_ids 填 "1, 2, 3, 4"（本文件不管开关；留空 = 整段不生效）
+#      —— 开关**故意**留在 profile：本文件被同型号机器共用，不该替别人决定启不启用。
+#   ② 上层的【精确重力前馈】一个字都不用配：两个控制器的共用模块
+#      （arms_controller_common::WaistGravityFeedforward）会从本文件的产物
+#      （/robot_description = xacro 输出）自己派生关节名单 + 电机号（读 current_motor_ids）、
+#      话题（gravity_ff_topic）与 τ→电流系数（gravity_ff_ma_per_nm）。
+#      但 control.patch 里的 torque_command_joints 必须与 body_current_motor_ids 是**同一份名单**
+#      （否则控制器 claim 不到 <joint>/velocity ⇒ 起不来）。
+#   ③ 复核 gravity_ff_table 路径与本机一致（换机器必须改）
+#
+# 下面数值 = fiveages_w2 本机实测/标定值（2026-10-12 ~ 10-16），可直接作为默认。
+
+# 电流硬限幅 mA。⚠️ 驱动里是**标量、全局共享**（改它则所有电流环电机一起变）；
+#   17000 按离线 RNEA 定（腰 home±0.15 rad 时 j2 要 11.2 A），代价是 joint4 也一起松到 17000（它只需 ~0.8 A）。
+max_current_ma: 17000
+# 电流变化率限制 mA/s。**必须 0**：非 0 时前馈换向要几十~上百 ms 才翻完。
+current_slew_rate_ma_s: 0
+
+# ── 阻抗增益（mA 域，不需要 Kt；顺序 = motor_ids = 1..6；"一个值" = 全部同值；留空 = 全 0）
+#    前馈偏置 Δq = τ_g·ma/Kp；换算小抄：误差[°] ≈ Δτ[N·m] × ma / Kp × 57.3
+#    ⚠️ Kd 要跟着 Kp 定：Kd = 2ζ√(Kp·J/Kt)，ζ 取 0.7~1.1（只降 Kp 不改 Kd 会变成过阻尼）。
+impedance_kp_ma_rad: "60000,60000,60000,20000,0,0"   # j4 沿用真机 stiff 相位标定的等效刚度 20438 mA/rad
+impedance_kd_ma_s_rad: "15000,15000,15000,6900,0,0"
+
+# ── 摩擦前馈：I_ff = sign(v)·(f_c + f_v·|v|) + f_off（±v 滑动扫掠辨识，只含**空载基础摩擦**）
+#    标定工具：scripts/identify_juxie_friction_gravity.py
+friction_coulomb_ma: "1106.5,1047.4,848.3,825,0,0"
+friction_viscous_ma_s_rad: "11366.1,9439.5,7220.0,6300,0,0"
+friction_offset_ma: "312.5,-110.8,-379.9,17,0,0"
+# 摩擦符号的速度死区 rad/s：0.03 = 45 电机 rpm（实测 0.002 会静止自激：前馈 > 起动电流）
+friction_vel_eps_rad_s: 0.03
+# 摩擦前馈的符号取哪个速度：measured（老行为）| reference（换向抢先一步；真机实测 RMS 0.223°→0.093°）
+friction_ff_velocity: reference
+# 摩擦前馈幅值上限 mA（0 = 不限）；腰部 |v|=0.2 rad/s 时 c+f_v·|v| = 3379 ⇒ 4000 留余量
+friction_ff_max_ma: 4000
+
+# ── 重力前馈（两层，**取其一不叠加**）
+# ① 保命层 = 查表：不依赖任何控制器（WBC 挂了/起不来也照样补重力）。
+#    ⚠️ 绝对路径，**换机器/换部署目录必须改**；文件打不开会让硬件 on_init 直接失败（不是静默关闭）。
+#    生成：python3 scripts/identify_juxie_friction_gravity.py table
+gravity_ff_table: /home/fiveages/fa-deploy-ws/config/waist_gravity_ff_table.txt
+# 上面那张表的 τ→电流标定系数［mA/(N·m)］：**必须与生成表时用的一致**
+#   （±v 滑动扫掠自由拟合得 28.3~32.8 ⇒ 取 30）。
+#   精确层（控制器发的话题）也用同一系数：它随 URDF 传给控制器（驱动不读），
+#   由 arms_controller_common::WaistGravityFeedforward 从 /robot_description 里取。
+gravity_ff_ma_per_nm: 30.0
+# ② 精度层 = 控制器推来的精确值（含真实手臂姿态）：驱动话题新鲜就用它，超时（下面这个秒数）退回查表。
+#    话题布局：Float64MultiArray，长度 = 6，下标 = 电机 ID − 1（mA，可为负）。
+#    谁发：**全身模式 = ocs2_wbc_controller；分体模式 = ocs2_arm_controller 代发**
+#    （分体下没有 WBC ⇒ 没人的话腰部只剩上面那层 ~1° 的查表）。两种模式不会同时跑。
+#    话题名/关节名单/τ→电流系数都不用手写：控制器的共用模块从 xacro 产物里自己派生。
+gravity_ff_topic: /body_gravity_feedforward_ma
+gravity_ff_topic_timeout_s: 0.5
+# 常数重力前馈：**有查表时必须全 0**（两者会叠加）。
+gravity_feedforward_ma: "0,0,0,0,0,0"
+
+# 反馈丢失保护（逐电机）：read() 没回帧 / 电机自称未使能 ⇒ 计数 +1，超过该拍数就把该电机
+#   锁存为 CSP 保持最后一帧位置并忽略上层命令。
+#   ⚠️ 绝不清零电流（对重力关节 = 自由落体）；不能设 1~2（反馈与 CM 的 read() 天然异步）。
+feedback_timeout_cycles: 10
