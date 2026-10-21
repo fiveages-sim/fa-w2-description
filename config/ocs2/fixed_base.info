@@ -115,10 +115,16 @@ initialModeSchedule
     }
 
     ; HM_DUAL_CUSTOM_LOCK_FIXED_BASE: 固定底盘 + 双臂独立 + 自定义关节锁定
+    ; 注意：ocs2_wheel_humanoid 的 loadHumanoidModeSchedule() 要求每个 mode 是
+    ; 结构化条目 { bodyMode, headMode }；旧写法 "[0] HM_..." 会报
+    ; "must be a structured entry with bodyMode and headMode"。
     modeSequence
     {
-        [0]     HM_DUAL_CUSTOM_LOCK_FIXED_BASE
-        ; 使用 customJointLock.lockedJointIndices 锁定指定关节
+        [0]
+        {
+            bodyMode    "HM_DUAL_CUSTOM_LOCK_FIXED_BASE"
+            headMode    "HEAD_DISABLE"
+        }
     }
 }
 
