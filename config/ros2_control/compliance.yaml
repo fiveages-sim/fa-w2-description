@@ -1,75 +1,125 @@
-# COMPLIANCE 力位混合控制参数（fsm_command=5 进入）
-#
-# 由 ros2_control_node 加载，参数注入 /ocs2_arm_controller。
-# 在线热调：ros2 param set /ocs2_arm_controller <name> <value>
-# 持久化：改本文件后重启 controller。
+# COMPLIANCE 力/位混合控制参数（fsm_command=5 进入）
+# 在线热调：ros2 param set /<controller> <name> <value>；持久化请改本文件后重启
 # 详见 ocs2_arm_controller/COMPLIANCE.md
 #
-# 控制律（base 系，每周期）：
-#   位控轴 S=0:  v = K/(1+D)·Δx + I
-#   力控轴 S=1:  v = (F_err_deadzone + I·leak) / D   →  再经 vel_lpf 低通
-#                （|F_err|<deadband 时输出 0，防止重力残差导致漂移）
-#   qdot = J⁺_DLS · v
+#   位控轴 S=0: v = K/(1+D)·Δx + I
+#   力控轴 S=1: v = (F_err + I·leak)/D，再经 vel_lpf
+#   qdot = J⁺ · v
 #
+# RViz 档位：软/中/硬 由面板写参数（覆盖本文件）；「自定义」（默认）不写，
+# 直接用本文件 / 在线 param 的值。
+#
+# 分体模式（只控制手臂）：
 ocs2_arm_controller:
   ros__parameters:
 
-    # ── 轴选择与目标力 ──
-    compliance_task_selection: [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # 1=力控 0=位控 [Fx,Fy,Fz,Mx,My,Mz]
-    compliance_force_setpoint: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # 目标力 [N,Nm]
+    # 轴选择: [Fx,Fy,Fz,Mx,My,Mz]，1=力控 0=位控
+    compliance_task_selection: [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    compliance_force_setpoint: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # 目标力 [N, Nm]；常用 |F|≤10 N
     compliance_force_feedback_sign: -1.0                       # 力方向反了改 1.0
 
-    # ── 位控轴 (S=0)：v = K/(1+D)·Δx + I ──
-    # 关节位置环实测频响：等效延迟 τ≈34ms，>3Hz 起增益>1 谐振峰。
-    # 位置环带宽 ωc=K，K=30(4.8Hz) 落入谐振区 → 目标周围来回振荡；
-    # K=15(2.4Hz) 相位滞后≈-32°、PM≈50°，远离谐振峰。档位预设不再改此参数。
-    compliance_hybrid_pos_stiffness: [15.0, 15.0, 15.0, 10.0, 10.0, 10.0]  # K [1/s]（各档固定）
-    compliance_hybrid_pos_damping:   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]        # D（阻尼，振荡时加大）
-    compliance_hybrid_pos_ki: 0.0
-    compliance_hybrid_pos_ki_max: 0.02
+    # ── 位控轴: v = K/(1+D)·Δx + I ──
+    compliance_hybrid_pos_stiffness: [15.0, 15.0, 15.0, 10.0, 10.0, 10.0]  # K [1/s]
+    #   ↑ 跟踪更快，但 >20（约 3 Hz）会进入位置环谐振区而振荡；旋转轴一般取平移的 0.6~0.7 倍。推荐 15 / 10
+    compliance_hybrid_pos_damping:   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]        # D
+    #   ↑ 变柔（等效增益 K/(1+D)），拖动/接触时振荡就加大；一般 0~2
+    compliance_hybrid_pos_ki: 0.0        # 位置积分 [1/s]；一般 0，留位误差时 0.2~0.5
+    compliance_hybrid_pos_ki_max: 0.02   # 积分上限 [m]；0.01~0.05
 
-    # ── 力控轴 (S=1)：v = (F_err + I·leak) / D ──
-    # D 越大环路增益越低、对力越硬（越大越硬）；接触环路同样经过 34ms 延迟。
-    # 抗拖拽振荡调优值（针对 1-3 Hz 低频摆动）：
-    #   - damping 加大 → 降低环路增益
-    #   - ki_leak 加大 → 防止拖拽时积分 wind-up
-    #   - vel_lpf_alpha 减小 → 导纳输出更强低通（虚拟惯性）
-    compliance_hybrid_force_damping: [8000.0, 8000.0, 8000.0, 400.0, 400.0, 400.0]  # D（中档，=RViz 中档）
-    compliance_hybrid_force_ki: 1.0          # 积分增益（消重力残余）；2.0 在接触刚性物体时积分过冲 → 力振荡
-    compliance_hybrid_force_ki_max: 5.0     # 积分上限（10 过大，接触时 wind-up → 极限环）
-    compliance_hybrid_force_ki_leak: 1.0     # 积分泄漏 [1/s]，拖拽振荡调大 (0.8~1.5)
-    compliance_hybrid_force_deadband: 0.5    # 力误差死区 [N]：|F_err|≤死区时力控轴 v=0（防重力残差漂移）；残差大时调大
-    compliance_force_vel_lpf_alpha: 0.15     # 导纳输出低通(虚拟惯性)；拖拽振荡调小 (0.1~0.2)
+    # ── 力控轴: v = (F_err + I·leak)/D ──
+    compliance_hybrid_force_damping: [8000.0, 8000.0, 8000.0, 400.0, 400.0, 400.0]  # D
+    #   ↑ 对力更硬（环路增益低、抗振强），↓ 更顺从；线性推荐 3000(软)/8000(中)/15000(硬)，旋转取 1/20
+    compliance_hybrid_force_ki: 1.0          # 积分增益；↑ 消重力残差快，但接触刚性物体易过冲振荡，推荐 0.5~2.0
+    compliance_hybrid_force_ki_max: 5.0      # 积分上限 [N]；>10 在接触时易 wind-up 成极限环
+    compliance_hybrid_force_ki_leak: 1.0     # 积分泄漏 [1/s]；↑ 抗拖拽 wind-up，推荐 0.5~1.5
+    compliance_hybrid_force_deadband: 0.5    # 力误差死区 [N]；↑ 防重力残差漂移但接触响应变钝，推荐 0.3~1.0
+    compliance_force_vel_lpf_alpha: 0.15     # 导纳输出低通(虚拟惯性)；↑ 跟随快但噪声穿透，↓ 更平滑，推荐 0.1~0.25
 
-    # ── 速度与位移限幅 ──
-    compliance_hybrid_cart_vmax: [0.15, 0.15, 0.15, 0.6, 0.6, 0.6]  # 笛卡尔速度上限 [m/s, rad/s]
-    compliance_hybrid_force_xmax_lin: 0.2             # 力控平移软限 [m]
-    compliance_hybrid_force_xmax_ang: 0.3             # 力控旋转软限 [rad]
-    compliance_hybrid_force_xmax_margin_ratio: 0.2    # 软限渐缓区比例
-    compliance_hybrid_joint_vmax: 0.8                 # 关节速度上限 [rad/s]
-    compliance_hybrid_joint_limit_margin: 0.02        # 关节限位裕度 [rad]
+    # ── 速度/位移限幅 ──
+    compliance_hybrid_cart_vmax: [0.15, 0.15, 0.15, 0.6, 0.6, 0.6]  # [m/s, rad/s]；↑ 响应快但易冲过头，推荐 0.1~0.2 / 0.45~0.6
+    compliance_hybrid_force_xmax_lin: 0.2           # 力控平移行程上限 [m]；↑ 可达范围大、↓ 更安全，推荐 0.1~0.3
+    compliance_hybrid_force_xmax_ang: 0.3           # 力控旋转行程上限 [rad]；推荐 0.2~0.4
+    compliance_hybrid_force_xmax_margin_ratio: 0.2  # 软限渐缓区占比（0~0.9）
+    compliance_hybrid_joint_vmax: 0.8               # 关节速度上限 [rad/s]；↑ 跟随快，推荐 0.5~1.0
+    compliance_hybrid_joint_limit_margin: 0.02      # 关节限位裕度 [rad]
 
-    # ── 逆解（v_des → qdot）──
-    # DLS: qdot = Jᵀ(JJᵀ+λ²I)⁻¹v，事后 clamp 关节速度（可能破坏末端速度方向）。
-    # QP : min 0.5·qdotᵀ(JᵀJ+λ²I)qdot − (Jᵀv)ᵀqdot  s.t. |qdot_i|≤joint_vmax，
-    #      限位在求解中被正确处理（投影），适合接近速度限位/奇异时避免过冲。
-    compliance_hybrid_inverse_method: DLS      # "DLS" 或 "QP"
-    compliance_hybrid_dls_lambda: 0.05         # DLS 正则化
-    compliance_hybrid_qp_lambda: 1.0           # QP 正则化权重（需≥DLS λ，保证投影梯度收敛）
+    # ── 逆解 v_des → qdot ──
+    compliance_hybrid_inverse_method: DLS      # DLS=快；接近限位/奇异、限速后方向被拉偏时改 QP（限幅在求解内处理）
+    compliance_hybrid_dls_lambda: 0.05         # ↑ 奇异附近更稳、跟踪变差，推荐 0.02~0.1
+    compliance_hybrid_qp_lambda: 1.0           # QP 正则化，需 ≥ dls_lambda
 
     # ── 力信号与零力校准 ──
-    # wrench EMA：α 太小（如 0.10）时滤波滞后大，接触刚性物体时相位裕度不足 → 力振荡。
-    # 噪声大时减小，抗动态振荡时增大（建议 0.15~0.25）。
-    compliance_wrench_lpf_alpha: 0.15        # wrench EMA 滤波
-    compliance_zero_cal_duration: 0.5        # 零力校准时长 [s]（工具重力已由模型扣除，此处仅平均残余零漂，无需长等待）
-    compliance_zero_cal_settle: 0.0          # 校准前等待 [s]
-    compliance_zero_cal_still_vel: 0.02      # 静止阈值 [rad/s]
-    compliance_gravity_accel: 9.81
-    compliance_ft_timeout_sec: 0.2           # FT 超时 [s]
+    compliance_wrench_lpf_alpha: 0.15       # wrench EMA；↓ 更平滑但滞后大（刚性接触易振荡），↑ 噪声穿透多；推荐 0.15~0.25
+    compliance_zero_cal_duration: 0.5       # [s]；↑ 更稳但等更久，推荐 0.3~1.0
+    compliance_zero_cal_settle: 0.0         # [s]；校准前静止等待
+    compliance_zero_cal_still_vel: 0.02     # [rad/s]；低于此速度才允许校准
+    compliance_gravity_accel: 9.81          # 重力加速度 [m/s²]
+    compliance_ft_timeout_sec: 0.2          # [s]；超时判 FT 失效并停用该侧力控，↑容忍掉帧、↓更安全
 
     # ── 遥操作与坐标系 ──
-    compliance_teleop_enable: true
-    # 力/位姿参考系（含 left_target 无 frame_id 假设的系）不在此硬编码：
-    # 控制器 auto_declare 默认取自本模式 .info 的 model_information.baseFrame
-    # （分体/全身=base_footprint，双臂台架=arm_base 等），与 target_manager 同源一致。
-    compliance_gravity_frame: world            # 重力补偿参考系
+    compliance_teleop_enable: true          # 是否接受 /left_target、/right_target
+    compliance_gravity_frame: world          # 重力补偿参考系
+    # 腰部柔顺只在全身控制器里启用，见下半段
+
+# 全身模式（含腰部 body_joint4）：
+ocs2_wbc_controller:
+  ros__parameters:
+
+    # 轴选择: [Fx,Fy,Fz,Mx,My,Mz]，1=力控 0=位控
+    compliance_task_selection: [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    compliance_force_setpoint: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # 目标力 [N, Nm]；常用 |F|≤10 N
+    compliance_force_feedback_sign: -1.0                       # 力方向反了改 1.0
+
+    # ── 位控轴: v = K/(1+D)·Δx + I ──
+    compliance_hybrid_pos_stiffness: [15.0, 15.0, 15.0, 10.0, 10.0, 10.0]  # K [1/s]
+    #   ↑ 跟踪更快，但 >20（约 3 Hz）会进入位置环谐振区而振荡；旋转轴一般取平移的 0.6~0.7 倍。推荐 15 / 10
+    compliance_hybrid_pos_damping:   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]        # D
+    #   ↑ 变柔（等效增益 K/(1+D)），拖动/接触时振荡就加大；一般 0~2
+    compliance_hybrid_pos_ki: 0.0        # 位置积分 [1/s]；一般 0，留位误差时 0.2~0.5
+    compliance_hybrid_pos_ki_max: 0.02   # 积分上限 [m]；0.01~0.05
+
+    # ── 力控轴: v = (F_err + I·leak)/D ──
+    compliance_hybrid_force_damping: [8000.0, 8000.0, 8000.0, 400.0, 400.0, 400.0]  # D
+    #   ↑ 对力更硬（环路增益低、抗振强），↓ 更顺从；线性推荐 3000(软)/8000(中)/15000(硬)，旋转取 1/20
+    compliance_hybrid_force_ki: 1.0          # 积分增益；↑ 消重力残差快，但接触刚性物体易过冲振荡，推荐 0.5~2.0
+    compliance_hybrid_force_ki_max: 5.0      # 积分上限 [N]；>10 在接触时易 wind-up 成极限环
+    compliance_hybrid_force_ki_leak: 1.0     # 积分泄漏 [1/s]；↑ 抗拖拽 wind-up，推荐 0.5~1.5
+    compliance_hybrid_force_deadband: 0.5    # 力误差死区 [N]；↑ 防重力残差漂移但接触响应变钝，推荐 0.3~1.0
+    compliance_force_vel_lpf_alpha: 0.15     # 导纳输出低通(虚拟惯性)；↑ 跟随快但噪声穿透，↓ 更平滑，推荐 0.1~0.25
+
+    # ── 速度/位移限幅 ──
+    compliance_hybrid_cart_vmax: [0.15, 0.15, 0.15, 0.6, 0.6, 0.6]  # [m/s, rad/s]；↑ 响应快但易冲过头，推荐 0.1~0.2 / 0.45~0.6
+    compliance_hybrid_force_xmax_lin: 0.2           # 力控平移行程上限 [m]；↑ 可达范围大、↓ 更安全，推荐 0.1~0.3
+    compliance_hybrid_force_xmax_ang: 0.3           # 力控旋转行程上限 [rad]；推荐 0.2~0.4
+    compliance_hybrid_force_xmax_margin_ratio: 0.2  # 软限渐缓区占比（0~0.9）
+    compliance_hybrid_joint_vmax: 0.8               # 关节速度上限 [rad/s]；↑ 跟随快，推荐 0.5~1.0
+    compliance_hybrid_joint_limit_margin: 0.02      # 关节限位裕度 [rad]
+
+    # ── 逆解 v_des → qdot ──
+    compliance_hybrid_inverse_method: DLS      # DLS=快；接近限位/奇异、限速后方向被拉偏时改 QP（限幅在求解内处理）
+    compliance_hybrid_dls_lambda: 0.05         # ↑ 奇异附近更稳、跟踪变差，推荐 0.02~0.1
+    compliance_hybrid_qp_lambda: 1.0           # QP 正则化，需 ≥ dls_lambda
+
+    # ── 力信号与零力校准 ──
+    compliance_wrench_lpf_alpha: 0.15       # wrench EMA；↓ 更平滑但滞后大（刚性接触易振荡），↑ 噪声穿透多；推荐 0.15~0.25
+    compliance_zero_cal_duration: 0.5       # [s]；↑ 更稳但等更久，推荐 0.3~1.0
+    compliance_zero_cal_settle: 0.0         # [s]；校准前静止等待
+    compliance_zero_cal_still_vel: 0.02     # [rad/s]；低于此速度才允许校准
+    compliance_gravity_accel: 9.81          # 重力加速度 [m/s²]
+    compliance_ft_timeout_sec: 0.2          # [s]；超时判 FT 失效并停用该侧力控，↑容忍掉帧、↓更安全
+
+    # ── 遥操作与坐标系 ──
+    compliance_teleop_enable: true          # 是否接受 /left_target、/right_target
+    compliance_gravity_frame: world          # 重力补偿参考系
+
+    # ── 腰部 body_joint4（yaw，全身模型含腰部，直接写关节指令）──
+    compliance_waist_enable: true
+    compliance_waist_joint: body_joint4
+    compliance_waist_mode: follow_target   # manual=跟 /compliance_waist_target 绝对角；follow_target=腰跟随目标方位
+    compliance_waist_soft_limit: 1.047     # [rad] ≈60°，|q| 软限位；↑ 范围更大但手臂远离舒适区，推荐 0.5~1.05
+    compliance_waist_rate: 0.12            # [rad/s] 指令速率；↑ 跟得快，但 r·ω 会顶到 cart_vmax，推荐 0.08~0.15
+    compliance_waist_gain: 0.5             # [1/s] 方位残差 → 角速率；↑ 跟得紧、易抖；符号反了取负，推荐 0.3~1.0
+    compliance_waist_deadband: 0.005       # [rad]；↑ 更稳但留残差，推荐 0.003~0.01
+    compliance_waist_comfort: 0.35         # [rad] ≈20°，超出才动腰；↑ 少动腰、多靠手臂，推荐 0.25~0.5
+    compliance_waist_cond_max: 12.0        # 手臂条件数门槛，超过则门限减半（更早介入）；推荐 8~15，<=0 关闭
+    compliance_waist_filter_tau: 0.2       # [s] 方位残差低通；↑ 更平滑但滞后，推荐 0.1~0.4
