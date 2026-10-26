@@ -42,11 +42,20 @@ ocs2_arm_controller:
     compliance_hybrid_force_xmax_margin_ratio: 0.2  # 软限渐缓区占比（0~0.9）
     compliance_hybrid_joint_vmax: 0.8               # 关节速度上限 [rad/s]；↑ 跟随快，推荐 0.5~1.0
     compliance_hybrid_joint_limit_margin: 0.02      # 关节限位裕度 [rad]
+    compliance_wrist_coupling_max: 1.9199           # |q6|+|q7| ≤ 110° [rad]（M6 CCS 八边形斜边）
+    #   ↑ 实际生效值 = 本值 − compliance_hybrid_joint_limit_margin；≤0 关闭。
+    #     M6 CCS URDF 直边是 j6 ±58°、j7 ±78°，对角 136° > 110°，所以不配这条时
+    #     那个角是可达的（说明书禁止）。只有 QP 会把盒进求解；DLS 下只剩事后 L1 投影。
 
     # ── 逆解 v_des → qdot ──
-    compliance_hybrid_inverse_method: DLS      # DLS=快；接近限位/奇异、限速后方向被拉偏时改 QP（限幅在求解内处理）
-    compliance_hybrid_dls_lambda: 0.05         # ↑ 奇异附近更稳、跟踪变差，推荐 0.02~0.1
-    compliance_hybrid_qp_lambda: 1.0           # QP 正则化，需 ≥ dls_lambda
+    # 分体模式没有腰关节：每臂独立求解。用 QP —— 盒（关节速度上限、URDF 限位软减速、
+    # 6/7 轴耦合）直接在求解里，贴限位时末端方向不会被事后截断拉偏。
+    # DLS 不处理速度盒，只留作对照/调试。全身模式若把腰部放进联合 QP，本项被忽略。
+    compliance_hybrid_inverse_method: QP
+    compliance_hybrid_dls_lambda: 0.05         # 仅 DLS 用；↑ 奇异附近更稳、跟踪变差，推荐 0.02~0.1
+    # QP 任务增益 = σ²/(σ²+λ²)：λ=0.1 时 σ=0.5→96%，与 DLS(λ=0.05) 基本相当；
+    # 取 1.0 会把健康方向压到 ~20%，表现为跟踪发软/跟不上。推荐 0.05~0.2。
+    compliance_hybrid_qp_lambda: 0.1
 
     # ── 力信号与零力校准 ──
     compliance_wrench_lpf_alpha: 0.15       # wrench EMA；↓ 更平滑但滞后大（刚性接触易振荡），↑ 噪声穿透多；推荐 0.15~0.25
@@ -62,6 +71,8 @@ ocs2_arm_controller:
     # 腰部柔顺只在全身控制器里启用，见下半段
 
 # 全身模式（含腰部 body_joint4）：
+# 腰部一旦进入联合 QP，整个求解固定为 QP：变量 [q̇_waist, q̇_left×7, q̇_right×7]，
+# 每个轴的位置/速度限位都在盒约束里（见 compliance_waist_mode）。
 ocs2_wbc_controller:
   ros__parameters:
 
@@ -94,11 +105,15 @@ ocs2_wbc_controller:
     compliance_hybrid_force_xmax_margin_ratio: 0.2  # 软限渐缓区占比（0~0.9）
     compliance_hybrid_joint_vmax: 0.8               # 关节速度上限 [rad/s]；↑ 跟随快，推荐 0.5~1.0
     compliance_hybrid_joint_limit_margin: 0.02      # 关节限位裕度 [rad]
+    compliance_wrist_coupling_max: 1.9199           # |q6|+|q7| ≤ 110° [rad]（M6 CCS 八边形斜边，软限位再减 margin）
 
     # ── 逆解 v_des → qdot ──
-    compliance_hybrid_inverse_method: DLS      # DLS=快；接近限位/奇异、限速后方向被拉偏时改 QP（限幅在求解内处理）
-    compliance_hybrid_dls_lambda: 0.05         # ↑ 奇异附近更稳、跟踪变差，推荐 0.02~0.1
-    compliance_hybrid_qp_lambda: 1.0           # QP 正则化，需 ≥ dls_lambda
+    # 腰部进联合 QP 时本项被忽略（固定 QP），见 compliance_waist_mode。
+    compliance_hybrid_inverse_method: QP
+    compliance_hybrid_dls_lambda: 0.05         # 仅单臂 DLS 用；推荐 0.02~0.1
+    # 联合 QP 的 λ 同时是腰部的正则基准（腰列 = λ × compliance_qp_waist_weight）。
+    # 任务增益 σ²/(σ²+λ²)：λ=1.0 时 σ=0.5 只剩 20%，调臂增益时先看这一项。
+    compliance_hybrid_qp_lambda: 1.0
 
     # ── 力信号与零力校准 ──
     compliance_wrench_lpf_alpha: 0.15       # wrench EMA；↓ 更平滑但滞后大（刚性接触易振荡），↑ 噪声穿透多；推荐 0.15~0.25
@@ -115,11 +130,14 @@ ocs2_wbc_controller:
     # ── 腰部 body_joint4（yaw，全身模型含腰部，直接写关节指令）──
     compliance_waist_enable: true
     compliance_waist_joint: body_joint4
-    compliance_waist_mode: follow_target   # manual=跟 /compliance_waist_target 绝对角；follow_target=腰跟随目标方位
-    compliance_waist_soft_limit: 1.047     # [rad] ≈60°，|q| 软限位；↑ 范围更大但手臂远离舒适区，推荐 0.5~1.05
-    compliance_waist_rate: 0.12            # [rad/s] 指令速率；↑ 跟得快，但 r·ω 会顶到 cart_vmax，推荐 0.08~0.15
-    compliance_waist_gain: 0.5             # [1/s] 方位残差 → 角速率；↑ 跟得紧、易抖；符号反了取负，推荐 0.3~1.0
-    compliance_waist_deadband: 0.005       # [rad]；↑ 更稳但留残差，推荐 0.003~0.01
-    compliance_waist_comfort: 0.35         # [rad] ≈20°，超出才动腰；↑ 少动腰、多靠手臂，推荐 0.25~0.5
-    compliance_waist_cond_max: 12.0        # 手臂条件数门槛，超过则门限减半（更早介入）；推荐 8~15，<=0 关闭
-    compliance_waist_filter_tau: 0.2       # [s] 方位残差低通；↑ 更平滑但滞后，推荐 0.1~0.4
+    # qp     = 腰部与双臂进同一个 QP（变量 [腰, 左7, 右7]），按任务/权重自动分配
+    # manual = 跟 /compliance_waist_target 绝对角；follow_target = 腰跟随目标方位（旧策略）
+    compliance_waist_mode: qp
+    compliance_qp_waist_weight: 1.0        # qp 模式：腰部正则相对手臂的倍数；<1 更愿意用腰，>1 更保守
+    compliance_waist_soft_limit: 1.047     # [rad] ≈60°，与 URDF 限位取交集（只能收紧）；↑ 范围更大但手臂远离舒适区，推荐 0.5~1.05
+    compliance_waist_rate: 0.12            # [rad/s] qp 模式的速度盒上限，与 URDF 速度限位取小；推荐 0.08~0.15
+    compliance_waist_gain: 0.5             # [1/s] 方位残差 → 角速率；仅 manual/follow_target 使用
+    compliance_waist_deadband: 0.005       # [rad]；仅 manual/follow_target 使用
+    compliance_waist_comfort: 0.35         # [rad]；仅 follow_target 使用（qp 模式由 QP 自己决定分配）
+    compliance_waist_cond_max: 12.0        # 手臂条件数门槛；仅 follow_target 使用，<=0 关闭
+    compliance_waist_filter_tau: 0.2       # [s] 方位残差低通；仅 follow_target 使用
