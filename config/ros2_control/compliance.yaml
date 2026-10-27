@@ -13,6 +13,14 @@
 ocs2_arm_controller:
   ros__parameters:
 
+    # ── 力控接近：本段只需要这两项 ──
+    # 实际接近速度 = min(approach_vel, force_vmax)。首接触峰值 ≈ F_des + k_env·v·0.05，
+    # 与环境刚度有关，没有任何参数能消除；要更软就降低 approach_vel。
+    # 其余护栏参数（guard_enable / delay / bandwidth_hz / bandwidth_ratio /
+    # stiffness_bound / max_lead）一律用 StateCompliance.h 的默认值。
+    compliance_hybrid_force_approach_vel: 0.002                            # 接近速度 [m/s]
+    compliance_hybrid_force_vmax: [0.002, 0.002, 0.002, 0.05, 0.05, 0.05]  # 力控轴速度硬上限，同时限退让速度 [m/s, rad/s]
+
     # 轴选择: [Fx,Fy,Fz,Mx,My,Mz]，1=力控 0=位控
     compliance_task_selection: [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     compliance_force_setpoint: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # 目标力 [N, Nm]；常用 |F|≤10 N
@@ -33,15 +41,15 @@ ocs2_arm_controller:
     compliance_hybrid_force_ki_max: 5.0      # 积分上限 [N]；>10 在接触时易 wind-up 成极限环
     compliance_hybrid_force_ki_leak: 1.0     # 积分泄漏 [1/s]；↑ 抗拖拽 wind-up，推荐 0.5~1.5
     compliance_hybrid_force_deadband: 0.5    # 力误差死区 [N]；↑ 防重力残差漂移但接触响应变钝，推荐 0.3~1.0
-    compliance_force_vel_lpf_alpha: 0.15     # 导纳输出低通(虚拟惯性)；↑ 跟随快但噪声穿透，↓ 更平滑，推荐 0.1~0.25
+    compliance_force_vel_lpf_alpha: 0.15     # 导纳输出低通；减速/停止/反向旁路旧速度，降低滤波刹车滞后
 
     # ── 接触门控 / 软着陆（力控轴自己走去接触时用）──
     # 未接触时 f_err 恒等于 F_des，积分会以 ki·f_eff 一路充到 ki_max（ki=1、
     # F_des=5N → 4.5 N/s，约 1.1 s 充满），接触瞬间带着这个偏置压上去 → 实测过冲 ≈ 5 N。
     # eps>0 时：未接触阶段积分强制为 0、改以 approach_vel 匀速接近；|F| 超过 eps
     # 才进导纳+积分（退出门限 0.6·eps 做迟滞）。eps ≤ 0 关闭，恢复旧行为。
+    # approach_vel 已上移到本段开头的「力控接近」块。
     compliance_hybrid_force_contact_eps: 1.5      # [N]/[Nm]；应 > force_deadband，推荐 1.0~2.0
-    compliance_hybrid_force_approach_vel: 0.002   # [m/s] 自由段接近速度；2 mm/s。愈快愈快到位但接触峰值≈k_env·v·T_d，刚性面建议 1~3 mm/s
 
     # ── 速度/位移限幅 ──
     compliance_hybrid_cart_vmax: [0.15, 0.15, 0.15, 0.6, 0.6, 0.6]  # [m/s, rad/s]；↑ 响应快但易冲过头，推荐 0.1~0.2 / 0.45~0.6
@@ -84,6 +92,11 @@ ocs2_arm_controller:
 ocs2_wbc_controller:
   ros__parameters:
 
+    # ── 力控接近：本段只需要这两项（与分体段保持同一组值）──
+    # 其余护栏参数一律用 StateCompliance.h 的默认值。
+    compliance_hybrid_force_approach_vel: 0.002                            # 接近速度 [m/s]
+    compliance_hybrid_force_vmax: [0.002, 0.002, 0.002, 0.05, 0.05, 0.05]  # 力控轴速度硬上限，同时限退让速度 [m/s, rad/s]
+
     # 轴选择: [Fx,Fy,Fz,Mx,My,Mz]，1=力控 0=位控
     compliance_task_selection: [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     compliance_force_setpoint: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # 目标力 [N, Nm]；常用 |F|≤10 N
@@ -104,9 +117,8 @@ ocs2_wbc_controller:
     compliance_hybrid_force_ki_max: 5.0      # 积分上限 [N]；>10 在接触时易 wind-up 成极限环
     compliance_hybrid_force_ki_leak: 1.0     # 积分泄漏 [1/s]；↑ 抗拖拽 wind-up，推荐 0.5~1.5
     compliance_hybrid_force_deadband: 0.5    # 力误差死区 [N]；↑ 防重力残差漂移但接触响应变钝，推荐 0.3~1.0
-    compliance_force_vel_lpf_alpha: 0.15     # 导纳输出低通(虚拟惯性)；↑ 跟随快但噪声穿透，↓ 更平滑，推荐 0.1~0.25
+    compliance_force_vel_lpf_alpha: 0.15     # 导纳输出低通；减速/停止/反向旁路旧速度，降低滤波刹车滞后
     compliance_hybrid_force_contact_eps: 1.5      # 接触门控阈值 [N]/[Nm]；≤0 关闭（说明见分体段）
-    compliance_hybrid_force_approach_vel: 0.002   # 自由段接近速度 [m/s]
 
     # ── 速度/位移限幅 ──
     compliance_hybrid_cart_vmax: [0.15, 0.15, 0.15, 0.6, 0.6, 0.6]  # [m/s, rad/s]；↑ 响应快但易冲过头，推荐 0.1~0.2 / 0.45~0.6
