@@ -79,7 +79,7 @@
              设成 1~2 拍会误判：反馈是模块收到控制帧后才回的，与 CM 的 read() 天然异步。 -->
         <xacro:arg name="feedback_timeout_cycles" default="${juxie_impedance['feedback_timeout_cycles']}"/>
         <!-- 减速比（电机端/输出端），顺序 = motor_ids = 1,2,3,4,5,6。现场实测后用
-             scripts/identify_gear_ratio.py 填（本机 2026-10-08：腰部 156 / 头部 100）。 -->
+             scripts/identify_gear_ratio.py 填（本机 2026-10-08：腰部 161 / 头部 100）。 -->
         <xacro:property name="juxie_joint_names"
                 value="${['body_joint1', 'body_joint2', 'body_joint3', 'body_joint4', 'head_joint1', 'head_joint2']}"/>
         <xacro:property name="juxie_motor_ids" value="${['1', '2', '3', '4', '5', '6']}"/>
