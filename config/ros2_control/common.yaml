@@ -66,9 +66,13 @@ ocs2_arm_controller:
     state_interfaces:
       - position
 
+    # 分体双臂 MPC 使用 m6_ccs 的 task.info（含 homeJointReference）；HOLD 可预置
+    # home_joint_reference_id / home_joint_reference，进 OCS2 时生效。
     robot_name: m6_ccs
     info_file_name: task
     home_duration: 5.0
+    # home_joint_reference_id: 0   # 1-based；例如 2 → 使用下方 home_2
+    # home_joint_reference: []     # 非空时优先于 id
     movel_trajectory_duration: 6.0
     movel_duration: 2.0
     movel_sample_interval: 0.04

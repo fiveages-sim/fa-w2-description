@@ -127,6 +127,9 @@ ros2 topic pub /body_joint_controller/target_joint_position std_msgs/msg/Float64
 # 双臂（14 维）
 ros2 topic pub /ocs2_arm_controller/target_joint_position std_msgs/msg/Float64MultiArray \
   "{data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}"
+
+# HOME 关节软参考（加载 m6_ccs task.info；HOLD 预置，进 OCS2 生效）
+ros2 param set /ocs2_arm_controller home_joint_reference_id 2
 ```
 
 ## 6. 导航
