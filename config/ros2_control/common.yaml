@@ -44,7 +44,7 @@ ocs2_arm_controller:
   ros__parameters:
     # Joint configuration
     update_rate: 500  # Hz
-    mpc_frequency: 50
+    mpc_frequency: 100
     joints:
       - left_joint1
       - left_joint2
