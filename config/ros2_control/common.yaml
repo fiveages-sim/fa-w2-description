@@ -43,7 +43,7 @@ controller_manager:
 ocs2_arm_controller:
   ros__parameters:
     # Joint configuration
-    update_rate: 100  # Hz
+    update_rate: 500  # Hz
     mpc_frequency: 50
     joints:
       - left_joint1
@@ -178,7 +178,7 @@ ocs2_wbc_controller:
 # 头部关节控制器配置
 head_joint_controller:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 500  # Hz
     
     # 头部关节
     joints:
@@ -202,7 +202,7 @@ head_joint_controller:
 
 body_joint_controller:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 500  # Hz
 
     # 身体关节
     joints:
