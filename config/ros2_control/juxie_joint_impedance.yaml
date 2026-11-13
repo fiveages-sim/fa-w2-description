@@ -45,9 +45,27 @@ friction_offset_ma: "312.5,-110.8,-379.9,17,0,0"
 # 摩擦符号的速度死区 rad/s：0.03 = 45 电机 rpm（实测 0.002 会静止自激：前馈 > 起动电流）
 friction_vel_eps_rad_s: 0.03
 # 摩擦前馈的符号取哪个速度：measured（老行为）| reference（换向抢先一步；真机实测 RMS 0.223°→0.093°）
+#   reference_ramp = reference + 死区内按 |q̇_d|/死区 比例补（修低速升降粘滑）。
+#   ⚠️ 默认保持 reference：reference_ramp 会改变启动/下降段的电流，需真机验证后再开。
 friction_ff_velocity: reference
 # 摩擦前馈幅值上限 mA（0 = 不限）；腰部 |v|=0.2 rad/s 时 c+f_v·|v| = 3379 ⇒ 4000 留余量
 friction_ff_max_ma: 4000
+# 死区内补摩擦的**斜坡宽度** rad/s（0 = 沿用 friction_vel_eps_rad_s，仅 reference_ramp 生效）。
+#   死区 = “用哪个速度判方向”，本参数 = “补多少”，**必须分开**：低速升降的指令在末端空间给
+#   （z 6 mm/s），同一个 6 mm/s 下 j1 只有 0.009 rad/s、j2 有 0.019 rad/s。若共用 0.015 的门槛，
+#   则 j1 只补到 58%、j3 补到 71%、j2 补满 ⇒ 不是整体下沉，而是姿态前后摆（实测 0.5°/轴）。
+#   0.0015 = 真在走就补满，指令真为 0（HOLD）时仍为 0，不会 1 rpm 量化自激。
+friction_ff_ramp_vel_rad_s: 0.0
+# 摩擦前馈参考速度的一阶低通 Hz（0 = 不滤）与噪声死区 rad/s（0 = 不设）。
+#   全身控制下 WBC 的 v_d 在 0 附近抖 ±0.01 rad/s（≈11 Hz），ramp=0.0015 时 scale
+#   一饱和就是满幅 ⇒ ±f_s 跟着噪声翻号，实测 Σd·ff 峰峰 2357 mA ≈ ±40 N·m。
+#   本机 config/robot.local.yaml 覆盖为 2.0 / 0.004；描述包默认保持 0（旧行为）。
+friction_ff_vd_filter_hz: 0.0
+friction_ff_min_vel_rad_s: 0.0
+# /juxie_impedance_debug 的抽取比例（N 个控制周期发一帧）。
+#   5 → 200 Hz（默认，够分辨 100 Hz 的 MPC 重解交替）
+#   1 → 1000 Hz（要定位比 MPC 更快的抖动才需要；CPU 占用明显上升）
+impedance_debug_decim: 5
 
 # ── 重力前馈（两层，**取其一不叠加**）
 # ① 保命层 = 查表：不依赖任何控制器（WBC 挂了/起不来也照样补重力）。
@@ -76,3 +94,19 @@ gravity_feedforward_ma: "0,0,0,0,0,0"
 #   锁存为 CSP 保持最后一帧位置并忽略上层命令。
 #   ⚠️ 绝不清零电流（对重力关节 = 自由落体）；不能设 1~2（反馈与 CM 的 read() 天然异步）。
 feedback_timeout_cycles: 10
+
+# ── 起动电流辨识（ident）
+# 该轴只保留重力前馈，电流从 0 按 ident_ramp_ma_s 增加；
+# 位移超过 ident_move_deg 即锁存，得到静摩擦 + 偏置。
+# 接口：/body_ident_command [motor_id, ±1] → /body_ident_result。
+# 默认关闭；打开后该轴失去 Kp/Kd 与摩擦前馈，必须人工扶稳、单轴、小角度试。
+ident_enable: false
+# ramp 上限 mA；到顶未动则 status=0。
+ident_max_ma: 3000.0
+# ramp 斜率 mA/s。
+ident_ramp_ma_s: 200.0
+# 位移判据 deg；0.02° ≈ 3.6 编码器 LSB。
+ident_move_deg: 0.02
+# 超时 s；5 s × 200 mA/s ≈ 1000 mA。
+ident_timeout_s: 5.0
+# ident 期间 current_slew_rate_ma_s 仍生效；开启限幅时 ramp 会滞后，测量值偏小。

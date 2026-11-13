@@ -52,11 +52,44 @@
         <xacro:arg name="friction_vel_eps_rad_s" default="${juxie_impedance['friction_vel_eps_rad_s']}"/>
         <!-- 摩擦前馈的符号取哪个速度：measured（默认）| reference。
              reference = |q̇_d| >= v_eps 时改用参考速度 ⇒ 换向时抢先一步，
-             真机实测跟踪 RMS 0.223° → 0.093°（2026-10-12，三角波 ±4°/0.05 rad/s）。 -->
+             真机实测跟踪 RMS 0.223° → 0.093°（2026-10-12，三角波 ±4°/0.05 rad/s）。
+             reference_ramp = reference + 死区内按 |q̇_d|/v_eps 比例补（修低速升降粘滑，
+             会改变启动/下降段电流，需真机验证后再开）。 -->
         <xacro:arg name="friction_ff_velocity" default="${juxie_impedance['friction_ff_velocity']}"/>
         <!-- 摩擦前馈幅值上限 mA（0 = 不限）。前馈 = f_c + f_v·|v|，|v|≈0.19 rad/s 就会顶满
              电流上限，而 f_v 只在 0.04 rad/s 以内辨识过 ⇒ 建议限在 1200 左右。 -->
         <xacro:arg name="friction_ff_max_ma" default="${juxie_impedance['friction_ff_max_ma']}"/>
+        <!-- 静摩擦 f_s + Stribeck 速度 v_s（不配 = 关闭，逐字节等价于以前的行为）。
+             只补 f_c 时，关节卡住那一刻需要的是 f_s > f_c，于是得等弹簧再压出
+             (f_s−f_c)/Kp 才滑动 ⇒ 「停一下→窜一下」的极限环（真机 2026-10-29 实测 ~1.6 Hz）。
+             前馈幅值 = f_c + f_v·|v| + (f_s−f_c)·e^-(|q̇|/v_s)²；按实测速度衰减。
+             f_s 取值参考 f_c×1.15~1.35，v_s 典型 0.005~0.02 rad/s。 -->
+        <xacro:arg name="friction_stiction_ma" default="0,0,0,0,0,0"/>
+        <xacro:arg name="stribeck_vel_rad_s" default="0"/>
+        <!-- 死区内补摩擦的**斜坡宽度** rad/s（0 = 沿用 friction_vel_eps_rad_s）。
+             死区是“用哪个速度判方向”，本参数是“补多少”——**必须分开**：
+             低速升降的指令在末端空间给（z 6 mm/s），同一个 6 mm/s 下 j1 只有
+             0.009 rad/s、j2 有 0.019；若共用一个 0.015 的门槛，j1 只能补到 58%、
+             j3 补到 71%、j2 补满 ⇒ 不是整体下沉，而是姿态前后摆。
+             建议 0.0015（真在走就补满，指令真为 0 时仍为 0，不自激）。 -->
+        <xacro:arg name="friction_ff_ramp_vel_rad_s"
+                    default="${juxie_impedance['friction_ff_ramp_vel_rad_s']}"/>
+        <!-- 摩擦前馈参考速度的一阶低通截止频率 Hz（0 = 不滤）。
+             起因：WBC 给的 v_d 在 0 附近抖 ≈±0.01 rad/s（≈11 Hz），比上面的 ramp
+             宽度 0.0015 大一个量级 ⇒ scale 一饱和就是满幅，±f_s 跟着噪声翻号。
+             实测 Σd·ff 峰峰 2357 mA ≈ ±40 N·m，位置却一点不动（纯内耗）。
+             2 Hz 对 11 Hz 衰减 ≈5 倍，对 6 mm/s 升降（j1 0.009 rad/s）几乎无衰减。 -->
+        <xacro:arg name="friction_ff_vd_filter_hz"
+                    default="${juxie_impedance['friction_ff_vd_filter_hz']}"/>
+        <!-- 噪声死区 rad/s：低通后 |v_d| 仍小于它时摩擦补偿直接归 0。
+             必须**小于**真实最慢运动速度（抬升时 j1 ≈ 0.0087 rad/s）
+             建议 0.004；0 = 不设死区。 -->
+        <xacro:arg name="friction_ff_min_vel_rad_s"
+                    default="${juxie_impedance['friction_ff_min_vel_rad_s']}"/>
+        <!-- /juxie_impedance_debug 抽取比例：5 → 200 Hz（默认），1 → 1000 Hz。
+             要分辨"交替发生在 MPC 100 Hz 还是 MRT 500 Hz"，需要 1。 -->
+        <xacro:arg name="impedance_debug_decim"
+                    default="${juxie_impedance['impedance_debug_decim']}"/>
         <!-- 腰部重力前馈查找表（数据文件路径，留空 = 关闭）。
              ⚠️ 这是**不依赖任何控制器**的重力补偿：WBC 必须同时 claim 20 个关节，手臂
              （M6_CCS）一出错它就激活不了；而驱动照样会把腰切进电流环 ⇒ 没人补重力 ⇒
@@ -78,6 +111,13 @@
              超过就【锁存该电机为 CSP 保持】并忽略上层命令 —— 绝不清零电流（重力关节会掉）。
              设成 1~2 拍会误判：反馈是模块收到控制帧后才回的，与 CM 的 read() 天然异步。 -->
         <xacro:arg name="feedback_timeout_cycles" default="${juxie_impedance['feedback_timeout_cycles']}"/>
+        <!-- 起动电流辨识（ident）：默认关。见 config/ros2_control/
+             juxie_joint_impedance.yaml 底部注释。 -->
+        <xacro:arg name="ident_enable" default="${juxie_impedance['ident_enable']}"/>
+        <xacro:arg name="ident_max_ma" default="${juxie_impedance['ident_max_ma']}"/>
+        <xacro:arg name="ident_ramp_ma_s" default="${juxie_impedance['ident_ramp_ma_s']}"/>
+        <xacro:arg name="ident_move_deg" default="${juxie_impedance['ident_move_deg']}"/>
+        <xacro:arg name="ident_timeout_s" default="${juxie_impedance['ident_timeout_s']}"/>
         <!-- 减速比（电机端/输出端），顺序 = motor_ids = 1,2,3,4,5,6。现场实测后用
              scripts/identify_gear_ratio.py 填（本机 2026-10-08：腰部 161 / 头部 100）。 -->
         <xacro:property name="juxie_joint_names"
@@ -142,12 +182,23 @@
 				<param name="friction_vel_eps_rad_s">$(arg friction_vel_eps_rad_s)</param>
 				<param name="friction_ff_velocity">$(arg friction_ff_velocity)</param>
 				<param name="friction_ff_max_ma">$(arg friction_ff_max_ma)</param>
+				<param name="friction_stiction_ma">$(arg friction_stiction_ma)</param>
+				<param name="stribeck_vel_rad_s">$(arg stribeck_vel_rad_s)</param>
+				<param name="friction_ff_ramp_vel_rad_s">$(arg friction_ff_ramp_vel_rad_s)</param>
+				<param name="friction_ff_vd_filter_hz">$(arg friction_ff_vd_filter_hz)</param>
+				<param name="friction_ff_min_vel_rad_s">$(arg friction_ff_min_vel_rad_s)</param>
+				<param name="impedance_debug_decim">$(arg impedance_debug_decim)</param>
 				<param name="gravity_ff_table">$(arg gravity_ff_table)</param>
 				<param name="gravity_ff_topic">$(arg gravity_ff_topic)</param>
 				<param name="gravity_ff_ma_per_nm">$(arg gravity_ff_ma_per_nm)</param>
 				<param name="gravity_ff_topic_timeout_s">$(arg gravity_ff_topic_timeout_s)</param>
                 <param name="gravity_ff_transition_s">$(arg gravity_ff_transition_s)</param>
 				<param name="feedback_timeout_cycles">$(arg feedback_timeout_cycles)</param>
+				<param name="ident_enable">$(arg ident_enable)</param>
+				<param name="ident_max_ma">$(arg ident_max_ma)</param>
+				<param name="ident_ramp_ma_s">$(arg ident_ramp_ma_s)</param>
+				<param name="ident_move_deg">$(arg ident_move_deg)</param>
+				<param name="ident_timeout_s">$(arg ident_timeout_s)</param>
 				<param name="gear_ratios">$(arg body_gear_ratios)</param>
 			</hardware>
 			<xacro:body_interfaces velocity_ids="${juxie_csv_ids}"
