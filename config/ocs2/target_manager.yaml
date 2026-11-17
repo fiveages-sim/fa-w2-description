@@ -6,11 +6,11 @@
     # 角度控制缩放因子：映射到 */twist 的角速度上限 (rad/s，满杆)
     angular_scale: 0.25
 
-    marker_fixed_frame: base_footprint
+    marker_fixed_frame: base_link
     # 是否启用VR输入处理
     enable_vr: true
     # 全身控制下 VR 目标相对底盘保持；发布前转换到 WBC 控制 frame
-    vr_follow_frame: base_footprint
+    vr_follow_frame: base_link
     # 仅 full_body.launch.py 在确认使用 Ocs2WbcController 时覆盖为 true
     enable_wbc_head_tracking_marker: false
     # WBC 6D Marker 切入 HEAD_TRACKING 时用它初始化目标位姿

@@ -14,7 +14,7 @@ model_information
     manipulatorModelType    0
 
     ; baseFrame: Pinocchio 模型的根坐标系
-    baseFrame               "base_footprint"
+    baseFrame               "base_link"
 
     ; eeFrame: 左臂末端执行器坐标系名
     eeFrame                 "left_tcp"

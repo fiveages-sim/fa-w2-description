@@ -84,10 +84,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         base_link:
           Alpha: 1
           Show Axes: false
@@ -694,10 +690,6 @@ Visualization Manager:
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
         arm_base:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        base_footprint:
           Alpha: 1
           Show Axes: false
           Show Trail: false
