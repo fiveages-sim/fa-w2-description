@@ -699,6 +699,18 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /trajectory_markers
       Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: CompliancePath
+      Namespaces:
+        {}
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /compliance_path_markers
+      Value: true
     - Class: rviz_default_plugins/TF
       Enabled: false
       Filter (blacklist): ""
