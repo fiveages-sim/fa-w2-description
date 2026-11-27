@@ -203,8 +203,11 @@ ocs2_wbc_controller:
     compliance_hybrid_inverse_method: QP
     compliance_hybrid_dls_lambda: 0.05         # 仅单臂 DLS 用；推荐 0.02~0.1
     # 联合 QP 的 λ 同时是腰部的正则基准（腰列 = λ × compliance_qp_waist_weight）。
-    # 任务增益 σ²/(σ²+λ²)：λ=1.0 时 σ=0.5 只剩 20%，调臂增益时先看这一项。
-    compliance_hybrid_qp_lambda: 1.0
+    # 任务增益 = σ²/(σ²+λ²)。实测 λ=1.0 时弱方向 σ=0.084 → σ²=0.007，正则项比
+    # 信号大 140 倍，QP 宁可不动也不追 v：指令 199 mm/s 只出 12 mm/s，路径回放
+    # 直接判"跟不上"。λ=0.1 时同一轨迹跑通（σ=0.5 → 96%）。改了这里必须同步把
+    # compliance_qp_waist_weight 乘以相同倍数，否则腰部绕组会跟着变软。
+    compliance_hybrid_qp_lambda: 0.1
 
     # ── 力信号与零力校准 ──
     compliance_wrench_lpf_alpha: 0.15       # wrench EMA；↓ 更平滑但滞后大（刚性接触易振荡），↑ 噪声穿透多；推荐 0.15~0.25
@@ -224,7 +227,7 @@ ocs2_wbc_controller:
     # qp     = 腰部与双臂进同一个 QP（变量 [腰, 左7, 右7]），按任务/权重自动分配
     # manual = 跟 /compliance_waist_target 绝对角；follow_target = 腰跟随目标方位（旧策略）
     compliance_waist_mode: qp
-    compliance_qp_waist_weight: 1.0        # qp 模式：腰部正则相对手臂的倍数；<1 更愿意用腰，>1 更保守
+    compliance_qp_waist_weight: 10.0       # qp 模式：腰部正则相对手臂的倍数；<1 更愿意用腰，>1 更保守
     compliance_waist_soft_limit: 1.047     # [rad] ≈60°，与 URDF 限位取交集（只能收紧）；↑ 范围更大但手臂远离舒适区，推荐 0.5~1.05
     compliance_waist_rate: 0.12            # [rad/s] qp 模式的速度盒上限，与 URDF 速度限位取小；推荐 0.08~0.15
     compliance_waist_gain: 0.5             # [1/s] 方位残差 → 角速率；仅 manual/follow_target 使用
@@ -437,8 +440,11 @@ ocs2_wbc_controller:
     compliance_hybrid_inverse_method: QP
     compliance_hybrid_dls_lambda: 0.05         # 仅单臂 DLS 用；推荐 0.02~0.1
     # 联合 QP 的 λ 同时是腰部的正则基准（腰列 = λ × compliance_qp_waist_weight）。
-    # 任务增益 σ²/(σ²+λ²)：λ=1.0 时 σ=0.5 只剩 20%，调臂增益时先看这一项。
-    compliance_hybrid_qp_lambda: 1.0
+    # 任务增益 = σ²/(σ²+λ²)。实测 λ=1.0 时弱方向 σ=0.084 → σ²=0.007，正则项比
+    # 信号大 140 倍，QP 宁可不动也不追 v：指令 199 mm/s 只出 12 mm/s，路径回放
+    # 直接判"跟不上"。λ=0.1 时同一轨迹跑通（σ=0.5 → 96%）。改了这里必须同步把
+    # compliance_qp_waist_weight 乘以相同倍数，否则腰部绕组会跟着变软。
+    compliance_hybrid_qp_lambda: 0.1
 
     # ── 力信号与零力校准 ──
     compliance_wrench_lpf_alpha: 0.15       # wrench EMA；↓ 更平滑但滞后大（刚性接触易振荡），↑ 噪声穿透多；推荐 0.15~0.25
@@ -458,7 +464,7 @@ ocs2_wbc_controller:
     # qp     = 腰部与双臂进同一个 QP（变量 [腰, 左7, 右7]），按任务/权重自动分配
     # manual = 跟 /compliance_waist_target 绝对角；follow_target = 腰跟随目标方位（旧策略）
     compliance_waist_mode: qp
-    compliance_qp_waist_weight: 1.0        # qp 模式：腰部正则相对手臂的倍数；<1 更愿意用腰，>1 更保守
+    compliance_qp_waist_weight: 10.0       # qp 模式：腰部正则相对手臂的倍数；<1 更愿意用腰，>1 更保守
     compliance_waist_soft_limit: 1.047     # [rad] ≈60°，与 URDF 限位取交集（只能收紧）；↑ 范围更大但手臂远离舒适区，推荐 0.5~1.05
     compliance_waist_rate: 0.12            # [rad/s] qp 模式的速度盒上限，与 URDF 速度限位取小；推荐 0.08~0.15
     compliance_waist_gain: 0.5             # [1/s] 方位残差 → 角速率；仅 manual/follow_target 使用
